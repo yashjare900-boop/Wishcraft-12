@@ -830,6 +830,7 @@
       <div class="tag">occasion pages, made per-person</div>
     </div>
     <div class="topbar-right">
+      <button class="ghost-btn" id="apiKeyModalBtn" style="padding: 7px 12px; font-size:12px; display:inline-flex; align-items:center; gap:5px; color:var(--gold); border-color:rgba(212,175,106,0.35);">🔑 API Key</button>
       
      <!-- AUTH UI -->
       <button class="ghost-btn" id="topbarLoginBtn" style="padding: 7px 12px; font-size:12px; display:none;">Log In / Sign Up</button>
@@ -1138,7 +1139,29 @@
           </svg>
           <h2 id="errorTitle">The spell fizzled.</h2>
           <p id="errorMsg">The AI couldn't complete the generation. Check your API credits or network connection.</p>
-          <button class="ghost-btn" id="retryBtn" style="margin-top: 10px; width: auto; padding: 10px 24px;">Try Again</button>
+          
+          <div style="display: flex; gap: 10px; justify-content: center; align-items: center; margin-top: 10px; flex-wrap: wrap;">
+            <button class="ghost-btn" id="retryBtn" style="padding: 10px 24px;">Try Again</button>
+            <button class="ghost-btn" id="toggleApiKeyBoxBtn" style="padding: 10px 18px; border-color: var(--gold); color: var(--gold);">Insert My API Key</button>
+          </div>
+
+          <!-- Custom API Key Input Box -->
+          <div id="customApiKeyBox" style="display: none; margin-top: 20px; padding: 18px; border: 1px solid rgba(212,175,106,0.35); border-radius: 12px; background: rgba(18,18,20,0.85); backdrop-filter: blur(16px); max-width: 440px; width: 100%; text-align: left; box-shadow: 0 8px 32px rgba(0,0,0,0.4);">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+              <span style="font-size: 13px; font-weight: 600; color: var(--gold); display: flex; align-items: center; gap: 6px;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+                Enter Your Gemini API Key
+              </span>
+              <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener" style="font-size: 11px; color: var(--text-2); text-decoration: underline;">Get free key ↗</a>
+            </div>
+            <p style="font-size: 12px; color: var(--text-2); margin-bottom: 12px; line-height: 1.4;">
+              Server busy or free quota reached? Paste your free Gemini API key to craft your page directly without server limits.
+            </p>
+            <div style="display: flex; gap: 8px;">
+              <input type="password" id="userCustomKeyInput" placeholder="Paste key (AIzaSy...)" style="flex: 1; padding: 10px 12px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); color: var(--text-1); font-size: 12px; font-family: var(--mono); outline: none;" />
+              <button class="generate-btn" id="saveAndCraftBtn" style="padding: 10px 16px; font-size: 13px; margin: 0; white-space: nowrap;">Craft Page</button>
+            </div>
+          </div>
         </div>
 
         <iframe id="preview" title="Generated page preview" sandbox="allow-scripts allow-same-origin"></iframe>
@@ -1593,6 +1616,47 @@ Integrate user details explicitly into the design.`;
   
 
   async function callGemini(systemPrompt, userContent) {
+    const customKey = localStorage.getItem('wishcraft_custom_api_key');
+
+    // If user provided their own key, call Gemini directly from browser (bypasses server timeouts/limits)
+    if (customKey && customKey.trim()) {
+      const models = ['gemini-2.5-flash', 'gemini-3.5-flash-lite', 'gemini-3.7-flash'];
+      let lastErr = null;
+
+      for (const m of models) {
+        try {
+          const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${m}:generateContent?key=${encodeURIComponent(customKey.trim())}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              system_instruction: systemPrompt ? { parts: [{ text: systemPrompt }] } : undefined,
+              contents: [{ role: 'user', parts: [{ text: userContent }] }]
+            })
+          });
+
+          const resText = await res.text();
+          if (!res.ok) {
+            let detail = `Error (${res.status})`;
+            try {
+              const errObj = JSON.parse(resText);
+              if (errObj.error?.message) detail = errObj.error.message;
+            } catch (_) {}
+            throw new Error(detail);
+          }
+
+          const data = JSON.parse(resText);
+          const generatedHtml = data.candidates?.[0]?.content?.parts?.[0]?.text;
+          if (!generatedHtml) throw new Error("Empty response from AI model");
+          return generatedHtml.replace(/^```html\s*/i, "").replace(/^```\s*/i, "").replace(/```\s*$/i, "").trim();
+        } catch (e) {
+          lastErr = e;
+          console.warn(`[Custom Key] Model ${m} failed:`, e.message);
+        }
+      }
+      throw lastErr || new Error("Failed to generate with custom API key");
+    }
+
+    // Default: use backend serverless function
     const response = await fetch('/api/generate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -1600,24 +1664,22 @@ Integrate user details explicitly into the design.`;
     });
 
     const contentType = response.headers.get('content-type') || '';
+    const raw = await response.text();
 
     if (!response.ok) {
       let errMsg = `Generation failed (${response.status})`;
       try {
-        const errJson = await response.json();
+        const errJson = JSON.parse(raw);
         if (errJson.error?.message) errMsg = errJson.error.message;
       } catch (_) {
-        const errText = await response.text();
-        if (errText.includes('Inactivity Timeout') || response.status === 504) {
-          errMsg = 'Generation timed out. Please try again with a simpler request.';
-        } else if (errText.length < 200) {
-          errMsg = errText;
+        if (raw.includes('Inactivity Timeout') || response.status === 504) {
+          errMsg = 'Generation timed out. Please try again or use your own API key.';
+        } else if (raw.length > 0 && raw.length < 200) {
+          errMsg = raw;
         }
       }
       throw new Error(errMsg);
     }
-
-    const raw = await response.text();
 
     // In case backend returned wrapped JSON
     if (contentType.includes('application/json')) {
@@ -1668,17 +1730,89 @@ Integrate user details explicitly into the design.`;
       chromeLabel.textContent = 'live preview'; step1.classList.remove('active'); step2.classList.add('active');
     } catch(err) {
       console.error("API Error:", err);
-      if (err.message && err.message.toLowerCase().includes('quota')) {
-        errorMsg.textContent = "API limits reached or credits are empty. Check your Google AI Studio account.";
+      if (err.message && (err.message.toLowerCase().includes('quota') || err.message.includes('429'))) {
+        errorMsg.textContent = "Server quota limit reached. You can insert your own free Gemini API key below to craft immediately!";
+      } else if (err.message && err.message.toLowerCase().includes('time')) {
+        errorMsg.textContent = "Generation took longer than expected. You can insert your own Gemini API key to craft without server timeout limits.";
       } else {
-        errorMsg.textContent = "The connection timed out or the AI returned an invalid response. Give it another try.";
+        errorMsg.textContent = (err.message && err.message.length < 150) ? err.message : "The connection timed out or the AI returned an invalid response. Insert your key below or retry.";
       }
+      
+      // Auto-open custom API key box on error so users can immediately paste and craft
+      const customKeyBox = document.getElementById('customApiKeyBox');
+      if (customKeyBox) {
+        customKeyBox.style.display = 'block';
+        const savedKey = localStorage.getItem('wishcraft_custom_api_key');
+        if (savedKey) {
+          const keyInput = document.getElementById('userCustomKeyInput');
+          if (keyInput && !keyInput.value) keyInput.value = savedKey;
+        }
+      }
+      
       errorStage.classList.add('visible'); 
     } finally {
       clearInterval(interval); loadingStage.classList.remove('visible');
       generateBtn.disabled = false; generateBtn.textContent = "✦ Craft the page";
     }
   });
+
+  // ---------- Custom API Key Controls ----------
+  const toggleApiKeyBoxBtn = document.getElementById('toggleApiKeyBoxBtn');
+  const customApiKeyBox = document.getElementById('customApiKeyBox');
+  const userCustomKeyInput = document.getElementById('userCustomKeyInput');
+  const saveAndCraftBtn = document.getElementById('saveAndCraftBtn');
+  const apiKeyModalBtn = document.getElementById('apiKeyModalBtn');
+
+  if (toggleApiKeyBoxBtn && customApiKeyBox) {
+    toggleApiKeyBoxBtn.addEventListener('click', () => {
+      const isHidden = customApiKeyBox.style.display === 'none' || !customApiKeyBox.style.display;
+      customApiKeyBox.style.display = isHidden ? 'block' : 'none';
+      if (isHidden && userCustomKeyInput) {
+        userCustomKeyInput.value = localStorage.getItem('wishcraft_custom_api_key') || '';
+        userCustomKeyInput.focus();
+      }
+    });
+  }
+
+  if (saveAndCraftBtn && userCustomKeyInput) {
+    saveAndCraftBtn.addEventListener('click', () => {
+      const enteredKey = userCustomKeyInput.value.trim();
+      if (!enteredKey) {
+        alert("Please enter a valid Gemini API key.");
+        return;
+      }
+      localStorage.setItem('wishcraft_custom_api_key', enteredKey);
+      if (apiKeyModalBtn) apiKeyModalBtn.textContent = '🔑 Custom Key (Set)';
+      // Trigger generation immediately
+      generateBtn.click();
+    });
+  }
+
+  if (apiKeyModalBtn) {
+    const existingKey = localStorage.getItem('wishcraft_custom_api_key');
+    if (existingKey) apiKeyModalBtn.textContent = '🔑 Custom Key (Set)';
+
+    apiKeyModalBtn.addEventListener('click', () => {
+      const current = localStorage.getItem('wishcraft_custom_api_key') || '';
+      const promptText = current 
+        ? `Your custom Gemini API Key is currently configured:\n${current.slice(0, 8)}...${current.slice(-4)}\n\nEnter a new API key, or clear the field to revert to backend default:` 
+        : `Enter your Google Gemini API key to craft directly with unlimited quota (get one free at https://aistudio.google.com/app/apikey):`;
+      
+      const newKey = prompt(promptText, current);
+      if (newKey !== null) {
+        const trimmed = newKey.trim();
+        if (trimmed) {
+          localStorage.setItem('wishcraft_custom_api_key', trimmed);
+          apiKeyModalBtn.textContent = '🔑 Custom Key (Set)';
+          alert("Gemini API key saved! Generations will now run directly via your key.");
+        } else {
+          localStorage.removeItem('wishcraft_custom_api_key');
+          apiKeyModalBtn.textContent = '🔑 API Key';
+          alert("Custom API key removed. Generations will use the default backend.");
+        }
+      }
+    });
+  }
 
   function renderPreview(html) {
     preview.srcdoc = typeof stripEditorArtifacts === 'function' ? stripEditorArtifacts(html) : html;
