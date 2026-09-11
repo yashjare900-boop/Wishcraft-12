@@ -62,12 +62,13 @@ export default stream(async (req, context) => {
     });
   }
 
-  // Model selection: try requested model or Gemini 3.7 Flash, then automatically fallback if busy (503) or quota exceeded (429)
+  // Model selection: default to gemini-3.5-flash-lite for ultra-fast <3s generation
+  // (gemini-3.7-flash is currently overloaded on Google's servers taking >20s and hitting Netlify's 10s limit)
   const candidateModels = [
     model,
     process.env.GEMINI_MODEL,
-    'gemini-3.7-flash',
-    'gemini-3.5-flash-lite'
+    'gemini-3.5-flash-lite',
+    'gemini-3.7-flash'
   ].filter(Boolean);
 
   const uniqueModels = [...new Set(candidateModels)];
