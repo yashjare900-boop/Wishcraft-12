@@ -62,12 +62,14 @@ export default stream(async (req, context) => {
     });
   }
 
-  // Model selection: ignore exhausted gemini-3.6-flash, prioritize gemini-3.5-flash-lite or gemini-3.7-flash
-  const envModel = (process.env.GEMINI_MODEL && process.env.GEMINI_MODEL !== 'gemini-3.6-flash') ? process.env.GEMINI_MODEL : null;
+  // Model selection: prioritize fast and responsive flash models
+  const envModel = process.env.GEMINI_MODEL || null;
   const candidateModels = [
     model,
     envModel,
     'gemini-3.5-flash-lite',
+    'gemini-3.6-flash',
+    'gemini-3.5-flash',
     'gemini-3.7-flash'
   ].filter(Boolean);
 

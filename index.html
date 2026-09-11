@@ -1620,7 +1620,7 @@ Integrate user details explicitly into the design.`;
 
     // If user provided their own key, call Gemini directly from browser (bypasses server timeouts/limits)
     if (customKey && customKey.trim()) {
-      const models = ['gemini-2.5-flash', 'gemini-3.5-flash-lite', 'gemini-3.7-flash'];
+      const models = ['gemini-3.5-flash-lite', 'gemini-3.6-flash', 'gemini-3.5-flash', 'gemini-3.7-flash'];
       let lastErr = null;
 
       for (const m of models) {
