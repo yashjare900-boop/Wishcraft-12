@@ -62,103 +62,124 @@ export default stream(async (req, context) => {
     });
   }
 
-  // Model choice: default to ultra-fast gemini-3.5-flash-lite to prevent timeouts
+  // Model selection: try requested model or Gemini 3.7 Flash, then automatically fallback if busy (503) or quota exceeded (429)
   const candidateModels = [
     model,
     process.env.GEMINI_MODEL,
-    'gemini-3.5-flash-lite',
-    'gemini-3.6-flash'
+    'gemini-3.7-flash',
+    'gemini-3.5-flash-lite'
   ].filter(Boolean);
 
-  const selectedModel = candidateModels[0];
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/${selectedModel}:streamGenerateContent?key=${apiKey}&alt=sse`;
-
+  const uniqueModels = [...new Set(candidateModels)];
   const encoder = new TextEncoder();
+  let geminiRes = null;
+  let lastErrMsg = 'Failed to connect to Gemini API';
 
-  try {
-    const geminiRes = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        system_instruction: systemPrompt ? { parts: [{ text: systemPrompt }] } : undefined,
-        contents: [{ role: 'user', parts: [{ text: userContent }] }]
-      })
-    });
+  for (const selectedModel of uniqueModels) {
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/${selectedModel}:streamGenerateContent?key=${apiKey}&alt=sse`;
 
-    if (!geminiRes.ok) {
-      const errText = await geminiRes.text();
-      let msg = `Google API error (${geminiRes.status})`;
+    try {
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          system_instruction: systemPrompt ? { parts: [{ text: systemPrompt }] } : undefined,
+          contents: [{ role: 'user', parts: [{ text: userContent }] }]
+        })
+      });
+
+      if (res.ok) {
+        geminiRes = res;
+        console.log(`[Gemini API] Successfully connected using model: ${selectedModel}`);
+        break;
+      }
+
+      const errText = await res.text();
+      console.warn(`[Gemini API] Model ${selectedModel} returned ${res.status}: ${errText.slice(0, 150)}`);
       try {
         const errObj = JSON.parse(errText);
-        if (errObj.error?.message) msg = errObj.error.message;
-      } catch (_) {}
-      return new Response(JSON.stringify({ error: { message: msg } }), {
-        status: 502,
+        if (errObj.error?.message) lastErrMsg = errObj.error.message;
+      } catch (_) {
+        lastErrMsg = `Google API error (${res.status})`;
+      }
+
+      // If overloaded (503), quota exceeded (429), or deprecated (404), continue to fallback model
+      if (res.status === 503 || res.status === 429 || res.status === 404) {
+        continue;
+      }
+
+      return new Response(JSON.stringify({ error: { message: lastErrMsg } }), {
+        status: res.status,
         headers: {
           'Content-Type': 'application/json',
           'Access-Control-Allow-Origin': '*'
         }
       });
+    } catch (fetchErr) {
+      console.warn(`[Gemini API] Model ${selectedModel} fetch error: ${fetchErr.message}`);
+      lastErrMsg = fetchErr.message;
     }
+  }
 
-    // Stream chunks back through Netlify (60s limit with continuous data)
-    const readable = new ReadableStream({
-      async start(controller) {
-        const reader = geminiRes.body.getReader();
-        const decoder = new TextDecoder();
-        let buffer = '';
-
-        try {
-          while (true) {
-            const { done, value } = await reader.read();
-            if (done) break;
-
-            buffer += decoder.decode(value, { stream: true });
-            const lines = buffer.split('\n');
-            buffer = lines.pop() || '';
-
-            for (const line of lines) {
-              const trimmed = line.trim();
-              if (trimmed.startsWith('data: ')) {
-                const jsonStr = trimmed.slice(6);
-                try {
-                  const parsed = JSON.parse(jsonStr);
-                  const chunkText = parsed.candidates?.[0]?.content?.parts?.[0]?.text || '';
-                  if (chunkText) {
-                    controller.enqueue(encoder.encode(chunkText));
-                  }
-                } catch (e) {
-                  // ignore partial JSON chunk
-                }
-              }
-            }
-          }
-        } catch (streamErr) {
-          console.error('[Netlify Stream Error]', streamErr);
-        } finally {
-          controller.close();
-        }
-      }
-    });
-
-    return new Response(readable, {
-      status: 200,
-      headers: {
-        'Content-Type': 'text/plain; charset=utf-8',
-        'Access-Control-Allow-Origin': '*',
-        'Cache-Control': 'no-cache, no-transform',
-        'X-Accel-Buffering': 'no'
-      }
-    });
-  } catch (err) {
-    return new Response(JSON.stringify({ error: { message: err.message || 'Server error' } }), {
-      status: 500,
+  if (!geminiRes) {
+    return new Response(JSON.stringify({ error: { message: lastErrMsg } }), {
+      status: 502,
       headers: {
         'Content-Type': 'application/json',
         'Access-Control-Allow-Origin': '*'
       }
     });
   }
+
+  // Stream chunks back through Netlify (60s limit with continuous data)
+  const readable = new ReadableStream({
+    async start(controller) {
+      const reader = geminiRes.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = '';
+
+      try {
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+
+          buffer += decoder.decode(value, { stream: true });
+          const lines = buffer.split('\n');
+          buffer = lines.pop() || '';
+
+          for (const line of lines) {
+            const trimmed = line.trim();
+            if (trimmed.startsWith('data: ')) {
+              const jsonStr = trimmed.slice(6);
+              try {
+                const parsed = JSON.parse(jsonStr);
+                const chunkText = parsed.candidates?.[0]?.content?.parts?.[0]?.text || '';
+                if (chunkText) {
+                  controller.enqueue(encoder.encode(chunkText));
+                }
+              } catch (e) {
+                // ignore partial JSON chunk
+              }
+            }
+          }
+        }
+      } catch (streamErr) {
+        console.error('[Netlify Stream Error]', streamErr);
+      } finally {
+        controller.close();
+      }
+    }
+  });
+
+  return new Response(readable, {
+    status: 200,
+    headers: {
+      'Content-Type': 'text/plain; charset=utf-8',
+      'Access-Control-Allow-Origin': '*',
+      'Cache-Control': 'no-cache, no-transform',
+      'X-Accel-Buffering': 'no'
+    }
+  });
 });
 
 export const config = {
