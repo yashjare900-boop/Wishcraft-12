@@ -1,0 +1,2844 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WishCraft — Build a gift, not a template</title>
+<meta name="description" content="WishCraft is a free digital gift builder. Craft cinematic, interactive, and personalized multi-chapter experiences and vaults for the people you love.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<!-- Open Graph / Rich Social Cards -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="WishCraft — Handcrafted Digital Moments">
+<meta property="og:description" content="An interactive, cinematic digital experience created just for you.">
+<meta property="og:image" content="https://wishcraft-12.netlify.app/og-preview.png">
+<meta property="og:url" content="https://wishcraft-12.netlify.app/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#0B0C10">
+
+<!-- Google Search Console Verification Tag -->
+<meta name="google-site-verification" content="EM4EqOjKtE7AVH1bbz7nG5XYZjmRL-VutiH5mKVqWmI" />
+
+<!-- QR Code Library for Native Sharing -->
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+
+
+<!-- QR Code Library for Native Sharing -->
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+
+
+<style>
+  :root{
+    --ink:#0B0C10;
+    --panel:#14161C;
+    --panel-2:#1B1E26;
+    --line: rgba(240,236,227,0.10);
+    --gold:#D4AF6A;
+    --gold-dim: rgba(212,175,106,0.35);
+    --cream:#F0ECE3;
+    --cream-dim: rgba(240,236,227,0.55);
+    --rose:#C97B84;
+    --teal:#4C8B82;
+    --radius: 14px;
+    --serif: 'Fraunces', serif;
+    --sans: 'Inter', sans-serif;
+    --mono: 'JetBrains Mono', monospace;
+  }
+
+  /* Gemini Logo Gradient Glow */
+  .gemini-glow {
+    background: linear-gradient(90deg, #4285f4, #9b72cb, #d96570, #f4b400);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    display: inline-block;
+    text-shadow: 0 0 20px rgba(155, 114, 203, 0.3);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0; background: var(--ink); color: var(--cream);}
+  
+  ::selection{ background:var(--gold); color:var(--ink); }
+  a{color:inherit; text-decoration:none;}
+
+  /* --- BRAND NEW PREMIUM LANDING PAGE CSS --- */
+  .landing-container {
+    position: fixed; inset: 0; z-index: 9999;
+    background: #050505;
+    overflow-y: auto; overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    transition: opacity 0.6s ease, visibility 0.6s ease;
+    font-family: var(--sans); color: var(--cream);
+  }
+  .landing-container.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+
+  /* Background Aurora & Mesh Effects */
+  .l-bg-glow {
+    position: absolute; top: -10%; left: 50%; transform: translateX(-50%);
+    width: 120vw; height: 100vh;
+    height: 100dvh;
+    background: radial-gradient(ellipse 60% 60% at 50% 20%, rgba(212,175,106,0.15), transparent 70%),
+                radial-gradient(ellipse 50% 50% at 80% 50%, rgba(201,123,132,0.1), transparent 60%);
+    pointer-events: none; z-index: 0; filter: blur(40px);
+  }
+  
+
+  /* --- PASTE STEP 2 RIGHT HERE --- */
+  .l-cyber-floor {
+    position: absolute;
+    bottom: -20%;
+    left: -50%;
+    width: 200%;
+    height: 100%;
+    background-image: 
+      linear-gradient(rgba(212, 175, 106, 0.2) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(212, 175, 106, 0.2) 1px, transparent 1px);
+    background-size: 60px 60px;
+    transform: perspective(600px) rotateX(75deg);
+    animation: gridScroll 2.5s linear infinite;
+    z-index: 0;
+    pointer-events: none;
+    -webkit-mask-image: radial-gradient(ellipse 80% 100% at 50% 100%, black 10%, transparent 60%);
+    mask-image: radial-gradient(ellipse 80% 100% at 50% 100%, black 10%, transparent 60%);
+  }
+
+  @keyframes gridScroll {
+    0% { background-position: 0 0; }
+    100% { background-position: 0 60px; }
+  }
+  /* ------------------------------- */
+
+  /* Landing Navbar */
+  .l-nav {
+    position: relative; z-index: 10; display: flex; align-items: center; justify-content: space-between;
+    padding: 24px 40px; max-width: 1200px; margin: 0 auto; width: 100%;
+  }
+
+  /* Landing Navbar */
+  .l-nav {
+    position: relative; z-index: 10; display: flex; align-items: center; justify-content: space-between;
+    padding: 24px 40px; max-width: 1200px; margin: 0 auto; width: 100%;
+  }
+  .l-nav-brand { font-family: var(--serif); font-size: 24px; font-weight: 700; color: #fff; letter-spacing: -0.01em; }
+  .l-nav-brand .dot { color: var(--gold); }
+  .l-nav-actions { display: flex; gap: 16px; align-items: center; }
+  
+  .l-btn-ghost {
+    background: transparent; color: var(--cream-dim); border: none; font-size: 14px; font-weight: 500;
+    cursor: pointer; padding: 10px 16px; border-radius: 8px; transition: color 0.2s, background 0.2s;
+  }
+  .l-btn-ghost:hover { color: #fff; background: rgba(255,255,255,0.05); }
+  .l-btn-outline {
+    background: rgba(255,255,255,0.03); color: #fff; border: 1px solid rgba(255,255,255,0.1);
+    font-size: 14px; font-weight: 500; cursor: pointer; padding: 10px 20px; border-radius: 8px;
+    transition: all 0.2s; backdrop-filter: blur(10px);
+  }
+  .l-btn-outline:hover { border-color: var(--gold-dim); background: rgba(212,175,106,0.05); }
+
+  /* Hero Section */
+  .l-hero {
+    position: relative; z-index: 10; display: flex; flex-direction: column; align-items: center;
+    text-align: center; padding: 80px 20px 40px; max-width: 900px; margin: 0 auto;
+  }
+  .l-badge {
+    background: rgba(212,175,106,0.1); color: var(--gold); border: 1px solid var(--gold-dim);
+    padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; letter-spacing: 0.05em;
+    margin-bottom: 24px; text-transform: uppercase;
+  }
+  .l-title {
+    font-family: var(--serif); font-size: clamp(42px, 8vw, 76px); font-weight: 600;
+    margin: 0 0 24px; line-height: 1.1; letter-spacing: -0.02em; color: #fff;
+  }
+  .l-title i { font-style: italic; font-weight: 400; color: var(--gold); }
+  .l-subtitle {
+    font-size: clamp(16px, 2.5vw, 20px); color: var(--cream-dim); max-width: 600px;
+    line-height: 1.6; margin: 0 0 40px;
+  }
+
+  .l-hero-actions { display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; margin-bottom: 60px; }
+  .l-btn-primary {
+    background: #fff; color: #000; border: none; border-radius: 10px; padding: 16px 36px;
+    font-size: 16px; font-weight: 600; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .l-btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(255,255,255,0.2); }
+  .l-guest-link {
+    color: var(--cream-dim); font-size: 15px; font-weight: 500; cursor: pointer;
+    display: flex; align-items: center; gap: 6px; padding: 16px 20px; background: transparent; border: none; transition: color 0.2s;
+  }
+  .l-guest-link:hover { color: #fff; }
+  .l-guest-link span { transition: transform 0.2s; }
+  .l-guest-link:hover span { transform: translateX(4px); }
+
+  /* Floating UI Visual */
+  .l-visual-showcase {
+    position: relative; width: 100%; max-width: 800px; height: 350px; margin: 0 auto;
+    perspective: 1000px; z-index: 5;
+  }
+  .l-float-card {
+    position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%) rotateX(15deg) rotateY(-10deg);
+    width: 60%; height: 260px; background: rgba(30, 32, 40, 0.4); backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; box-shadow: 0 30px 60px rgba(0,0,0,0.6);
+    padding: 24px; animation: floatAnim 6s ease-in-out infinite alternate; display: flex; flex-direction: column; gap:16px;
+  }
+  .l-float-card::before {
+    content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+    background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent 40%);
+  }
+  @keyframes floatAnim {
+    0% { transform: translate(-50%, -50%) rotateX(15deg) rotateY(-10deg) translateY(0); }
+    100% { transform: translate(-50%, -50%) rotateX(15deg) rotateY(-10deg) translateY(-20px); }
+  }
+  /* Card internals just for visuals */
+  .l-mock-nav { display: flex; justify-content: space-between; align-items: center; }
+  .l-mock-dot { width: 12px; height: 12px; background: rgba(255,255,255,0.2); border-radius: 50%; }
+  .l-mock-line { height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; width: 40%; }
+  .l-mock-hero { flex: 1; border-radius: 12px; background: radial-gradient(circle at 50% 0%, rgba(212,175,106,0.15), transparent); border: 1px dashed rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center; }
+  .l-mock-lock { font-size: 40px; opacity: 0.8; filter: drop-shadow(0 0 10px rgba(212,175,106,0.5)); }
+  .l-float-card-2 {
+    position: absolute; right: 10%; bottom: 10%; width: 220px; height: 140px;
+    background: rgba(201,123,132,0.1); backdrop-filter: blur(15px); border: 1px solid rgba(201,123,132,0.3);
+    border-radius: 16px; transform: rotateX(10deg) rotateY(15deg) translateZ(40px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.5); animation: floatAnim2 5s ease-in-out infinite alternate-reverse;
+  }
+  @keyframes floatAnim2 { 0% { transform: rotateX(10deg) rotateY(15deg) translateZ(40px) translateY(0); } 100% { transform: rotateX(10deg) rotateY(15deg) translateZ(40px) translateY(15px); } }
+
+  /* Features Section */
+  .l-features-wrap { max-width: 1200px; margin: 60px auto 100px; padding: 0 20px; position: relative; z-index: 10; }
+  .l-features { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; }
+  .l-feature {
+    background: #0B0C10; border: 1px solid rgba(255,255,255,0.05);
+    padding: 36px 28px; border-radius: 20px; text-align: left; transition: all 0.3s ease;
+    position: relative; overflow: hidden;
+  }
+  .l-feature:hover { border-color: rgba(212,175,106,0.4); transform: translateY(-4px); box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
+  .l-feature-icon { font-size: 28px; margin-bottom: 20px; display: inline-block; padding: 12px; background: rgba(255,255,255,0.03); border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); }
+  .l-feature h3 { font-family: var(--serif); font-size: 22px; margin: 0 0 10px; color: #fff; font-weight: 600;}
+  .l-feature p { font-size: 14.5px; color: var(--cream-dim); line-height: 1.6; margin: 0; }
+
+  @media (max-width: 768px) {
+    .l-nav { padding: 20px; }
+    .l-hero { padding: 40px 20px; }
+    .l-visual-showcase { height: 250px; }
+    .l-float-card { width: 85%; height: 200px; }
+    .l-float-card-2 { display: none; }
+  }
+  /* --- PREMIUM PROFILE MENU (UPGRADED) --- */
+  .profile-wrapper { position: relative; display: inline-block; }
+  .profile-trigger {
+    display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.1); border-radius: 40px; padding: 6px 14px 6px 6px;
+    cursor: pointer; color: var(--cream); font-family: var(--sans); font-size: 13px; font-weight: 500;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); backdrop-filter: blur(10px);
+  }
+  .profile-trigger:hover { 
+    background: rgba(212,175,106,0.08); border-color: var(--gold-dim); 
+    box-shadow: 0 0 20px rgba(212,175,106,0.15);
+  }
+  .profile-avatar {
+    width: 28px; height: 28px; background: linear-gradient(135deg, var(--gold), #c79a52);
+    color: var(--ink); border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 13px; box-shadow: inset 0 -2px 4px rgba(0,0,0,0.2);
+  }
+  
+  .profile-dropdown {
+    position: absolute; top: calc(100% + 14px); right: 0; width: 260px;
+    background: rgba(20, 22, 28, 0.7); backdrop-filter: blur(25px);
+    border: 1px solid rgba(255,255,255,0.1); border-radius: 16px;
+    padding: 10px; display: flex; flex-direction: column; gap: 4px;
+    box-shadow: 0 40px 80px rgba(0,0,0,0.8), 0 0 0 1px rgba(212,175,106,0.1) inset;
+    opacity: 0; visibility: hidden; transform: translateY(-15px) scale(0.98); 
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); z-index: 9999;
+    transform-origin: top right;
+  }
+  .profile-dropdown.show { opacity: 1; visibility: visible; transform: translateY(0) scale(1); }
+  
+  .dropdown-item {
+    padding: 12px 16px; color: var(--cream-dim); font-size: 13px; text-decoration: none;
+    border-radius: 10px; display: flex; align-items: center; gap: 12px; cursor: pointer;
+    transition: all 0.2s ease; font-family: var(--sans); font-weight: 500;
+    position: relative; overflow: hidden; border: 1px solid transparent;
+  }
+  .dropdown-item::before {
+    content: ''; position: absolute; left: 0; top: 0; height: 100%; width: 3px;
+    background: var(--gold); transform: scaleY(0); transition: transform 0.2s ease;
+    border-radius: 0 4px 4px 0;
+  }
+  .dropdown-item:hover { 
+    background: linear-gradient(90deg, rgba(212,175,106,0.08), transparent); 
+    color: #fff; padding-left: 20px; border-color: rgba(212,175,106,0.1);
+  }
+  .dropdown-item:hover::before { transform: scaleY(1); }
+  
+  .dropdown-divider { height: 1px; background: rgba(255,255,255,0.06); margin: 6px 4px; }
+  .dropdown-item.danger:hover { background: linear-gradient(90deg, rgba(201,123,132,0.1), transparent); border-color: rgba(201,123,132,0.2); }
+  .dropdown-item.danger:hover::before { background: var(--rose); }
+
+  /* --- DASHBOARD ACTION BUTTONS --- */
+  .dash-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+  .dash-btn { 
+    background: rgba(255,255,255,0.04); border: 1px solid var(--line); color: var(--cream-dim); 
+    border-radius: 8px; padding: 8px 14px; font-size: 12px; cursor: pointer; transition: 0.2s; 
+    display: flex; align-items: center; gap: 6px; font-weight: 500;
+  }
+  .dash-btn:hover { border-color: var(--gold-dim); color: var(--gold); background: rgba(212,175,106,0.05); }
+  .dash-btn.danger:hover { border-color: rgba(201,123,132,0.4); color: var(--rose); background: rgba(201,123,132,0.05); }
+
+  /* --- FULL SCREEN PANELS (Account, Settings, About) --- */
+  .fs-panel-overlay {
+    position: fixed; inset: 0; z-index: 100000;
+    background: rgba(0,0,0,0.6); backdrop-filter: blur(15px);
+    display: flex; align-items: center; justify-content: center; padding: 20px;
+    opacity: 0; visibility: hidden; transition: 0.4s ease;
+  }
+  .fs-panel-overlay.show { opacity: 1; visibility: visible; }
+  
+  .fs-panel-card {
+    width: 100%; max-width: 560px; background: #0B0C10;
+    border: 1px solid rgba(255,255,255,0.08); border-radius: 24px; padding: 40px;
+    position: relative; overflow: hidden; box-shadow: 0 40px 100px rgba(0,0,0,0.8);
+    transform: translateY(30px) scale(0.95); transition: 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  .fs-panel-overlay.show .fs-panel-card { transform: translateY(0) scale(1); }
+  
+  /* The cinematic glowing aurora inside the cards */
+  .fs-panel-glow {
+    position: absolute; top: -50%; left: -20%; width: 140%; height: 140%;
+    background: radial-gradient(circle at 50% 0%, rgba(212,175,106,0.12), transparent 60%);
+    pointer-events: none; z-index: 0;
+  }
+  
+  .fs-panel-content { position: relative; z-index: 1; }
+  .fs-panel-close {
+    position: absolute; top: 20px; right: 20px; background: rgba(255,255,255,0.03); 
+    border: 1px solid rgba(255,255,255,0.08); color: var(--cream-dim); width: 36px; height: 36px; 
+    border-radius: 50%; display: flex; align-items: center; justify-content: center; 
+    cursor: pointer; font-size: 20px; transition: 0.2s; z-index: 10;
+  }
+  .fs-panel-close:hover { background: rgba(212,175,106,0.1); border-color: var(--gold-dim); color: var(--gold); transform: rotate(90deg); }
+  
+  .fs-title { font-family: var(--serif); font-size: 32px; font-weight: 600; color: #fff; margin: 0 0 8px 0; letter-spacing: -0.01em;}
+  .fs-subtitle { font-size: 14px; color: var(--cream-dim); margin: 0 0 32px 0; line-height: 1.6;}
+  
+  /* Panel internal styles */
+  .fs-row { display: flex; justify-content: space-between; align-items: center; padding: 16px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+  .fs-row:last-child { border-bottom: none; }
+  .fs-label { font-size: 14.5px; color: #fff; font-weight: 500; }
+  .fs-value { font-size: 13px; color: var(--cream-dim); font-family: var(--mono); }
+  
+  /* Toggle Switch */
+  .fs-switch { position: relative; display: inline-block; width: 44px; height: 24px; }
+  .fs-switch input { opacity: 0; width: 0; height: 0; }
+  .fs-slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(255,255,255,0.1); transition: .3s; border-radius: 34px; border: 1px solid rgba(255,255,255,0.1); }
+  .fs-slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px; background-color: var(--cream-dim); transition: .3s; border-radius: 50%; }
+  .fs-switch input:checked + .fs-slider { background-color: rgba(212,175,106,0.2); border-color: var(--gold); }
+  .fs-switch input:checked + .fs-slider:before { transform: translateX(20px); background-color: var(--gold); }
+
+  /* App Visibility Classes */
+  .app-hidden { display: none !important; }
+  /* ---------------------------------- */
+
+
+  /* Topbar (App) */
+  body.app-active {
+    background: radial-gradient(ellipse 1200px 600px at 15% -10%, rgba(212,175,106,0.08), transparent 60%),
+                radial-gradient(ellipse 900px 500px at 100% 0%, rgba(76,139,130,0.06), transparent 55%),
+                var(--ink);
+  }
+  .topbar{ display:flex; align-items:center; justify-content:space-between; gap:14px; padding:16px 28px; border-bottom:1px solid var(--line); flex-wrap:wrap; }
+  .brand{ display:flex; align-items:baseline; gap:10px; flex-shrink:0; }
+  .brand .mark{ font-family:var(--serif); font-weight:600; font-size:20px; letter-spacing:0.01em; white-space:nowrap; }
+  .brand .mark .dot{ color:var(--gold); }
+  .brand .tag{ font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:var(--cream-dim); white-space:nowrap; }
+  .topbar-right{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-left:auto; }
+  .step-indicator{ display:flex; gap:6px; font-family:var(--mono); font-size:11px; color:var(--cream-dim); letter-spacing:0.05em; white-space:nowrap; }
+  .step-indicator span.active{ color:var(--gold); }
+
+  @media (max-width:640px){
+    .topbar{ padding:14px 16px; gap:8px; }
+    .brand{ flex-direction:column; align-items:flex-start; gap:2px; }
+    .brand .mark{ font-size:17px; }
+    .brand .tag{ font-size:9.5px; }
+    .topbar-right{ width:100%; justify-content:space-between; margin-left:0; }
+    .step-indicator{ font-size:10px; gap:4px; }
+    .hub-back{ padding:6px 10px; font-size:11px; }
+  }
+
+  /* Layout */
+  .workshop{ display:grid; grid-template-columns: 420px 1fr; min-height:calc(100vh - 73px); }
+  @media (max-width: 1100px){ .workshop{ grid-template-columns: 380px 1fr; } }
+  @media (max-width: 980px){
+    .workshop{ grid-template-columns: 1fr; min-height:auto; }
+    .rail{ border-right:none; border-bottom:1px solid var(--line); max-height:none; padding:20px 18px; }
+    .stage{ padding:20px 16px 40px; min-height:70vh; }
+    .stage-inner{ max-height:none; height:min(640px, 78vh); }
+  }
+  @media (max-width: 640px){
+    .rail{ padding:18px 14px; gap:16px; }
+    .stage{ padding:14px 10px 32px; }
+    .stage-inner{ border-radius:16px; height:min(560px, 72vh); }
+    .name-pair{ grid-template-columns:1fr; gap:14px; }
+    .theme-grid{ grid-template-columns:1fr 1fr; }
+    .empty-stage{ padding:24px 16px; }
+    .empty-stage h2{ font-size:19px; }
+    .empty-stage p{ font-size:12.5px; max-width:280px; }
+    .ribbon-mark{ width:48px; height:48px; }
+  }
+
+  /* Left Rail */
+  .rail{ border-right:1px solid var(--line); padding:28px; display:flex; flex-direction:column; gap:20px; max-height:calc(100vh - 73px); overflow-y:auto; }
+  .rail::-webkit-scrollbar{ width:6px; }
+  .rail::-webkit-scrollbar-thumb{ background:var(--line); border-radius:3px; }
+
+  .field-group{ display:flex; flex-direction:column; gap:8px; }
+  .field-label{ font-size:11px; letter-spacing:0.1em; text-transform:uppercase; color:var(--cream-dim); font-weight:600; }
+  input[type=text], textarea, select{ background:var(--panel); border:1px solid var(--line); color:var(--cream); border-radius:10px; padding:11px 13px; font-family:var(--sans); font-size:14px; outline:none; transition: border-color .15s ease, background .15s ease; width:100%; }
+  input[type=text]:focus, textarea:focus, select:focus{ border-color:var(--gold-dim); background:var(--panel-2); }
+  textarea{ resize:vertical; min-height:60px; line-height:1.5; }
+
+  .chip-row{ display:flex; flex-wrap:wrap; gap:8px; }
+  .chip{ padding:7px 12px; border:1px solid var(--line); border-radius:999px; font-size:12px; cursor:pointer; background:var(--panel); color:var(--cream-dim); transition: all .15s ease; user-select:none; }
+  .chip:hover{ border-color:var(--gold-dim); color:var(--cream); }
+  .chip.selected{ background:var(--gold); color:var(--ink); border-color:var(--gold); font-weight:600; }
+  .chip[data-tip]{ position:relative; }
+  .chip[data-tip]:hover::after{ content:attr(data-tip); position:absolute; left:0; bottom:calc(100% + 8px); z-index:20; width:180px; background:var(--panel-2); color:var(--cream); border:1px solid var(--gold-dim); border-radius:8px; padding:8px 10px; font-size:11px; line-height:1.45; font-weight:400; white-space:normal; box-shadow:0 12px 30px rgba(0,0,0,0.5); pointer-events:none; }
+  .chip[data-tip]:hover::before{ content:''; position:absolute; left:14px; bottom:100%; z-index:20; border:5px solid transparent; border-top-color:var(--gold-dim); margin-bottom:2px; }
+
+  .theme-grid{ display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  .theme-card{ border:1px solid var(--line); border-radius:10px; padding:10px 12px; cursor:pointer; transition:all .15s ease; background:var(--panel); }
+  .theme-card:hover{ border-color:var(--gold-dim); }
+  .theme-card.selected{ border-color:var(--gold); background:rgba(212,175,106,0.06); }
+  .theme-swatch{ height:20px; border-radius:5px; margin-bottom:6px; }
+  .theme-card .name{ font-size:12px; font-weight:600; }
+  .theme-card .desc{ font-size:10.5px; color:var(--cream-dim); margin-top:2px; }
+
+  .photo-drop{ border:1.5px dashed var(--line); border-radius:10px; padding:14px; text-align:center; font-size:12px; color:var(--cream-dim); cursor:pointer; transition:all .15s ease; }
+  .photo-drop:hover{ border-color:var(--gold-dim); color:var(--cream); }
+  .photo-strip{ display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; }
+  .photo-thumb{ width:40px; height:40px; border-radius:6px; object-fit:cover; border:1px solid var(--line); }
+
+  .name-pair{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .name-pair .field-group{ gap:8px; }
+  
+  .field-hint{ font-size:11px; color:var(--cream-dim); line-height:1.5; margin-top:-2px; }
+
+  .song-drop{ border:1.5px dashed var(--line); border-radius:10px; padding:14px; text-align:center; font-size:12px; color:var(--cream-dim); cursor:pointer; transition:all .15s ease; }
+  .song-drop:hover{ border-color:var(--gold-dim); color:var(--cream); }
+  .song-drop.has-file{ border-color:var(--teal); color:var(--cream); border-style:solid; }
+  .song-chip{ display:none; align-items:center; justify-content:space-between; gap:8px; margin-top:8px; padding:8px 10px; background:var(--panel); border:1px solid var(--line); border-radius:8px; font-size:12px; }
+  .song-chip.visible{ display:flex; }
+  .song-chip .song-name{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; flex:1; }
+  .song-chip button{ background:none; border:none; color:var(--rose); cursor:pointer; font-size:13px; padding:0 4px; }
+
+  .subfield{ display:none; flex-direction:column; gap:8px; margin-top:2px; }
+  .subfield.visible{ display:flex; }
+
+  .section-divider{ display:flex; align-items:center; gap:10px; margin:2px 0 -6px; font-size:10.5px; letter-spacing:0.14em; text-transform:uppercase; color:var(--gold-dim); }
+  .section-divider::after{ content:''; flex:1; height:1px; background:var(--line); }
+
+  input[type=date], input[type=time]{ background:var(--panel); border:1px solid var(--line); color:var(--cream); border-radius:10px; padding:10px 13px; font-family:var(--sans); font-size:13px; outline:none; width:100%; color-scheme:dark; }
+  input[type=date]:focus, input[type=time]:focus{ border-color:var(--gold-dim); }
+  .date-time-row{ display:flex; gap:8px; }
+  .date-time-row > *{ flex:1; }
+
+  .generate-btn{ margin-top:6px; background:linear-gradient(135deg, var(--gold), #c79a52); color:var(--ink); border:none; border-radius:10px; padding:14px; font-family:var(--serif); font-weight:600; font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; transition: transform .12s ease, box-shadow .12s ease; }
+  .generate-btn:hover{ transform:translateY(-1px); box-shadow:0 8px 24px rgba(212,175,106,0.25); }
+  .generate-btn:disabled{ opacity:0.5; cursor:not-allowed; transform:none; box-shadow:none; }
+
+  /* Edit Block */
+  .edit-block{ display:none; flex-direction:column; gap:10px; border-top:1px solid var(--line); padding-top:20px; }
+  .edit-block.visible{ display:flex; }
+  .edit-log{ display:flex; flex-direction:column; gap:6px; max-height:120px; overflow-y:auto; }
+  .edit-log-item{ font-size:11.5px; color:var(--cream-dim); font-family:var(--mono); padding:6px 9px; background:var(--panel); border-radius:6px; border:1px solid var(--line); }
+  .edit-row{ display:flex; gap:8px; }
+  .edit-row input{ flex:1; }
+  .edit-row button{ background:var(--panel-2); border:1px solid var(--gold-dim); color:var(--gold); border-radius:10px; padding:0 16px; font-weight:600; cursor:pointer; font-size:13px; white-space:nowrap; }
+  .edit-row button:hover{ background:rgba(212,175,106,0.1); }
+  .undo-row{ display:flex; gap:8px; }
+  .ghost-btn{ flex:1; background:transparent; border:1px solid var(--line); color:var(--cream-dim); border-radius:10px; padding:9px; font-size:12px; cursor:pointer; }
+  .ghost-btn:hover{ border-color:var(--gold-dim); color:var(--cream); }
+
+  /* Right Stage */
+  .stage{ position:relative; display:flex; align-items:center; justify-content:center; padding:30px; overflow:hidden; width:100%; }
+  .stage-inner{ width:100%; max-width:840px; margin:0 auto; height:100%; max-height:86vh; display:flex; flex-direction:column; border-radius:20px; border:1px solid var(--line); background:var(--panel); overflow:hidden; position:relative; box-shadow: 0 40px 80px -30px rgba(0,0,0,0.6); }
+  .stage-chrome{ position:relative; display:flex; align-items:center; justify-content:space-between; padding:12px 16px; border-bottom:1px solid var(--line); font-family:var(--mono); font-size:11px; color:var(--cream-dim); }
+  #chromeLabel { position:absolute; left:50%; transform:translateX(-50%); font-weight:600; color:var(--gold-dim); letter-spacing:0.1em; text-transform:uppercase; }
+  .stage-chrome .dots{ display:flex; gap:6px; }
+  .stage-chrome .dots span{ width:9px; height:9px; border-radius:50%; background:var(--line); }
+  .stage-actions{ display:flex; gap:10px; }
+  .stage-actions button{ background:none; border:1px solid var(--line); color:var(--cream-dim); border-radius:7px; padding:5px 11px; font-size:11.5px; cursor:pointer; font-family:var(--sans); }
+  .stage-actions button:hover{ border-color:var(--gold-dim); color:var(--gold); }
+
+  iframe#preview{ flex:1; width:100%; border:none; background:#000; }
+
+  .empty-stage{ flex:1; width:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:16px; padding:40px; text-align:center; margin:0 auto; }
+  .ribbon-mark{ width:64px; height:64px; position:relative; }
+  .empty-stage h2{ font-family:var(--serif); font-weight:500; font-size:24px; margin:0; color:var(--cream); text-align:center; width:100%; }
+  .empty-stage p{ color:var(--cream-dim); font-size:13.5px; max-width:360px; line-height:1.6; margin:0 auto; text-align:center; }
+
+  .loading-stage{ flex:1; display:none; flex-direction:column; align-items:center; justify-content:center; gap:18px; }
+  .loading-stage.visible{ display:flex; }
+  .loading-stage p{ font-family:var(--mono); font-size:12px; color:var(--gold); letter-spacing:0.05em; }
+
+  .error-stage { flex: 1; display: none; flex-direction: column; align-items: center; justify-content: center; gap: 16px; padding: 40px; text-align: center; }
+  .error-stage.visible { display: flex; }
+  .error-mark { width: 56px; height: 56px; margin-bottom: 8px; }
+  .error-stage h2 { font-family: var(--serif); font-weight: 500; font-size: 22px; margin: 0; color: var(--rose); }
+  .error-stage p { color: var(--cream-dim); font-size: 13px; max-width: 320px; line-height: 1.6; margin: 0; }
+
+  @keyframes tie { 0%{ stroke-dashoffset: 220; } 100%{ stroke-dashoffset: 0; } }
+  .tie-svg path{ stroke-dasharray:220; stroke-dashoffset:220; animation: tie 1.4s ease-in-out infinite alternate; }
+
+  .empty-stage, .loading-stage, iframe#preview { display: none; }
+  .empty-stage.visible{ display:flex; }
+  iframe#preview.visible{ display:block; }
+
+  /* ---------- Entry Hub ---------- */
+  .hub{ display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:calc(100vh - 73px); padding:40px 24px; text-align:center; gap:36px; }
+  .hub-heading h1{ font-family:var(--serif); font-weight:600; font-size:clamp(28px,4vw,42px); margin:0 0 10px; letter-spacing:-0.01em; color:#fff; }
+  .hub-heading p{ color:var(--cream-dim); font-size:14.5px; max-width:460px; margin:0 auto; line-height:1.6; }
+  .hub-cards{ display:grid; grid-template-columns:1fr 1fr; gap:22px; width:100%; max-width:800px; }
+  @media (max-width:640px){ .hub-cards{ grid-template-columns:1fr; gap:16px; max-width:420px; } }
+
+  .hub-card{
+    background:linear-gradient(160deg, var(--panel) 0%, rgba(255,255,255,0.015) 100%);
+    border:1px solid var(--line); border-radius:20px; padding:34px 28px;
+    display:flex; flex-direction:column; align-items:flex-start; gap:13px; text-align:left; cursor:pointer;
+    transition:transform .22s cubic-bezier(.2,.8,.2,1), border-color .22s ease, box-shadow .22s ease, background .22s ease;
+    position:relative; overflow:hidden; isolation:isolate;
+  }
+  .hub-card:hover{ transform:translateY(-6px); border-color:var(--gold-dim); box-shadow:0 24px 60px -20px rgba(0,0,0,0.6); }
+  .hub-card:active{ transform:translateY(-2px); }
+
+  .hub-card .hub-ic-wrap{
+    width:52px; height:52px; border-radius:14px; display:flex; align-items:center; justify-content:center;
+    background:rgba(255,255,255,0.04); border:1px solid var(--line); z-index:2; position:relative;
+    transition:transform .22s ease, border-color .22s ease;
+  }
+  .hub-card:hover .hub-ic-wrap{ transform:scale(1.06) rotate(-3deg); border-color:var(--gold-dim); }
+  .hub-card .hub-ic{ font-size:24px; line-height:1; }
+
+  .hub-card h3{ font-family:var(--serif); font-size:21px; font-weight:600; margin:0; z-index:2; position:relative; color:#fff;}
+  .hub-card p{ color:var(--cream-dim); font-size:13px; line-height:1.65; margin:0; z-index:2; position:relative;}
+  .hub-card .hub-cta{
+    margin-top:10px; font-size:12.5px; font-weight:600; color:var(--gold); display:flex; align-items:center; gap:6px;
+    z-index:2; position:relative; padding-top:12px; border-top:1px solid var(--line); width:100%;
+    transition:gap .18s ease;
+  }
+  .hub-card:hover .hub-cta{ gap:10px; }
+
+  .hub-card.manual::before, .hub-card.ai::before{
+    content:''; position:absolute; top:-60px; right:-60px; width:180px; height:180px; border-radius:50%;
+    z-index:1; transition:opacity .3s ease;
+  }
+  .hub-card.manual::before{ background:radial-gradient(circle, rgba(76,139,130,0.2), transparent 70%); }
+  .hub-card.ai::before{ background:radial-gradient(circle, rgba(212,175,106,0.22), transparent 70%); }
+  .hub-card:hover::before{ opacity:1; }
+
+  /* AI Card Locked state styling */
+  .hub-card.ai.locked { opacity: 0.55; filter: grayscale(0.85); cursor: not-allowed; }
+  .hub-card.ai.locked:hover { transform: none; box-shadow: none; border-color: var(--line); }
+  .lock-badge {
+    position:absolute; top:18px; right:18px; display:flex; align-items:center; gap:5px;
+    background:rgba(0,0,0,0.75); backdrop-filter:blur(6px); color:#fff; padding:5px 11px 5px 9px;
+    border-radius:20px; font-size:10.5px; font-weight:600; letter-spacing:.02em; z-index:10;
+    font-family:var(--sans); border:1px solid rgba(212,175,106,0.3);
+  }
+
+  @media (max-width:640px){
+    .hub-card{ padding:24px 20px; border-radius:16px; gap:11px; }
+    .hub-card .hub-ic-wrap{ width:44px; height:44px; border-radius:12px; }
+    .hub-card .hub-ic{ font-size:20px; }
+    .hub-card h3{ font-size:18px; }
+    .hub-card p{ font-size:12.5px; }
+    .lock-badge{ top:14px; right:14px; font-size:9.5px; padding:4px 9px 4px 7px; }
+  }
+  
+  .hub-back{ display:none; align-items:center; gap:6px; background:none; border:1px solid var(--line); color:var(--cream-dim); border-radius:8px; padding:7px 13px; font-size:12px; cursor:pointer; font-family:var(--sans); }
+  .hub-back:hover{ border-color:var(--gold-dim); color:var(--cream); }
+  .hub-back.visible{ display:inline-flex; }
+  .workshop{ display:none; }
+  .workshop.visible{ display:grid; }
+  .hub.hidden{ display:none; }
+
+  /* --- ACCOUNT PANEL: SUBSCRIPTIONS & REDEEM UI --- */
+  .fs-panel-card.wide { max-width: 860px; max-height: 90vh; overflow-y: auto; overflow-x: hidden; }
+  .fs-panel-card.wide::-webkit-scrollbar { width: 6px; }
+  .fs-panel-card.wide::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
+  
+  .redeem-box { 
+    display: flex; gap: 8px; background: rgba(0,0,0,0.4); 
+    border: 1px solid rgba(255,255,255,0.08); padding: 6px; border-radius: 12px; margin-top: 6px; 
+    box-shadow: inset 0 4px 10px rgba(0,0,0,0.5);
+  }
+  .redeem-box input { 
+    flex: 1; background: transparent; border: none; color: #fff; 
+    padding: 10px 14px; font-family: var(--mono); font-size: 13px; outline: none; width: 100%;
+  }
+  .redeem-box input::placeholder { color: rgba(255,255,255,0.3); }
+  .redeem-box button { 
+    background: var(--gold); color: var(--ink); border: none; border-radius: 8px; 
+    padding: 0 20px; font-weight: 600; cursor: pointer; transition: 0.2s; font-family: var(--sans);
+  }
+  .redeem-box button:hover { background: #fff; box-shadow: 0 0 15px rgba(212,175,106,0.5); }
+
+  .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-top: 24px; }
+  .pricing-card { 
+    background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); 
+    border-radius: 16px; padding: 24px; text-align: left; transition: 0.3s;
+    display: flex; flex-direction: column; position: relative; overflow: hidden;
+  }
+  .pricing-card:hover { border-color: var(--gold-dim); background: rgba(212,175,106,0.03); transform: translateY(-4px); }
+  .pricing-card.popular { border-color: rgba(212,175,106,0.3); background: rgba(212,175,106,0.06); box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
+  .pricing-card.popular::before { 
+    content: 'Most Popular'; position: absolute; top: 12px; right: -28px; 
+    background: linear-gradient(135deg, var(--gold), #c79a52); color: var(--ink); 
+    font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em;
+    padding: 4px 30px; transform: rotate(45deg); box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  }
+  .pricing-title { font-family: var(--serif); font-size: 20px; color: #fff; margin-bottom: 8px; font-weight: 600;}
+  .pricing-price { font-size: 32px; font-weight: 700; color: var(--gold); margin-bottom: 20px; letter-spacing: -0.02em;}
+  .pricing-price span { font-size: 14px; color: var(--cream-dim); font-weight: 500; letter-spacing: normal;}
+  .pricing-features { list-style: none; padding: 0; margin: 0 0 24px 0; flex: 1; display: flex; flex-direction: column; gap: 10px;}
+  .pricing-features li { font-size: 13px; color: var(--cream-dim); display: flex; align-items: flex-start; gap: 8px; line-height: 1.4;}
+  .pricing-features li::before { content: '✓'; color: var(--teal); font-weight: bold; font-size: 14px;}
+
+  /* --- ULTIMATE POLISH: ANIMATIONS & GLOWS --- */
+  
+  /* 1. Staggered Dropdown Menu Items */
+  .profile-dropdown .dropdown-item, .profile-dropdown .dropdown-divider {
+    opacity: 0; transform: translateX(15px);
+    transition: background 0.2s ease, border 0.2s ease, padding 0.2s ease, opacity 0.4s ease, transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  .profile-dropdown.show .dropdown-item, .profile-dropdown.show .dropdown-divider {
+    opacity: 1; transform: translateX(0);
+  }
+  /* Delay each item slightly more than the last */
+  .profile-dropdown.show .dropdown-item:nth-child(1) { transition-delay: 0.05s; }
+  .profile-dropdown.show .dropdown-item:nth-child(2) { transition-delay: 0.10s; }
+  .profile-dropdown.show .dropdown-item:nth-child(3) { transition-delay: 0.15s; }
+  .profile-dropdown.show .dropdown-item:nth-child(4) { transition-delay: 0.20s; }
+  .profile-dropdown.show .dropdown-divider { transition-delay: 0.25s; }
+  .profile-dropdown.show .dropdown-item:nth-child(6) { transition-delay: 0.30s; }
+
+  /* 2. Breathing Aurora Glow inside Panels */
+  @keyframes panelBreathe {
+    0% { transform: scale(1) translate(0, 0); opacity: 0.5; }
+    50% { transform: scale(1.15) translate(3%, 4%); opacity: 0.9; }
+    100% { transform: scale(1) translate(0, 0); opacity: 0.5; }
+  }
+  .fs-panel-glow {
+    animation: panelBreathe 8s infinite alternate ease-in-out;
+    filter: blur(50px); /* Makes the gradient ultra-smooth */
+  }
+
+  /* 3. Shimmering Premium Badge */
+  .pro-badge {
+    display: inline-block; padding: 4px 12px; border-radius: 20px;
+    background: linear-gradient(120deg, rgba(212,175,106,0.1) 0%, rgba(212,175,106,0.4) 50%, rgba(212,175,106,0.1) 100%);
+    background-size: 200% 100%; color: var(--gold); font-family: var(--mono); font-size: 11px;
+    border: 1px solid rgba(212,175,106,0.3); animation: shimmer 3s infinite linear;
+    box-shadow: 0 0 10px rgba(212,175,106,0.2);
+  }
+  @keyframes shimmer { 
+    0% { background-position: 200% 0; } 
+    100% { background-position: -200% 0; } 
+  }
+  
+  /* --- LOCKED FEATURES UI --- */
+  .locked-feature {
+    opacity: 0.5; filter: grayscale(100%); cursor: not-allowed !important;
+    position: relative; pointer-events: auto;
+  }
+  .locked-feature::after {
+    content: '🔒'; position: absolute; top: 10px; right: 10px; font-size: 16px;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+  }
+  .locked-feature:hover { border-color: var(--line) !important; transform: none !important; }
+  
+  /* --- GLOBAL APP FEEL (Prevents accidental text selection) --- */
+  body { 
+    -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; 
+  }
+  input, textarea, [contenteditable="true"] { 
+    -webkit-user-select: auto; -moz-user-select: auto; -ms-user-select: auto; user-select: auto; 
+  }
+
+ /* --- MOBILE REDEEM FIX & SETTINGS UI --- */
+  .redeem-wrapper { flex:1; min-width: 260px; max-width: 320px; }
+  .redeem-box { display: flex; flex-wrap: nowrap; width: 100%; box-sizing: border-box; }
+  .redeem-box input { flex: 1 1 auto; min-width: 0; }
+  .redeem-box button { flex-shrink: 0; padding: 0 16px; white-space: nowrap; }
+  
+  .settings-category { font-family: var(--serif); color: var(--gold); font-size: 16px; margin: 32px 0 12px; border-bottom: 1px solid rgba(212,175,106,0.2); padding-bottom: 8px; font-weight: 600; text-align: left; }
+  .settings-category:first-of-type { margin-top: 10px; }
+
+  @media (max-width: 640px) {
+      .redeem-wrapper { margin: 0 auto; text-align: center; }
+      .redeem-wrapper > div:first-child { text-align: center !important; }
+      .redeem-box { justify-content: center; }
+  }
+
+  /* --- CINEMATIC CUSTOM MODAL SYSTEM --- */
+  .sys-modal-overlay {
+    position: fixed; inset: 0; z-index: 9999999;
+    background: rgba(0,0,0,0.7); backdrop-filter: blur(10px);
+    display: flex; align-items: center; justify-content: center; padding: 20px;
+    opacity: 0; visibility: hidden; transition: 0.3s ease;
+  }
+  .sys-modal-overlay.show { opacity: 1; visibility: visible; }
+  
+  .sys-modal-card {
+    background: #14161C; border: 1px solid rgba(212,175,106,0.3);
+    border-radius: 20px; padding: 30px; width: 100%; max-width: 420px;
+    text-align: center; transform: scale(0.95) translateY(10px);
+    transition: 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+    box-shadow: 0 30px 60px rgba(0,0,0,0.9), inset 0 0 40px rgba(212,175,106,0.05);
+  }
+  .sys-modal-overlay.show .sys-modal-card { transform: scale(1) translateY(0); }
+  
+  .sys-modal-title { font-family: var(--serif); color: #fff; font-size: 24px; margin: 0 0 12px 0; font-weight: 600;}
+  .sys-modal-msg { color: var(--cream-dim); font-size: 14.5px; margin: 0 0 24px 0; line-height: 1.6; white-space: pre-wrap; }
+  
+  .sys-modal-input {
+    width: 100%; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1);
+    color: var(--gold); padding: 14px; border-radius: 12px; margin-bottom: 24px;
+    font-family: var(--mono); font-size: 14px; display: none; outline: none; transition: 0.2s;
+  }
+  .sys-modal-input:focus { border-color: var(--gold); background: rgba(212,175,106,0.05); }
+  
+  .sys-modal-actions { display: flex; gap: 12px; justify-content: center; }
+  .sys-modal-btn {
+    flex: 1; background: var(--gold); color: var(--ink); border: none;
+    padding: 12px 24px; border-radius: 10px; font-weight: 600; cursor: pointer; transition: 0.2s; font-size: 14px;
+  }
+  .sys-modal-btn:hover { background: #fff; box-shadow: 0 0 15px rgba(212,175,106,0.4); }
+  .sys-modal-cancel { background: rgba(255,255,255,0.05); color: var(--cream); border: 1px solid rgba(255,255,255,0.1); }
+  .sys-modal-cancel:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2); box-shadow: none; }
+
+  /* --- TWO-WAY INBOX UI --- */
+  .msg-bubble { 
+    background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); 
+    padding: 14px; border-radius: 12px; margin-bottom: 12px; text-align: left; 
+    transition: 0.2s; position: relative;
+  }
+  .msg-bubble:hover { border-color: rgba(255,255,255,0.15); }
+  
+  .msg-reply { 
+    background: rgba(212,175,106,0.08); border-left: 3px solid var(--gold); 
+    padding: 10px 14px; margin-top: 12px; border-radius: 0 8px 8px 0; 
+    font-size: 13px; color: var(--cream); line-height: 1.5;
+  }
+  
+  .msg-reaction { 
+    display: inline-flex; align-items: center; justify-content: center;
+    background: rgba(255,255,255,0.08); border-radius: 20px; 
+    padding: 4px 10px; font-size: 14px; margin-top: 10px; border: 1px solid rgba(255,255,255,0.1);
+  }
+  
+  .msg-actions { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+  .reply-input-box { display: flex; gap: 8px; margin-top: 12px; width: 100%; }
+  .reply-input-box input { 
+    flex: 1; background: rgba(0,0,0,0.4); border: 1px solid var(--line); 
+    color: #fff; padding: 8px 12px; border-radius: 8px; font-size: 13px; outline: none;
+  }
+  .reply-input-box input:focus { border-color: var(--gold-dim); }
+  
+  .action-btn { 
+    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); 
+    color: var(--cream); cursor: pointer; border-radius: 8px; padding: 6px 12px; 
+    font-size: 12px; transition: 0.2s; font-family: var(--sans); font-weight: 500;
+  }
+  .action-btn:hover { background: var(--gold); color: var(--ink); border-color: var(--gold); }
+  .action-btn.del:hover { background: var(--rose); color: #fff; border-color: var(--rose); }
+
+  /* --- GOLDEN CINEMATIC SCROLLBAR --- */
+  .custom-scroll::-webkit-scrollbar { width: 6px; }
+  .custom-scroll::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); border-radius: 10px; }
+  .custom-scroll::-webkit-scrollbar-thumb { background: rgba(212,175,106,0.4); border-radius: 10px; }
+  .custom-scroll::-webkit-scrollbar-thumb:hover { background: var(--gold); }
+
+</style>
+</head>
+<body>
+
+<!-- 1. LANDING PAGE OVERLAY -->
+<div class="landing-container" id="landingPage">
+  <div class="l-bg-glow"></div>
+  <!-- Put it right here, just before the <nav> starts -->
+<div class="l-cyber-floor"></div>
+  
+  <nav class="l-nav">
+    <div class="l-nav-brand">Wish<span class="dot">Craft</span></div>
+    <div class="l-nav-actions">
+      <button class="l-btn-ghost" id="navLoginBtn">Log in</button>
+      <button class="l-btn-outline" id="navSignupBtn">Sign Up</button>
+    </div>
+  </nav>
+
+  <section class="l-hero">
+    <div class="l-badge">New: Pro Canvas Editor</div>
+    <h1 class="l-title">Craft the perfect <i>moment.</i></h1>
+    <p class="l-subtitle">Build a gift, not a template. Generate stunning, personalized multi-chapter experiences for the people you love. Use our AI Kickstart or construct it block-by-block.</p>
+    
+    <div class="l-hero-actions">
+      <button class="l-btn-primary" id="heroSignupBtn">Get Started for Free</button>
+      <button class="l-guest-link" id="landingGuestBtn">Explore as Guest <span>→</span></button>
+    </div>
+
+    <div class="l-visual-showcase">
+      <div class="l-float-card">
+        <div class="l-mock-nav">
+          <div class="l-mock-dot"></div>
+          <div class="l-mock-line"></div>
+        </div>
+        <div class="l-mock-hero">
+          <div class="l-mock-lock">🔒</div>
+        </div>
+      </div>
+      <div class="l-float-card-2"></div>
+    </div>
+  </section>
+
+  <section class="l-features-wrap">
+    <div class="l-features">
+      <div class="l-feature">
+        <div class="l-feature-icon">✨</div>
+        <h3>Cinematic AI Generation</h3>
+        <p>Input a few details, inside jokes, and dreams. Our AI weaves them into a fully coded, interactive HTML experience tailored specifically for them.</p>
+      </div>
+      <div class="l-feature">
+        <div class="l-feature-icon">🔐</div>
+        <h3>Interactive Vaults</h3>
+        <p>Build anticipation with frosted glass passcode screens, fake biometric fingerprint scanners, and digital scratch-off cards.</p>
+      </div>
+      <div class="l-feature">
+        <div class="l-feature-icon">🚀</div>
+        <h3>Publish Anywhere</h3>
+        <p>Export the raw code to host yourself, or publish directly to our secure cloud database with a single click to instantly share the link.</p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- 2. MAIN APP CONTENT (Hidden behind landing page initially) -->
+<div id="main-app" class="app-hidden">
+  
+  <div class="topbar">
+    <div class="brand">
+      <div class="mark">Wish<span class="dot">Craft</span></div>
+      <div class="tag">occasion pages, made per-person</div>
+    </div>
+    <div class="topbar-right">
+      
+     <!-- AUTH UI -->
+      <button class="ghost-btn" id="topbarLoginBtn" style="padding: 7px 12px; font-size:12px; display:none;">Log In / Sign Up</button>
+      
+      <div id="userProfile" style="display:none; align-items:center; gap:14px;">
+        <!-- Primary Action kept outside for quick access -->
+        <button class="generate-btn" id="publishBtn" style="padding:8px 16px; font-size:13px; margin:0;">Publish Online</button>
+        
+        <!-- Profile Dropdown Menu -->
+        <div class="profile-wrapper">
+          <button class="profile-trigger" id="profileMenuBtn">
+            <div class="profile-avatar" id="userAvatar">U</div>
+            <span id="userNameText" style="white-space: nowrap; max-width: 100px; overflow: hidden; text-overflow: ellipsis;">User</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          
+          <div class="profile-dropdown" id="profileDropdown">
+            <div class="dropdown-item" id="menuAccount">👤 Account Info</div>
+            <div class="dropdown-item" id="menuMyWishes" style="color: var(--gold);">✨ My Wishes Dashboard</div>
+            <div class="dropdown-item" id="menuSettings">⚙️ Settings</div>
+            <div class="dropdown-item" id="menuContact">✉️ Contact Support</div>
+            <div class="dropdown-divider"></div>
+            <div class="dropdown-item" id="menuFAQ">📖 Help & FAQ</div>
+            <div class="dropdown-item" id="menuDocs">💻 API Documentation</div>
+            <div class="dropdown-item" id="menuAbout">ℹ️ About WishCraft</div>
+            <div class="dropdown-divider"></div>
+            <div class="dropdown-item danger" id="logoutBtn">🚪 Log Out</div>
+          </div>
+        </div>
+      </div>
+      
+      <button class="hub-back" id="hubBackBtn">← Back to start</button>
+      <div class="step-indicator" id="aiStepIndicator" style="display:none;">
+        <span id="step1" class="active">01 compose</span>
+        <span>—</span>
+        <span id="step2">02 refine</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="hub" id="hub">
+    <div class="hub-heading">
+      <h1>How do you want to build it?</h1>
+      <p>Start with a blank canvas and place every block yourself, or let the AI draft a full cinematic page from a short description — either way you end up with a real, editable HTML file.</p>
+    </div>
+    <div class="hub-cards">
+      <div class="hub-card manual" id="hubManualCard">
+        <div class="hub-ic-wrap"><div class="hub-ic">🧩</div></div>
+        <h3>Start from Scratch</h3>
+        <p>Open the manual builder with a friendly set of starter blocks already on the canvas — headings, a glass panel, a vault gate, and a letter scene. Drag, edit, and arrange everything by hand.</p>
+        <div class="hub-cta">Open Pro Builder →</div>
+      </div>
+      <div class="hub-card ai" id="hubAiCard">
+        <div class="lock-badge" id="aiLockBadge" style="display:none;">🔒 Login Required</div>
+        <div class="hub-ic-wrap"><div class="hub-ic">✦</div></div>
+        <h3>Generate with AI</h3>
+        <p>Answer a few quick questions about the recipient, occasion, and tone. The AI writes a full interactive page for you, which you can then refine with chat instructions or download directly.</p>
+        <div class="hub-cta">Start AI Kickstart →</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="workshop" id="workshop">
+    <!-- LEFT RAIL -->
+    <div class="rail">
+
+      <div class="name-pair">
+        <div class="field-group">
+          <label class="field-label">To</label>
+          <input type="text" id="recipientName" placeholder="e.g. Name">
+        </div>
+        <div class="field-group">
+          <label class="field-label">From</label>
+          <input type="text" id="senderName" placeholder="e.g. your name">
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label class="field-label">Your relationship</label>
+        <input type="text" id="relationship" placeholder="e.g. cousin, best friend, partner">
+      </div>
+
+      <div class="field-group">
+        <label class="field-label">Occasion</label>
+        <div class="chip-row" id="occasionChips">
+          <div class="chip selected" data-val="Birthday">Birthday</div>
+          <div class="chip" data-val="Anniversary">Anniversary</div>
+          <div class="chip" data-val="Congratulations">Congrats</div>
+          <div class="chip" data-val="Just because">Just because</div>
+          <div class="chip" data-val="Farewell">Farewell</div>
+          <div class="chip" data-val="Wedding">Wedding</div>
+          <div class="chip" data-val="Graduation">Graduation</div>
+          <div class="chip" data-val="Apology">Apology</div>
+          <div class="chip" data-val="New Job">New Job</div>
+          <div class="chip" data-val="Get Well Soon">Get Well</div>
+          <div class="chip" data-val="Valentine's Day">Valentine's</div>
+          <div class="chip" data-val="Proposal">Proposal</div>
+          <div class="chip" data-val="Long Distance">Long Distance</div>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label class="field-label">Tone</label>
+        <div class="chip-row" id="toneChips">
+          <div class="chip selected" data-val="Romantic & Cinematic" data-tip="Big swoony romance — slow reveals, warm lighting, movie-trailer pacing.">Cinematic</div>
+          <div class="chip" data-val="Funny & Playful" data-tip="Light, joke-y copy and bouncy animations. Good for close friends.">Playful</div>
+          <div class="chip" data-val="Nostalgic & Deep" data-tip="Reflective, memory-driven writing — like flipping through an old photo album.">Nostalgic</div>
+          <div class="chip" data-val="Wholesome" data-tip="Simple, sincere, gentle — no drama, just genuine warmth.">Wholesome</div>
+          <div class="chip" data-val="Dramatic Vault" data-tip="Suspenseful and theatrical — locks, reveals, a sense of ceremony.">Dramatic</div>
+          <div class="chip" data-val="Elegant & Minimal" data-tip="Clean, restrained, lots of whitespace — quiet luxury over spectacle.">Elegant Minimal</div>
+          <div class="chip" data-val="Whimsical & Fairytale" data-tip="Storybook language, magical little flourishes, soft wonder.">Whimsical</div>
+          <div class="chip" data-val="Bold & Energetic" data-tip="High-contrast, punchy copy, fast motion — feels loud and alive.">Bold</div>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label class="field-label">Craft Mode (Complexity Level)</label>
+        <div class="theme-grid" id="complexityGrid">
+          <div class="theme-card" data-val="fast-glass">
+            <div class="name">✨ Fast Glass</div>
+            <div class="desc">Pure CSS, fast load</div>
+          </div>
+          <div class="theme-card selected" data-val="interactive-vault">
+            <div class="name">🔒 Interactive Vault</div>
+            <div class="desc">Scanners, scratch cards, petals</div>
+          </div>
+          <div class="theme-card" data-val="cinematic-3d">
+            <div class="name">🌌 Cinematic 3D WebGL</div>
+            <div class="desc">Three.js particles, 3D bloom, carousel</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label class="field-label">Visual Theme</label>
+        <div class="theme-grid" id="themeGrid">
+          <div class="theme-card selected" data-val="velvet-plum">
+            <div class="theme-swatch" style="background:linear-gradient(135deg,#1e0b16,#dfaa9c);"></div>
+            <div class="name">Velvet Plum</div>
+            <div class="desc">Deep plum, rose gold</div>
+          </div>
+          <div class="theme-card" data-val="obsidian-gold">
+            <div class="theme-swatch" style="background:linear-gradient(135deg,#0B0C10,#D4AF6A);"></div>
+            <div class="name">Obsidian & Gold</div>
+            <div class="desc">Dark, glass, liquid</div>
+          </div>
+          <div class="theme-card" data-val="blush-romance">
+            <div class="theme-swatch" style="background:linear-gradient(135deg,#3B1F2B,#E8A6B0);"></div>
+            <div class="name">Blush Romance</div>
+            <div class="desc">Soft, warm, intimate</div>
+          </div>
+          <div class="theme-card" data-val="midnight-arcade">
+            <div class="theme-swatch" style="background:linear-gradient(135deg,#0D0221,#00F5D4);"></div>
+            <div class="name">Midnight Neon</div>
+            <div class="desc">Cyberpunk, matrix energy</div>
+          </div>
+          <div class="theme-card" data-val="emerald-noir">
+            <div class="theme-swatch" style="background:linear-gradient(135deg,#031B14,#3FCF8E);"></div>
+            <div class="name">Emerald Noir</div>
+            <div class="desc">Deep forest green, brass</div>
+          </div>
+          <div class="theme-card" data-val="sunset-peach">
+            <div class="theme-swatch" style="background:linear-gradient(135deg,#2B1130,#FFB199);"></div>
+            <div class="name">Sunset Peach</div>
+            <div class="desc">Warm gradient, dreamy glow</div>
+          </div>
+          <div class="theme-card" data-val="lavender-dream">
+            <div class="theme-swatch" style="background:linear-gradient(135deg,#1B1030,#C9A6FF);"></div>
+            <div class="name">Lavender Dream</div>
+            <div class="desc">Soft violet, stardust</div>
+          </div>
+          <div class="theme-card" data-val="arctic-frost">
+            <div class="theme-swatch" style="background:linear-gradient(135deg,#0A1620,#8FD8E8);"></div>
+            <div class="name">Arctic Frost</div>
+            <div class="desc">Icy blue, crystalline glass</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-divider">Extra features</div>
+
+      <div class="field-group">
+        <label class="field-label">Add-ons (pick any)</label>
+        <div class="chip-row" id="featureChips">
+          <div class="chip" data-val="Countdown Timer" data-tip="A live ticking countdown to a date/time you set — great for birthdays or events.">⏳ Countdown</div>
+          <div class="chip" data-val="Background Music" data-tip="Upload a song that plays on the page (tap-to-start, since browsers block autoplay).">🎵 Song</div>
+          <div class="chip" data-val="Confetti Finale" data-tip="A burst of animated confetti at the big reveal moment.">🎉 Confetti</div>
+          <div class="chip" data-val="Guestbook Wall" data-tip="Visitors can leave a short note that gets pinned to a wall of sticky notes.">💌 Guestbook</div>
+          <div class="chip" data-val="Star Map" data-tip="Memories and nicknames shown as glowing stars you can tap for a caption.">✨ Star Map</div>
+          <div class="chip" data-val="Memory Timeline" data-tip="A scrolling timeline laying out key moments and inside jokes in order.">🗓 Timeline</div>
+          <div class="chip" data-val="Love Meter" data-tip="A playful animated gauge/slider that fills up to '100% loved' with a fun label.">💗 Love Meter</div>
+          <div class="chip" data-val="Quiz Game" data-tip="A short 'how well do you know us' style quiz using details you provide.">🧠 Quiz</div>
+          <div class="chip" data-val="Reaction Buttons" data-tip="Emoji reaction buttons the recipient can tap while reading, with a little animation.">😍 Reactions</div>
+          <div class="chip" data-val="Voice Note" data-tip="Upload a short voice message audio clip that plays like a recorded note.">🎙 Voice Note</div>
+          <div class="chip" data-val="Map Pin Memory" data-tip="Mark a meaningful place (city/location name) shown as a stylized pin with a caption.">📍 Place Pin</div>
+          <div class="chip" data-val="Printable Card" data-tip="Adds a 'download as printable card' view formatted nicely for A5/A6 paper.">🖨 Printable</div>
+        </div>
+
+        <div class="subfield" id="countdownField">
+          <label class="field-label" style="margin-top:6px;">Countdown to</label>
+          <div class="date-time-row">
+            <input type="date" id="countdownDate">
+            <input type="time" id="countdownTime">
+          </div>
+          <div class="field-hint">The page will show a live countdown until this date/time, then unlock the reveal.</div>
+        </div>
+
+        <div class="subfield" id="songField">
+          <label class="field-label" style="margin-top:6px;">Upload a song</label>
+          <div class="song-drop" id="songDrop">Click to add an mp3, or drop it here</div>
+          <input type="file" id="songInput" accept="audio/*" style="display:none;">
+          <div class="song-chip" id="songChip">
+            <span class="song-name" id="songName"></span>
+            <button id="songRemoveBtn" title="Remove">✕</button>
+          </div>
+          <div class="field-hint">Keep it short (under ~2 min) — it's embedded directly in the file, so smaller is faster and more reliable.</div>
+        </div>
+
+        <div class="subfield" id="voiceField">
+          <label class="field-label" style="margin-top:6px;">Upload a voice note</label>
+          <div class="song-drop" id="voiceDrop">Click to add a short audio clip</div>
+          <input type="file" id="voiceInput" accept="audio/*" style="display:none;">
+          <div class="song-chip" id="voiceChip">
+            <span class="song-name" id="voiceName"></span>
+            <button id="voiceRemoveBtn" title="Remove">✕</button>
+          </div>
+        </div>
+
+        <div class="subfield" id="placeField">
+          <label class="field-label" style="margin-top:6px;">Meaningful place</label>
+          <input type="text" id="placeName" placeholder="e.g. Marine Drive, Mumbai — first date spot">
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label class="field-label">Vault Secret / Passcode (Optional)</label>
+        <input type="text" id="passcode" placeholder="e.g. 151126 or secret word">
+      </div>
+
+      <div class="field-group">
+        <label class="field-label">Key Dreams, Nicknames & Inside Jokes</label>
+        <textarea id="aspirations" placeholder="e.g. Wants to join something, called 'Nickname', loves shopping..."></textarea>
+      </div>
+
+      <div class="field-group">
+        <label class="field-label">Your Message (Expanded if left blank)</label>
+        <textarea id="messageText" placeholder="A heartfelt note, a memory, or what you want to say..."></textarea>
+      </div>
+
+      <div class="field-group">
+        <label class="field-label">Photos (Embedded directly)</label>
+        <div class="photo-drop" id="photoDrop">Click to add photos, or drop them here</div>
+        <input type="file" id="photoInput" accept="image/*" multiple style="display:none;">
+        <div class="photo-strip" id="photoStrip"></div>
+      </div>
+
+      <button class="generate-btn" id="generateBtn">✦ Craft the page</button>
+
+      <div class="edit-block" id="editBlock">
+        <label class="field-label">Refine with chat</label>
+        <div class="edit-log" id="editLog"></div>
+        <div class="edit-row">
+          <input type="text" id="editInput" placeholder="e.g. add confetti, change passcode to 2026...">
+          <button id="editBtn">Apply</button>
+        </div>
+        <div class="undo-row">
+          <button class="ghost-btn" id="undoBtn">↺ Undo last edit</button>
+          <button class="ghost-btn" id="downloadBtn">⇩ Download .html</button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT STAGE -->
+    <div class="stage">
+      <div class="stage-inner">
+        <div class="stage-chrome">
+          <div class="dots"><span></span><span></span><span></span></div>
+          <div id="chromeLabel">preview</div>
+          <div class="stage-actions" id="stageActions" style="visibility:hidden;">
+            <button id="openTabBtn">Open in tab ↗</button>
+          </div>
+        </div>
+
+        <div class="empty-stage visible" id="emptyStage">
+          <svg class="ribbon-mark" viewBox="0 0 64 64" fill="none">
+            <circle cx="32" cy="32" r="30" stroke="#D4AF6A" stroke-width="1" opacity="0.4"/>
+            <path d="M20 24 L32 36 L44 24" stroke="#D4AF6A" stroke-width="1.5" opacity="0.8"/>
+            <path d="M20 40 L32 28 L44 40" stroke="#D4AF6A" stroke-width="1.5" opacity="0.8"/>
+          </svg>
+          <h2>The cinematic experience opens here</h2>
+          <p>Fill in the details on the left. WishCraft creates a multi-chapter experience with glassmorphism, interactive gates, and liquid motion.</p>
+        </div>
+
+        <div class="loading-stage" id="loadingStage">
+          <svg class="tie-svg" width="90" height="90" viewBox="0 0 90 90" fill="none">
+            <path d="M45 10 C20 10 20 45 45 45 C70 45 70 80 45 80" stroke="#D4AF6A" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          <p id="loadingText">tying the ribbon...</p>
+        </div>
+
+        <div class="error-stage" id="errorStage">
+          <svg class="error-mark" viewBox="0 0 64 64" fill="none">
+            <circle cx="32" cy="32" r="30" stroke="#C97B84" stroke-width="1.5" stroke-dasharray="4 4" opacity="0.6"/>
+            <path d="M24 24 L40 40 M40 24 L24 40" stroke="#C97B84" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          <h2 id="errorTitle">The spell fizzled.</h2>
+          <p id="errorMsg">The AI couldn't complete the generation. Check your API credits or network connection.</p>
+          <button class="ghost-btn" id="retryBtn" style="margin-top: 10px; width: auto; padding: 10px 24px;">Try Again</button>
+        </div>
+
+        <iframe id="preview" title="Generated page preview" sandbox="allow-scripts allow-same-origin"></iframe>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+
+  // ---------- Cinematic System Modal Engine ----------
+  window.appModal = function({ title, msg, type = 'alert', inputVal = '', onConfirm }) {
+      const overlay = document.getElementById('sysModal');
+      document.getElementById('smTitle').textContent = title || 'Notice';
+      document.getElementById('smMsg').textContent = msg || '';
+
+      const input = document.getElementById('smInput');
+      const cancelBtn = document.getElementById('smCancel');
+      const confirmBtn = document.getElementById('smConfirm');
+
+      // Reset modal UI state
+      input.style.display = 'none';
+      cancelBtn.style.display = 'none';
+      input.value = '';
+
+      if (type === 'prompt') {
+          input.style.display = 'block';
+          input.value = inputVal;
+          cancelBtn.style.display = 'block';
+          setTimeout(() => input.focus(), 100);
+      } else if (type === 'confirm') {
+          cancelBtn.style.display = 'block';
+      }
+
+      overlay.classList.add('show');
+
+      // Wipe old event listeners to prevent double-firing
+      confirmBtn.onclick = null; cancelBtn.onclick = null;
+
+      confirmBtn.onclick = () => {
+          overlay.classList.remove('show');
+          if (onConfirm) {
+              if (type === 'prompt') onConfirm(input.value);
+              else onConfirm(true);
+          }
+      };
+
+      cancelBtn.onclick = () => {
+          overlay.classList.remove('show');
+          if (onConfirm) onConfirm(null);
+      };
+  };
+
+    // ---------- Profile Dropdown Logic ----------
+  const profileMenuBtn = document.getElementById('profileMenuBtn');
+  const profileDropdown = document.getElementById('profileDropdown');
+
+  if (profileMenuBtn) {
+    profileMenuBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      profileDropdown.classList.toggle('show');
+    });
+  }
+
+  // Close dropdown when clicking outside
+  document.addEventListener('click', (e) => {
+    if (profileDropdown && profileDropdown.classList.contains('show') && !e.target.closest('.profile-wrapper')) {
+      profileDropdown.classList.remove('show');
+    }
+  });
+
+  // ---------- Resilient Full Screen Panels Logic ----------
+  
+  // 1. Function to open a panel by its ID string
+  function openPanel(panelId) {
+    document.getElementById('profileDropdown').classList.remove('show');
+    const panel = document.getElementById(panelId);
+    if(panel) panel.classList.add('show');
+  }
+
+  // 2. Function to close all panels
+  function closePanels() {
+    document.querySelectorAll('.fs-panel-overlay').forEach(p => p.classList.remove('show'));
+  }
+
+  // 3. Bind Menu Items
+  document.getElementById('menuAccount').addEventListener('click', () => openPanel('accountPanel'));
+  document.getElementById('menuSettings').addEventListener('click', () => openPanel('settingsPanel'));
+  document.getElementById('menuContact').addEventListener('click', () => openPanel('contactPanel'));
+  document.getElementById('menuAbout').addEventListener('click', () => openPanel('aboutPanel'));
+  
+  // Open the new FAQ and API Docs panels
+  document.getElementById('menuFAQ').addEventListener('click', () => openPanel('faqPanel'));
+  document.getElementById('menuDocs').addEventListener('click', () => openPanel('docsPanel'));
+
+  // 4. Global click listener for closing panels
+  document.addEventListener('click', (e) => {
+    if (e.target.closest('.fs-panel-close')) closePanels();
+    if (e.target.classList.contains('fs-panel-overlay')) closePanels();
+  });
+
+  // 5. Initialize the 15 Working Settings!
+  document.querySelectorAll('.fs-switch input').forEach(input => {
+      if(!input.id) return;
+      // Load saved state on page refresh
+      const savedState = localStorage.getItem('wc_setting_' + input.id);
+      if(savedState !== null) input.checked = (savedState === 'true');
+      
+      // Save state immediately when clicked
+      input.addEventListener('change', () => {
+          localStorage.setItem('wc_setting_' + input.id, input.checked);
+      });
+  });
+  
+  // ---------- Global Data Definitions ----------
+  window.currentHtml = "";
+  window.versions = [];
+  window.isGuest = false;
+
+  // ---------- Guest & Landing Page Logic ----------
+  const landingPage = document.getElementById('landingPage');
+  const mainApp = document.getElementById('main-app');
+  const aiCard = document.getElementById('hubAiCard');
+  const aiLockBadge = document.getElementById('aiLockBadge');
+  const topbarLoginBtn = document.getElementById('topbarLoginBtn');
+
+  // Guard against duplicate initialization in this page script.
+  if (typeof window.__wishcraftTopbarLoginBound === 'undefined') {
+    window.__wishcraftTopbarLoginBound = true;
+  }
+
+  document.getElementById('landingGuestBtn').addEventListener('click', () => {
+    window.isGuest = true;
+    landingPage.classList.add('hidden');
+    
+    // Slight delay so the opacity transition finishes before swapping display:none
+    setTimeout(() => {
+        mainApp.classList.remove('app-hidden');
+    }, 400);
+    
+    aiCard.classList.add('locked');
+    aiLockBadge.style.display = 'flex';
+    topbarLoginBtn.style.display = 'inline-flex';
+    
+    // Force scroll to top when entering app
+    window.scrollTo(0,0);
+    document.body.style.overflow = "auto";
+  });
+
+  // ---------- Entry Hub Fork ----------
+  const hubEl = document.getElementById('hub');
+  const workshopEl = document.getElementById('workshop');
+  const hubBackBtn = document.getElementById('hubBackBtn');
+  const aiStepIndicator = document.getElementById('aiStepIndicator');
+
+  document.getElementById('hubManualCard').addEventListener('click', () => {
+    window.location.href = 'builder.html';
+  });
+  aiCard.addEventListener('click', () => {
+    if (window.isGuest) {
+      // Trigger the cinematic modal instead of the ugly browser alert
+      window.appModal({
+          title: "Authentication Required", 
+          msg: "🔒 AI Generation is restricted to logged-in users to prevent abuse.\n\nPlease log in or use the 'Start from Scratch' Pro Builder instead."
+      });
+      return;
+    }
+    hubEl.classList.add('hidden');
+    workshopEl.classList.add('visible');
+    hubBackBtn.classList.add('visible');
+    aiStepIndicator.style.display = 'flex';
+  });
+  hubBackBtn.addEventListener('click', () => {
+    hubEl.classList.remove('hidden');
+    workshopEl.classList.remove('visible');
+    hubBackBtn.classList.remove('visible');
+    aiStepIndicator.style.display = 'none';
+  });
+
+  // ---------- State ----------
+  let selectedOccasion = "Birthday";
+  let selectedTone = "Romantic & Cinematic";
+  let selectedTheme = "velvet-plum";
+  let selectedComplexity = "interactive-vault";
+  let selectedFeatures = new Set();
+  let photos = [];
+  let songDataUrl = null;
+  let songFileName = "";
+
+  const themeDescriptions = {
+    "velvet-plum": "Deep velvety plum background (#1e0b16), rose gold accents (#dfaa9c), frosted glass cards with specular light, soft glowing particles",
+    "obsidian-gold": "Near-black background (#0B0C10), warm gold accent (#D4AF6A), cream text, glassmorphism panels with soft blur, quiet luxury",
+    "blush-romance": "Deep plum background, blush pink (#ff7eb3) and dusty rose (#ffb199) accents, warm serif headlines, glowing candlelight feel",
+    "midnight-arcade": "Deep indigo/black background, neon cyan and magenta accents, matrix decryption effects, glowing glass borders",
+    "emerald-noir": "Deep forest-green and near-black background (#031B14), brushed brass/brass-gold accents (#3FCF8E for glow highlights), botanical line-art motifs, understated luxury",
+    "sunset-peach": "Rich plum-to-burnt-orange gradient background (#2B1130 to warm tones), peach and coral accents (#FFB199), dreamy soft-focus glow, warm dusk lighting feel",
+    "lavender-dream": "Deep indigo-violet background (#1B1030), soft lavender accent (#C9A6FF), stardust particle motes, fairytale storybook feel",
+    "arctic-frost": "Deep icy-blue near-black background (#0A1620), pale crystalline cyan accent (#8FD8E8), frosted/frozen glass texture, crisp winter light"
+  };
+
+  // ---------- Chip & Selection Listeners ----------
+  
+  // 1. OCCASIONS
+  document.getElementById('occasionChips').addEventListener('click', e => {
+    if(!e.target.classList.contains('chip')) return;
+    document.querySelectorAll('#occasionChips .chip').forEach(c => c.classList.remove('selected'));
+    e.target.classList.add('selected');
+    selectedOccasion = e.target.dataset.val;
+  });
+
+  // 2. CRAFT MODE / COMPLEXITY (THE MISSING BOUNCER!)
+  document.getElementById('complexityGrid').addEventListener('click', e => {
+    const card = e.target.closest('.theme-card');
+    if(!card) return;
+    
+    if(card.classList.contains('locked-feature')) {
+        window.appModal({title: "Premium Feature", msg: "🔒 Upgrade your account to unlock this cinematic mode!"});
+        return; 
+    }
+    
+    document.querySelectorAll('#complexityGrid .theme-card').forEach(c => c.classList.remove('selected'));
+    card.classList.add('selected');
+    window.selectedComplexity = card.dataset.val; 
+  });
+
+  // 3. TONES BOUNCER
+  document.getElementById('toneChips').addEventListener('click', e => {
+    if(!e.target.classList.contains('chip')) return;
+    if(e.target.classList.contains('locked-feature')) {
+        window.appModal({title: "Premium Feature", msg: "🔒 Upgrade to Artisan or Studio to unlock this writing tone!"});
+        return;
+    }
+    document.querySelectorAll('#toneChips .chip').forEach(c => c.classList.remove('selected'));
+    e.target.classList.add('selected');
+    selectedTone = e.target.dataset.val;
+  });
+
+  // 4. THEMES BOUNCER
+  document.getElementById('themeGrid').addEventListener('click', e => {
+    const card = e.target.closest('.theme-card');
+    if(!card) return;
+    if(card.classList.contains('locked-feature')) {
+        window.appModal({title: "Premium Theme", msg: "🔒 Upgrade to Artisan or Studio to unlock this visual theme!"});
+        return;
+    }
+    document.querySelectorAll('#themeGrid .theme-card').forEach(c => c.classList.remove('selected'));
+    card.classList.add('selected');
+    selectedTheme = card.dataset.val;
+  });
+
+  // 5. ADD-ONS BOUNCER (Fixed Duplicate)
+  const countdownField = document.getElementById('countdownField');
+  const songField = document.getElementById('songField');
+  const voiceField = document.getElementById('voiceField');
+  const placeField = document.getElementById('placeField');
+  
+  document.getElementById('featureChips').addEventListener('click', e => {
+    if(!e.target.classList.contains('chip')) return;
+    const val = e.target.dataset.val;
+    
+    if(e.target.classList.contains('locked-feature')) {
+        window.appModal({title: "Premium Add-on", msg: "🔒 Upgrade your account to attach premium add-ons to your wishes!"});
+        return;
+    }
+
+    if(selectedFeatures.has(val)){
+      selectedFeatures.delete(val);
+      e.target.classList.remove('selected');
+    } else {
+      selectedFeatures.add(val);
+      e.target.classList.add('selected');
+    }
+    
+    countdownField.classList.toggle('visible', selectedFeatures.has('Countdown Timer'));
+    songField.classList.toggle('visible', selectedFeatures.has('Background Music'));
+    voiceField.classList.toggle('visible', selectedFeatures.has('Voice Note'));
+    placeField.classList.toggle('visible', selectedFeatures.has('Map Pin Memory'));
+  });
+
+  // ---------- Uploads ----------
+  // ---------- Uploads ----------
+  const songDrop = document.getElementById('songDrop');
+  const songInput = document.getElementById('songInput');
+  const songChip = document.getElementById('songChip');
+  const songName = document.getElementById('songName');
+  songDrop.addEventListener('click', () => songInput.click());
+  songDrop.addEventListener('dragover', e => { e.preventDefault(); songDrop.style.borderColor = 'var(--gold)'; });
+  songDrop.addEventListener('dragleave', () => { songDrop.style.borderColor = ''; });
+  songDrop.addEventListener('drop', e => { e.preventDefault(); songDrop.style.borderColor = ''; if(e.dataTransfer.files[0]) handleSongFile(e.dataTransfer.files[0]); });
+  songInput.addEventListener('change', () => { if(songInput.files[0]) handleSongFile(songInput.files[0]); });
+  function handleSongFile(file) {
+    const reader = new FileReader();
+    reader.onload = () => {
+      songDataUrl = reader.result; songFileName = file.name; songName.textContent = file.name;
+      songChip.classList.add('visible'); songDrop.classList.add('has-file'); songDrop.textContent = 'Click to replace the song';
+    };
+    reader.readAsDataURL(file);
+  }
+  document.getElementById('songRemoveBtn').addEventListener('click', (e) => {
+    e.stopPropagation(); songDataUrl = null; songFileName = ""; songChip.classList.remove('visible');
+    songDrop.classList.remove('has-file'); songDrop.textContent = 'Click to add an mp3, or drop it here'; songInput.value = '';
+  });
+
+  let voiceDataUrl = null, voiceFileName = "";
+  const voiceDrop = document.getElementById('voiceDrop');
+  const voiceInput = document.getElementById('voiceInput');
+  const voiceChip = document.getElementById('voiceChip');
+  const voiceName = document.getElementById('voiceName');
+  voiceDrop.addEventListener('click', () => voiceInput.click());
+  voiceDrop.addEventListener('dragover', e => { e.preventDefault(); voiceDrop.style.borderColor = 'var(--gold)'; });
+  voiceDrop.addEventListener('dragleave', () => { voiceDrop.style.borderColor = ''; });
+  voiceDrop.addEventListener('drop', e => { e.preventDefault(); voiceDrop.style.borderColor = ''; if(e.dataTransfer.files[0]) handleVoiceFile(e.dataTransfer.files[0]); });
+  voiceInput.addEventListener('change', () => { if(voiceInput.files[0]) handleVoiceFile(voiceInput.files[0]); });
+  function handleVoiceFile(file) {
+    const reader = new FileReader();
+    reader.onload = () => {
+      voiceDataUrl = reader.result; voiceFileName = file.name; voiceName.textContent = file.name;
+      voiceChip.classList.add('visible'); voiceDrop.classList.add('has-file'); voiceDrop.textContent = 'Click to replace the voice note';
+    };
+    reader.readAsDataURL(file);
+  }
+  document.getElementById('voiceRemoveBtn').addEventListener('click', (e) => {
+    e.stopPropagation(); voiceDataUrl = null; voiceFileName = ""; voiceChip.classList.remove('visible');
+    voiceDrop.classList.remove('has-file'); voiceDrop.textContent = 'Click to add a short audio clip'; voiceInput.value = '';
+  });
+
+  const photoDrop = document.getElementById('photoDrop');
+  const photoInput = document.getElementById('photoInput');
+  const photoStrip = document.getElementById('photoStrip');
+  photoDrop.addEventListener('click', () => photoInput.click());
+  photoInput.addEventListener('change', handleFiles);
+  photoDrop.addEventListener('dragover', e => { e.preventDefault(); photoDrop.style.borderColor = 'var(--gold)'; });
+  photoDrop.addEventListener('dragleave', () => { photoDrop.style.borderColor = ''; });
+  photoDrop.addEventListener('drop', e => { e.preventDefault(); photoDrop.style.borderColor = ''; handleFiles({ target: { files: e.dataTransfer.files } }); });
+
+  function handleFiles(e) {
+    const files = Array.from(e.target.files).slice(0, 15 - photos.length);
+    files.forEach(f => {
+      const reader = new FileReader();
+      reader.onload = () => { photos.push(reader.result); renderPhotoStrip(); };
+      reader.readAsDataURL(f);
+    });
+  }
+  function renderPhotoStrip() {
+    photoStrip.innerHTML = '';
+    photos.forEach(p => {
+      const img = document.createElement('img'); img.src = p; img.className = 'photo-thumb'; photoStrip.appendChild(img);
+    });
+  }
+
+  // ---------- Dynamic System Prompt Generator ----------
+  function getSystemPrompt(complexity) {
+    let modeRules = "";
+    if (complexity === "fast-glass") {
+      modeRules = `
+- CRAFT MODE: Fast Glass.
+- Keep the page lightweight and fast. Pure CSS, HTML, and vanilla JS.
+- Use frosted glass cards (backdrop-filter: blur(25px)), liquid background gradient blobs with float animations, and smooth section reveals.
+- Structure as a 3 to 4 section Single Page Application (SPA). The sections MUST have the class "wc-scene".`;
+    } else if (complexity === "interactive-vault") {
+      modeRules = `
+- CRAFT MODE: Interactive Vault (Multi-Chapter SPA).
+- MUST be a Single Page Application (SPA) with smooth screen-to-screen transitions using JavaScript (show/hide sections, opacity, scale). DO NOT link to external HTML files like href="page2.html".
+- Every chapter or page MUST be contained within a div with the class "wc-scene". The first should be display:block, others display:none.
+- Include a sequence of distinct interactive chapters:
+  1. Hero Premiere Screen (Title, subtitle, and "Start Journey" button).
+  2. Polaroid Glass Memory Card (Image with glass frost that clears, date label, title).
+  3. Biometric Thumb Scanner or Matrix Passcode Terminal (if passcode provided: matrix scramble decryption with green success state; if not: hold-to-scan liquid fill ring). IMPORTANT: render the scanner as simple concentric circles / a pulsing ring only — do NOT draw an actual fingerprint pattern, ridges, or whorls of any kind.
+  4. Scratch-off / Wipe Promise Cards (Canvas wiping layer revealing gift like "Shopping Spree" or "Dinner Date").
+  5. Photo Archive Carousel (Horizontal snap-scrolling cards with memory numbers).
+  6. Make a Wish Candle Blow-out (Swipe down or click to extinguish flame, brief pause, confetti burst reveal).
+  7. The Core Letter Reveal (Falling glass petals animation, IntersectionObserver for fading/translating text blocks as user scrolls).`;
+    } else if (complexity === "cinematic-3d") {
+      modeRules = `
+- CRAFT MODE: Cinematic 3D WebGL (Multi-Chapter SPA).
+- MUST be a Single Page Application (SPA) with smooth screen transitions via JS. Chapters MUST have the class "wc-scene".
+- Import Three.js via CDN (https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js) and OrbitControls.
+- Build 3D interactive WebGL scenes.`;
+    }
+
+    let featureRules = "";
+    if (selectedFeatures.size) {
+      let lines = [];
+      if (selectedFeatures.has('Countdown Timer')) lines.push(`- COUNTDOWN TIMER: Live, glass-styled countdown targeting "countdownTarget".`);
+      if (selectedFeatures.has('Background Music')) lines.push(`- BACKGROUND MUSIC: Audio loop with src set to "songDataUrl". Provide tap-to-play button.`);
+      if (selectedFeatures.has('Confetti Finale')) lines.push(`- CONFETTI FINALE: At the climax, trigger plain JS canvas confetti burst.`);
+      if (selectedFeatures.has('Guestbook Wall')) lines.push(`- GUESTBOOK WALL: Sticky notes where user can type and save to localStorage.`);
+      if (selectedFeatures.has('Star Map')) lines.push(`- STAR MAP: HTML canvas starfield of memories.`);
+      if (selectedFeatures.has('Memory Timeline')) lines.push(`- MEMORY TIMELINE: Vertical scroll-triggered timeline.`);
+      if (selectedFeatures.has('Love Meter')) lines.push(`- LOVE METER: Playful animated gauge filling up on tap.`);
+      if (selectedFeatures.has('Quiz Game')) lines.push(`- QUIZ GAME: Multiple-choice quiz from details.`);
+      if (selectedFeatures.has('Reaction Buttons')) lines.push(`- REACTION BUTTONS: Emoji reactions triggering pop animation.`);
+      if (selectedFeatures.has('Voice Note')) lines.push(`- VOICE NOTE: Audio player styled like a voice memo using "voiceDataUrl".`);
+      if (selectedFeatures.has('Map Pin Memory')) lines.push(`- MAP PIN MEMORY: Stylized pin-drop of "placeName".`);
+      if (selectedFeatures.has('Printable Card')) lines.push(`- PRINTABLE CARD: Download view formatted for A5 paper via print CSS.`);
+      featureRules = `\n\nOptional Add-ons Requested:\n${lines.join("\n")}`;
+    }
+
+   return `You are an elite creative developer generating a single self-contained HTML file for a personalized, luxury occasion page.
+Hard Technical Rules:
+- Output ONLY raw HTML starting with <!DOCTYPE html> — no markdown fences, no explanations before or after.
+- Everything MUST be inline: styles in the head, and scripts right before the closing body tag.
+- External CDNs allowed ONLY for Fonts (Google Fonts) and Three.js / OrbitControls.
+- Structure pages clearly using elements with class="wc-scene".
+- Mobile responsive, touch-friendly, and smooth animations.
+
+Aesthetic & Design Language:
+- "Liquid Glass" UI: Frosted glass containers (backdrop-filter: blur(25px)), subtle 1px border highlights, dynamic animated background blobs, specular light sheens.
+- Colors: Rich luxury dark base (${themeDescriptions[selectedTheme]}).
+- Typography: Playfair Display for italicized serif headlines, Poppins or Montserrat for clean subtext, Space Mono for terminal/tech elements.
+${modeRules}${featureRules}
+Integrate user details explicitly into the design.`;
+  }
+
+  function buildIntakeMessage() {
+    const name = document.getElementById('recipientName').value.trim() || "them";
+    const sender = document.getElementById('senderName').value.trim();
+    const relationship = document.getElementById('relationship').value.trim() || "someone special";
+    const message = document.getElementById('messageText').value.trim();
+    const passcode = document.getElementById('passcode').value.trim();
+    const aspirations = document.getElementById('aspirations').value.trim();
+
+    let countdownTarget = null;
+    const cd = document.getElementById('countdownDate').value;
+    if (cd && selectedFeatures.has('Countdown Timer')) {
+      const ct = document.getElementById('countdownTime').value || "00:00";
+      countdownTarget = `${cd}T${ct}:00`;
+    }
+
+    return `Create the page with this intake payload:
+{
+  "recipientName": "${name}",
+  "senderName": ${sender ? JSON.stringify(sender) : "null"},
+  "relationship": "${relationship}",
+  "occasion": "${selectedOccasion}",
+  "tone": "${selectedTone}",
+  "themeName": "${selectedTheme}",
+  "themeDirection": "${themeDescriptions[selectedTheme]}",
+  "passcode": ${passcode ? JSON.stringify(passcode) : "null"},
+  "personalDetailsAndAspirations": ${aspirations ? JSON.stringify(aspirations) : "null"},
+  "userMessage": ${message ? JSON.stringify(message) : "null"},
+  "features": ${JSON.stringify(Array.from(selectedFeatures))},
+  "countdownTarget": ${countdownTarget ? JSON.stringify(countdownTarget) : "null"},
+  "songDataUrl": ${songDataUrl ? JSON.stringify(songDataUrl) : "null"},
+  "voiceDataUrl": ${voiceDataUrl ? JSON.stringify(voiceDataUrl) : "null"},
+  "placeName": ${document.getElementById('placeName').value.trim() ? JSON.stringify(document.getElementById('placeName').value.trim()) : "null"},
+  "photoCount": ${photos.length},
+  "photoDataUrls": ${JSON.stringify(photos)}
+}`;
+  }
+
+  
+
+  async function callGemini(systemPrompt, userContent) {
+    const response = await fetch('/api/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ systemPrompt, userContent })
+    });
+
+    const data = await response.json();
+
+    if (!response.ok || !data.success) {
+      throw new Error(data.error?.message || 'Server error occurred during generation');
+    }
+
+    return data.html;
+  }
+
+  // ---------- Generation Handling ----------
+  const generateBtn = document.getElementById('generateBtn');
+  const emptyStage = document.getElementById('emptyStage');
+  const loadingStage = document.getElementById('loadingStage');
+  const preview = document.getElementById('preview');
+  const editBlock = document.getElementById('editBlock');
+  const stageActions = document.getElementById('stageActions');
+  const chromeLabel = document.getElementById('chromeLabel');
+  const step1 = document.getElementById('step1');
+  const step2 = document.getElementById('step2');
+  
+  const errorStage = document.getElementById('errorStage');
+  const errorMsg = document.getElementById('errorMsg');
+
+  document.getElementById('retryBtn').addEventListener('click', () => { generateBtn.click(); });
+
+  const loadingMessages = ["tying the ribbon...", "setting the glass frost...", "initializing biometric scanner...", "crafting 3D particle bloom...", "arranging the archives...", "writing the core letter..."];
+
+  generateBtn.addEventListener('click', async () => {
+    generateBtn.disabled = true; generateBtn.textContent = "Crafting...";
+    emptyStage.classList.remove('visible'); preview.classList.remove('visible'); errorStage.classList.remove('visible');
+    loadingStage.classList.add('visible');
+    
+    let i = 0; const loadingText = document.getElementById('loadingText');
+    const interval = setInterval(() => { i = (i + 1) % loadingMessages.length; loadingText.textContent = loadingMessages[i]; }, 1400);
+
+    try {
+      const systemPrompt = getSystemPrompt(selectedComplexity);
+      const html = await callGemini(systemPrompt, buildIntakeMessage());
+      
+      window.currentHtml = html; window.versions = [html];
+      renderPreview(html);
+      
+      editBlock.classList.add('visible'); stageActions.style.visibility = 'visible';
+      chromeLabel.textContent = 'live preview'; step1.classList.remove('active'); step2.classList.add('active');
+    } catch(err) {
+      console.error("API Error:", err);
+      if (err.message && err.message.toLowerCase().includes('quota')) {
+        errorMsg.textContent = "API limits reached or credits are empty. Check your Google AI Studio account.";
+      } else {
+        errorMsg.textContent = "The connection timed out or the AI returned an invalid response. Give it another try.";
+      }
+      errorStage.classList.add('visible'); 
+    } finally {
+      clearInterval(interval); loadingStage.classList.remove('visible');
+      generateBtn.disabled = false; generateBtn.textContent = "✦ Craft the page";
+    }
+  });
+
+  function renderPreview(html) {
+    preview.srcdoc = typeof stripEditorArtifacts === 'function' ? stripEditorArtifacts(html) : html;
+    preview.classList.add('visible');
+  }
+
+  // ---------- Conversational Edit Loop ----------
+  const editInput = document.getElementById('editInput');
+  const editBtnEl = document.getElementById('editBtn');
+  const editLog = document.getElementById('editLog');
+
+  async function applyEdit() {
+    const instruction = editInput.value.trim(); if(!instruction) return;
+    editBtnEl.disabled = true; editBtnEl.textContent = "..."; chromeLabel.textContent = 'refining...';
+    try {
+      const editSystem = `You edit an existing single-file HTML occasion page based on a user instruction. Return the FULL updated HTML file, preserving all interactive JS state mechanics and styling. Output ONLY raw HTML without markdown fences.`;
+      const editUser = `Current HTML:\n${window.currentHtml}\n\nInstruction: "${instruction}"\n\nReturn the complete updated HTML file.`;
+      const html = await callGemini(editSystem, editUser);
+      window.currentHtml = html; window.versions.push(html); renderPreview(html);
+      const entry = document.createElement('div'); entry.className = 'edit-log-item'; entry.textContent = '→ ' + instruction;
+      editLog.appendChild(entry); editLog.scrollTop = editLog.scrollHeight; editInput.value = '';
+    } catch(err) {
+      alert("Edit failed — try again.");
+    } finally {
+      editBtnEl.disabled = false; editBtnEl.textContent = "Apply"; chromeLabel.textContent = 'live preview';
+    }
+  }
+  editBtnEl.addEventListener('click', applyEdit);
+  editInput.addEventListener('keydown', e => { if(e.key === 'Enter') applyEdit(); });
+  document.getElementById('undoBtn').addEventListener('click', () => {
+    if(window.versions.length <= 1) return; window.versions.pop();
+    window.currentHtml = window.versions[window.versions.length - 1]; renderPreview(window.currentHtml);
+    if(editLog.lastChild) editLog.removeChild(editLog.lastChild);
+  });
+  document.getElementById('downloadBtn').addEventListener('click', () => {
+    if(!window.currentHtml) return;
+    const blob = new Blob([window.currentHtml], { type: 'text/html' });
+    const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url;
+    const name = (document.getElementById('recipientName').value.trim() || 'wish').toLowerCase().replace(/\s+/g,'-');
+    a.download = `${name}-experience.html`; a.click(); URL.revokeObjectURL(url);
+  });
+
+  function stripEditorArtifacts(html) {
+    // Self-heals older saved files that still contain a leftover copy
+    // of the editor script/style/toolbar from before this fix.
+    return html
+      .replace(/<script id=["']wc-editor-script["'][\s\S]*?<\/script>/gi, '')
+      .replace(/<style id=["']wc-editor-styles["'][\s\S]*?<\/style>/gi, '')
+      .replace(/<div id=["']wc-editor-toolbar["'][\s\S]*?<\/div>\s*<\/div>\s*<\/div>/i, m => m) // no-op safety, real removal below
+      .replace(/<div id=["']wc-editor-toolbar["'][\s\S]*?<\/div>/gi, '');
+  }
+
+  // ---------- ADVANCED CANVAS EDITOR (NEW TAB) — disabled, coming back in a future update ----------
+  /*
+  window.receiveCanvasEdit = function(newHtml) {
+    window.currentHtml = newHtml;
+    window.versions.push(newHtml);
+    renderPreview(newHtml);
+    
+    const entry = document.createElement('div');
+    entry.className = 'edit-log-item';
+    entry.textContent = '→ manual canvas edit saved';
+    document.getElementById('editLog').appendChild(entry);
+    document.getElementById('editLog').scrollTop = document.getElementById('editLog').scrollHeight;
+  };
+
+  const editCanvasBtn = document.getElementById('editCanvasBtn');
+
+  const EDIT_SCRIPT = `
+(function(){
+  if (window.__wcEditInit) return; window.__wcEditInit = true;
+
+  const style = document.createElement('style');
+  style.id = 'wc-editor-styles';
+  style.textContent = \`
+    body.wc-mode-move [data-wc-draggable] { cursor: grab !important; outline: 1px dashed rgba(212,175,106,0.4); outline-offset:2px; }
+    body.wc-mode-move [data-wc-draggable]:hover { outline: 1.5px solid #D4AF6A; }
+    body.wc-mode-move [data-wc-draggable].wc-dragging { cursor: grabbing !important; opacity: 0.7; z-index: 999999 !important; }
+    
+    body.wc-mode-text [data-wc-editable] { cursor: text !important; outline: 1px dashed rgba(76,139,130,0.5); outline-offset:2px; }
+    body.wc-mode-text [data-wc-editable]:hover { outline: 1.5px solid #4C8B82; }
+    body.wc-mode-text [data-wc-editable]:focus { outline: 2px solid #4C8B82; background: rgba(76,139,130,0.1); }
+    
+    #wc-editor-toolbar {
+      position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+      background: #1B1E26; border: 1px solid #D4AF6A; padding: 10px 16px;
+      border-radius: 12px; z-index: 2147483647; display: flex; gap: 12px;
+      align-items: center; box-shadow: 0 12px 40px rgba(0,0,0,0.8);
+      font-family: system-ui, sans-serif; color: #F0ECE3;
+    }
+    .wc-tb-group { display: flex; gap: 4px; background: #14161C; padding: 4px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); }
+    .wc-tb-btn {
+      background: transparent; border: none; color: #F0ECE3; padding: 6px 12px;
+      border-radius: 6px; font-size: 13px; cursor: pointer; font-weight: 500; transition:0.2s;
+    }
+    .wc-tb-btn:hover { background: rgba(255,255,255,0.1); }
+    .wc-tb-btn.active { background: #D4AF6A; color: #0B0C10; }
+    .wc-tb-save { background: #4C8B82 !important; color: #fff !important; font-weight: bold; margin-left:8px; }
+    .wc-page-nav { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight:bold; }
+  \`;
+  document.head.appendChild(style);
+
+  const skipTags = new Set(['SCRIPT','STYLE','HTML','HEAD','BODY','SVG','PATH','CIRCLE','G','DEFS','LINEARGRADIENT','STOP']);
+
+  // Mark editable: any element that has a direct (non-whitespace) text node
+  // child, even if it ALSO has child elements (e.g. a <button> with an
+  // <svg> icon plus a text node). This scans ALL scenes, visible or not,
+  // so hidden pages (display:none) still get wired up correctly.
+  function markEditable(root){
+    root.querySelectorAll('*').forEach(el => {
+      if(skipTags.has(el.tagName)) return;
+      if(el.closest('#wc-editor-toolbar')) return;
+      const hasDirectText = Array.from(el.childNodes).some(n => n.nodeType === 3 && n.textContent.trim().length > 0);
+      if(hasDirectText){
+        el.setAttribute('data-wc-editable','1');
+      }
+    });
+  }
+
+  // Mark draggable: works off getBoundingClientRect + explicit size in the
+  // markup rather than offsetWidth/offsetHeight, so elements inside a
+  // display:none scene (0x0 at scan time) still get tagged instead of
+  // being silently skipped and left "dead" when you switch to that page.
+  function markDraggable(root){
+    root.querySelectorAll('*').forEach(el => {
+      if(skipTags.has(el.tagName)) return;
+      if(el.id === 'wc-editor-toolbar' || el.closest('#wc-editor-toolbar')) return;
+      if(el.hasAttribute('data-wc-draggable')) return;
+      const inlineTags = new Set(['SPAN','EM','STRONG','B','I','SMALL','SUP','SUB','U','MARK','LABEL']);
+      if(inlineTags.has(el.tagName)) return;
+      el.setAttribute('data-wc-draggable','1');
+    });
+  }
+
+  function scanAll(){
+    document.querySelectorAll('.wc-scene').forEach(scene => {
+      markEditable(scene);
+      markDraggable(scene);
+    });
+    // Fallback: single-page (no .wc-scene) generations
+    if(document.querySelectorAll('.wc-scene').length === 0){
+      markEditable(document.body);
+      markDraggable(document.body);
+    }
+  }
+  scanAll();
+
+  let mode = 'move'; 
+  document.body.classList.add('wc-mode-move');
+  
+  let localHistory = [];
+  let historyIndex = -1;
+  
+  function getSnapshotRoot(){
+     const scenes = document.querySelectorAll('.wc-scene');
+     return scenes.length ? Array.from(scenes) : [document.body];
+  }
+
+  function saveState() {
+     const roots = getSnapshotRoot();
+     const stateHtml = roots.map(s => s.outerHTML);
+     localHistory = localHistory.slice(0, historyIndex + 1);
+     localHistory.push(stateHtml);
+     historyIndex++;
+  }
+  
+  setTimeout(saveState, 300);
+
+  function restoreState(index) {
+     if(index < 0 || index >= localHistory.length) return;
+     const stateHtml = localHistory[index];
+     const roots = getSnapshotRoot();
+     roots.forEach((s, i) => { if(stateHtml[i]) s.outerHTML = stateHtml[i]; });
+     scanAll();
+     if(mode === 'text'){ document.querySelectorAll('[data-wc-editable]').forEach(el => el.setAttribute('contenteditable','true')); }
+     historyIndex = index;
+     updatePageUI();
+  }
+
+  let scenes = document.querySelectorAll('.wc-scene');
+  let currentPage = 0;
+  
+  function updatePageUI() {
+     scenes = document.querySelectorAll('.wc-scene');
+     if(scenes.length === 0) return;
+     scenes.forEach((sc, i) => {
+         sc.style.display = (i === currentPage) ? 'block' : 'none';
+     });
+     const lbl = document.getElementById('wc-page-lbl');
+     if(lbl) lbl.textContent = "Page " + (currentPage + 1) + " / " + scenes.length;
+  }
+
+  const tb = document.createElement('div');
+  tb.id = 'wc-editor-toolbar';
+  tb.innerHTML = \`
+    <div class="wc-tb-group">
+      <button class="wc-tb-btn active" id="wc-btn-move">✋ Move</button>
+      <button class="wc-tb-btn" id="wc-btn-text">📝 Edit Text</button>
+    </div>
+    <div class="wc-tb-group">
+      <button class="wc-tb-btn" id="wc-btn-undo" title="Undo">↺</button>
+      <button class="wc-tb-btn" id="wc-btn-redo" title="Redo">↻</button>
+    </div>
+    <div class="wc-tb-group wc-page-nav">
+      <button class="wc-tb-btn" id="wc-btn-prev">◀</button>
+      <span id="wc-page-lbl">Page 1</span>
+      <button class="wc-tb-btn" id="wc-btn-next">▶</button>
+    </div>
+    <button class="wc-tb-btn wc-tb-save" id="wc-btn-save">Save & Exit</button>
+  \`;
+  document.body.appendChild(tb);
+
+  updatePageUI();
+
+  document.getElementById('wc-btn-move').onclick = () => {
+     mode = 'move';
+     document.body.classList.remove('wc-mode-text');
+     document.body.classList.add('wc-mode-move');
+     document.getElementById('wc-btn-move').classList.add('active');
+     document.getElementById('wc-btn-text').classList.remove('active');
+     document.querySelectorAll('[contenteditable]').forEach(el => el.removeAttribute('contenteditable'));
+  };
+  
+  document.getElementById('wc-btn-text').onclick = () => {
+     mode = 'text';
+     document.body.classList.remove('wc-mode-move');
+     document.body.classList.add('wc-mode-text');
+     document.getElementById('wc-btn-text').classList.add('active');
+     document.getElementById('wc-btn-move').classList.remove('active');
+     document.querySelectorAll('[data-wc-editable]').forEach(el => el.setAttribute('contenteditable', 'true'));
+  };
+  
+  document.getElementById('wc-btn-undo').onclick = () => restoreState(historyIndex - 1);
+  document.getElementById('wc-btn-redo').onclick = () => restoreState(historyIndex + 1);
+  
+  document.getElementById('wc-btn-prev').onclick = () => { 
+      if(currentPage > 0) { currentPage--; updatePageUI(); } 
+  };
+  document.getElementById('wc-btn-next').onclick = () => { 
+      if(currentPage < scenes.length - 1) { currentPage++; updatePageUI(); } 
+  };
+
+  document.addEventListener('click', e => {
+     if(e.target.closest('#wc-editor-toolbar')) return; 
+     if(mode === 'text') return; // let contenteditable focus/caret placement happen normally
+     if(e.target.tagName === 'A' || e.target.tagName === 'BUTTON' || e.target.closest('button, a, .scene-nav-btn')) {
+         e.preventDefault();
+         e.stopPropagation();
+     }
+  }, true); 
+
+  document.addEventListener('blur', e => {
+     if(e.target.hasAttribute('contenteditable')) saveState();
+  }, true);
+
+  let dragEl = null, startX, startY, origLeft, origTop, dragMoved = false;
+
+  function pickDraggable(target){
+    // Prefer the SMALLEST (innermost) draggable ancestor under the pointer,
+    // not the first one found — avoids accidentally grabbing a whole
+    // wrapper/scene when the user meant to grab a small child element.
+    const path = target.closest('[data-wc-draggable]');
+    if(!path) return null;
+    let innermost = path;
+    let node = target;
+    while(node && node !== document.body){
+      if(node.hasAttribute && node.hasAttribute('data-wc-draggable')){ innermost = node; break; }
+      node = node.parentElement;
+    }
+    return innermost;
+  }
+
+  function dragStart(clientX, clientY, targetEl){
+    if(mode !== 'move') return;
+    const el = pickDraggable(targetEl);
+    if(!el) return;
+    dragEl = el;
+    dragMoved = false;
+    const cs = getComputedStyle(el);
+    if(cs.position === 'static'){ el.style.position = 'relative'; }
+    startX = clientX; startY = clientY;
+    origLeft = parseFloat(el.style.left) || 0;
+    origTop = parseFloat(el.style.top) || 0;
+    el.classList.add('wc-dragging');
+  }
+
+  function dragMove(clientX, clientY){
+    if(!dragEl) return;
+    const dx = clientX - startX, dy = clientY - startY;
+    if(Math.abs(dx) > 2 || Math.abs(dy) > 2) dragMoved = true;
+    dragEl.style.left = (origLeft + dx) + 'px';
+    dragEl.style.top = (origTop + dy) + 'px';
+  }
+
+  function dragEnd(){
+    if(dragEl){
+      dragEl.classList.remove('wc-dragging');
+      dragEl = null;
+      if(dragMoved) saveState();
+    }
+  }
+
+  // Mouse support
+  document.addEventListener('mousedown', e => {
+    if(e.button !== 0) return; // left-click only
+    if(e.target.closest('#wc-editor-toolbar')) return;
+    if(!e.target.closest('[data-wc-draggable]')) return;
+    e.preventDefault();
+    dragStart(e.clientX, e.clientY, e.target);
+  });
+  document.addEventListener('mousemove', e => {
+    if(!dragEl) return;
+    dragMove(e.clientX, e.clientY);
+  });
+  document.addEventListener('mouseup', dragEnd);
+
+  // Touch support (phones/tablets)
+  document.addEventListener('touchstart', e => {
+    if(e.target.closest('#wc-editor-toolbar')) return;
+    if(!e.target.closest('[data-wc-draggable]')) return;
+    const t = e.touches[0];
+    dragStart(t.clientX, t.clientY, e.target);
+    if(dragEl) e.preventDefault();
+  }, { passive: false });
+  document.addEventListener('touchmove', e => {
+    if(!dragEl) return;
+    e.preventDefault();
+    const t = e.touches[0];
+    dragMove(t.clientX, t.clientY);
+  }, { passive: false });
+  document.addEventListener('touchend', dragEnd);
+  document.addEventListener('touchcancel', dragEnd);
+
+  document.getElementById('wc-btn-save').onclick = () => {
+     scenes = document.querySelectorAll('.wc-scene');
+     if(scenes.length){ scenes.forEach((sc, i) => { sc.style.display = (i === 0) ? 'block' : 'none'; }); }
+
+     document.querySelectorAll('[data-wc-editable]').forEach(el => {
+         el.removeAttribute('data-wc-editable');
+         el.removeAttribute('contenteditable');
+     });
+     document.querySelectorAll('[data-wc-draggable]').forEach(el => {
+         el.removeAttribute('data-wc-draggable');
+     });
+     document.body.classList.remove('wc-mode-move', 'wc-mode-text');
+
+     document.getElementById('wc-editor-styles').remove();
+     document.getElementById('wc-editor-toolbar').remove();
+     const selfScript = document.getElementById('wc-editor-script');
+     if(selfScript) selfScript.remove();
+     window.__wcEditInit = false;
+     
+     if(window.opener && window.opener.receiveCanvasEdit) {
+         const finalHtml = '<!DOCTYPE html>\\n' + document.documentElement.outerHTML;
+         window.opener.receiveCanvasEdit(finalHtml);
+         window.close();
+     } else {
+         alert("Could not communicate with main window. Please keep this tab open and copy the source manually.");
+     }
+  };
+
+})();
+`;
+
+  editCanvasBtn.addEventListener('click', () => {
+    if (!window.currentHtml) return;
+    window.currentHtml = stripEditorArtifacts(window.currentHtml);
+    const editWindow = window.open('', '_blank');
+    if (!editWindow) { alert("Popup blocked! Please allow popups for this site to open the Canvas Editor."); return; }
+    editWindow.document.write(window.currentHtml);
+    editWindow.document.close();
+    const s = editWindow.document.createElement('script');
+    s.id = 'wc-editor-script';
+    s.textContent = EDIT_SCRIPT;
+    editWindow.document.body.appendChild(s);
+  });
+  */
+
+  document.getElementById('openTabBtn').addEventListener('click', () => {
+    if(!window.currentHtml) return;
+    window.currentHtml = stripEditorArtifacts(window.currentHtml);
+    const blob = new Blob([window.currentHtml], { type: 'text/html' });
+    const url = URL.createObjectURL(blob); window.open(url, '_blank');
+  });
+</script>
+
+  <!-- ---------- FIREBASE AUTH, DB, TIER & CONTACT LOGIC ---------- -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+  import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+  import { getFirestore, collection, addDoc, serverTimestamp, query, where, orderBy, getDocs, deleteDoc, doc, updateDoc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyByEAwr9i5ijcRA1a2z-FsUinwENmnEfQA",
+    authDomain: "wishcraft-1cad2.firebaseapp.com",
+    projectId: "wishcraft-1cad2",
+    storageBucket: "wishcraft-1cad2.firebasestorage.app",
+    messagingSenderId: "117932063613",
+    appId: "1:117932063613:web:c2c350effa4dc7ca2eea14"
+  };
+
+  const ADMIN_EMAILS = ["yashjare12@gmail.com", "yashjare081@gmail.com"]; 
+  let auth, db;
+  let currentUserTier = "Hobbyist"; 
+
+  try { 
+      const app = initializeApp(firebaseConfig); 
+      auth = getAuth(app); 
+      db = getFirestore(app); 
+  } catch(e) { 
+      console.warn("Firebase not configured."); 
+  }
+
+  const landingLoginBtn = document.getElementById('landingLoginBtn');
+  const heroSignupBtn = document.getElementById('heroSignupBtn');
+  const navLoginBtn = document.getElementById('navLoginBtn');
+  const navSignupBtn = document.getElementById('navSignupBtn');
+  const topbarLoginBtn_firebase = document.getElementById('topbarLoginBtn');
+  const logoutBtn = document.getElementById('logoutBtn');
+  // landingPage and mainApp already declared in main script
+  const userProfile = document.getElementById('userProfile');
+
+  function updateTierUI(tier) {
+    currentUserTier = tier;
+    const badgeText = tier === 'Studio' ? '✦ Studio Tier' : (tier === 'Artisan' ? '✦ Artisan Tier' : 'Hobbyist Tier');
+    document.querySelectorAll('.pro-badge').forEach(badge => {
+        badge.innerHTML = badgeText;
+        if(tier === 'Hobbyist') {
+            badge.style.animation = 'none'; badge.style.background = 'rgba(255,255,255,0.05)'; badge.style.color = '#aaa'; badge.style.borderColor = 'rgba(255,255,255,0.1)';
+        } else {
+            badge.style.animation = 'shimmer 3s infinite linear'; badge.style.background = ''; badge.style.color = 'var(--gold)'; badge.style.borderColor = 'rgba(212,175,106,0.3)';
+        }
+    });
+
+    const pricingBtns = document.querySelectorAll('.pricing-card .dash-btn, .pricing-card .generate-btn');
+    if (pricingBtns.length >= 3) {
+        if (tier === 'Studio') {
+            pricingBtns[0].textContent = "Included"; pricingBtns[0].disabled = true; pricingBtns[1].textContent = "Included"; pricingBtns[1].disabled = true; pricingBtns[2].textContent = "Current Plan"; pricingBtns[2].disabled = true;
+        } else if (tier === 'Artisan') {
+            pricingBtns[0].textContent = "Included"; pricingBtns[0].disabled = true; pricingBtns[1].textContent = "Current Plan"; pricingBtns[1].disabled = true; pricingBtns[2].textContent = "Upgrade to Studio"; pricingBtns[2].disabled = false;
+        } else {
+            pricingBtns[0].textContent = "Current Plan"; pricingBtns[0].disabled = true; pricingBtns[1].textContent = "Upgrade to Artisan"; pricingBtns[1].disabled = false; pricingBtns[2].textContent = "Upgrade to Studio"; pricingBtns[2].disabled = false;
+        }
+    }
+
+    const premiumFeatures = [
+        document.querySelector('[data-val="interactive-vault"]'), document.querySelector('[data-val="cinematic-3d"]'), document.querySelector('[data-val="obsidian-gold"]'), document.querySelector('[data-val="midnight-arcade"]'), document.querySelector('[data-val="emerald-noir"]'), document.querySelector('[data-val="arctic-frost"]'), document.querySelector('[data-val="Dramatic Vault"]'), document.querySelector('[data-val="Elegant & Minimal"]'), document.querySelector('[data-val="Bold & Energetic"]'), document.querySelector('[data-val="Background Music"]'), document.querySelector('[data-val="Voice Note"]'), document.querySelector('[data-val="Guestbook Wall"]'), document.querySelector('[data-val="Love Meter"]')
+    ].filter(Boolean); 
+
+    if (tier === 'Hobbyist') {
+        premiumFeatures.forEach(el => el.classList.add('locked-feature'));
+        const activeComplexity = document.querySelector('#complexityGrid .selected');
+        if (activeComplexity && activeComplexity.classList.contains('locked-feature')) { activeComplexity.classList.remove('selected'); document.querySelector('[data-val="fast-glass"]').click(); }
+        const activeTheme = document.querySelector('#themeGrid .selected');
+        if (activeTheme && activeTheme.classList.contains('locked-feature')) { activeTheme.classList.remove('selected'); document.querySelector('[data-val="velvet-plum"]').click(); }
+        const activeTone = document.querySelector('#toneChips .selected');
+        if (activeTone && activeTone.classList.contains('locked-feature')) { activeTone.classList.remove('selected'); document.querySelector('[data-val="Romantic & Cinematic"]').click(); }
+        document.querySelectorAll('#featureChips .selected').forEach(chip => { if (chip.classList.contains('locked-feature')) chip.click(); });
+    } else {
+        premiumFeatures.forEach(el => el.classList.remove('locked-feature'));
+    }
+  }
+
+  // --- HOISTED HELPER FUNCTIONS FOR CONTACT INBOX ---
+  async function loadUserMessages() {
+      const list = document.getElementById('userMsgList');
+      if(!list || !auth.currentUser) return;
+      list.innerHTML = '<div style="color:#888; font-size:12px; text-align:center;">Loading ticket history...</div>';
+      try {
+          const q = query(collection(db, "contact_messages"), where("uid", "==", auth.currentUser.uid));
+          const snap = await getDocs(q);
+          if(snap.empty) { list.innerHTML = '<div style="color:#888; font-size:12px; text-align:center;">You have no active support tickets.</div>'; return; }
+          
+          let msgs = [];
+          snap.forEach(docSnap => msgs.push({ id: docSnap.id, data: docSnap.data() }));
+          msgs.sort((a, b) => {
+              const t1 = a.data.createdAt ? a.data.createdAt.toMillis() : 0;
+              const t2 = b.data.createdAt ? b.data.createdAt.toMillis() : 0;
+              return t2 - t1; 
+          });
+
+          list.innerHTML = '';
+          msgs.forEach(msgItem => {
+              const data = msgItem.data;
+              const docId = msgItem.id;
+              const dt = data.createdAt ? data.createdAt.toDate().toLocaleString() : 'Just now';
+              function esc(s){ return (s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+              
+              const card = document.createElement('div');
+              card.className = "msg-bubble";
+              
+              let html = `
+                  <div style="font-size:11px; color:var(--cream-dim); margin-bottom:6px;">${esc(dt)}</div>
+                  <div style="font-size:14px; color:#fff; line-height:1.5; white-space:pre-wrap;">${esc(data.message)}</div>
+              `;
+              
+              if(data.reply) html += `<div class="msg-reply"><strong>Admin Team:</strong><br>${esc(data.reply)}</div>`;
+              if(data.reaction) html += `<div class="msg-reaction">${esc(data.reaction)} Viewed</div>`;
+              
+              html += `
+                  <div class="msg-actions">
+                      <button class="action-btn del user-del-btn" style="margin-left:auto;">🗑 Delete Ticket</button>
+                  </div>
+              `;
+              card.innerHTML = html;
+              
+              card.querySelector('.user-del-btn').addEventListener('click', () => {
+                  window.appModal({
+                      type: 'confirm', title: "Delete Ticket?", msg: "Are you sure you want to delete this support request?",
+                      onConfirm: async (res) => {
+                          if(res) {
+                              await deleteDoc(doc(db, "contact_messages", docId));
+                              card.remove();
+                              if(list.children.length === 0) list.innerHTML = '<div style="color:#888; font-size:12px; text-align:center;">You have no active support tickets.</div>';
+                          }
+                      }
+                  });
+              });
+              list.appendChild(card);
+          });
+      } catch(e) { list.innerHTML = '<div style="color:#e88; font-size:12px; text-align:center;">Error loading history.</div>'; }
+  }
+
+  async function loadAdminInbox() {
+      const inbox = document.getElementById('adminMsgList');
+      if(!inbox) return;
+      inbox.innerHTML = '<div style="color:#888; font-size:12px; text-align:center;">Loading messages...</div>';
+      try {
+          const q = query(collection(db, "contact_messages"), orderBy("createdAt", "desc"));
+          const snap = await getDocs(q);
+          if(snap.empty) { inbox.innerHTML = '<div style="color:#888; font-size:12px; text-align:center;">Inbox is empty.</div>'; return; }
+          
+          inbox.innerHTML = '';
+          snap.forEach(docSnap => {
+              const data = docSnap.data();
+              const dt = data.createdAt ? data.createdAt.toDate().toLocaleString() : 'Just now';
+              function esc(s){ return (s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+              
+              const card = document.createElement('div');
+              card.className = "msg-bubble";
+              
+              let html = `
+                  <div style="display:flex; justify-content:space-between; font-size:11px; color:var(--gold); margin-bottom:6px;">
+                      <span>${esc(data.email)}</span>
+                      <span style="color:#888;">${esc(dt)}</span>
+                  </div>
+                  <div style="font-size:14px; color:#fff; line-height:1.5; white-space:pre-wrap;">${esc(data.message)}</div>
+              `;
+              
+              if(data.reply) html += `<div class="msg-reply"><strong>You Replied:</strong><br>${esc(data.reply)}</div>`;
+              if(data.reaction) html += `<div class="msg-reaction">Reacted: ${esc(data.reaction)}</div>`;
+              
+              html += `
+                  <div class="reply-input-box">
+                      <input type="text" placeholder="Type a direct reply..." class="admin-reply-input">
+                      <button class="action-btn admin-reply-btn">Send Reply</button>
+                  </div>
+                  <div class="msg-actions">
+                      <button class="action-btn admin-react-btn">❤️ React</button>
+                      <button class="action-btn admin-react-btn2">✅ Done</button>
+                      <button class="action-btn del admin-del-btn" style="margin-left:auto;">🗑 Delete</button>
+                  </div>
+              `;
+              card.innerHTML = html;
+              
+              card.querySelector('.admin-reply-btn').addEventListener('click', async () => {
+                  const input = card.querySelector('.admin-reply-input');
+                  const replyText = input.value.trim();
+                  if(!replyText) return;
+                  await updateDoc(doc(db, "contact_messages", docSnap.id), { reply: replyText });
+                  loadAdminInbox(); 
+              });
+              
+              card.querySelector('.admin-react-btn').addEventListener('click', async () => {
+                  await updateDoc(doc(db, "contact_messages", docSnap.id), { reaction: "❤️" });
+                  loadAdminInbox();
+              });
+              
+              card.querySelector('.admin-react-btn2').addEventListener('click', async () => {
+                  await updateDoc(doc(db, "contact_messages", docSnap.id), { reaction: "✅" });
+                  loadAdminInbox();
+              });
+              
+              card.querySelector('.admin-del-btn').addEventListener('click', () => {
+                  window.appModal({
+                      type: 'confirm', title: "Delete Record?", msg: "Delete this user's message completely from the database?",
+                      onConfirm: async (res) => {
+                          if(res) {
+                              await deleteDoc(doc(db, "contact_messages", docSnap.id));
+                              loadAdminInbox();
+                          }
+                      }
+                  });
+              });
+              inbox.appendChild(card);
+          });
+      } catch(e) { inbox.innerHTML = '<div style="color:#e88; font-size:12px; text-align:center;">Error loading inbox. Check permissions.</div>'; }
+  }
+
+
+  // --- LOGIN & CORE LOGIC FLOW ---
+  if (auth) {
+    const provider = new GoogleAuthProvider();
+    provider.setCustomParameters({ prompt: 'select_account' });
+    
+    const handleLogin = () => signInWithPopup(auth, provider).catch(err => window.appModal({title: "Login Error", msg: err.message}));
+    if(landingLoginBtn) landingLoginBtn.addEventListener('click', handleLogin);
+    if(heroSignupBtn) heroSignupBtn.addEventListener('click', handleLogin);
+    if(navLoginBtn) navLoginBtn.addEventListener('click', handleLogin);
+    if(navSignupBtn) navSignupBtn.addEventListener('click', handleLogin);
+    if(topbarLoginBtn) topbarLoginBtn.addEventListener('click', handleLogin);
+    if(logoutBtn) logoutBtn.addEventListener('click', () => signOut(auth));
+
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        window.isGuest = false; landingPage.classList.add('hidden');
+        setTimeout(() => { mainApp.classList.remove('app-hidden'); window.scrollTo(0,0); }, 400); document.body.style.overflow = "auto";
+        userProfile.style.display = 'flex'; topbarLoginBtn.style.display = 'none';
+        
+        const isAdmin = ADMIN_EMAILS.includes(user.email);
+        const uName = user.displayName || user.email || "User";
+        
+        if(document.getElementById('userNameText')) document.getElementById('userNameText').textContent = uName.split(' ')[0] + (isAdmin ? " (Admin)" : ""); 
+        if(document.getElementById('userAvatar')) document.getElementById('userAvatar').textContent = uName.charAt(0).toUpperCase(); 
+        if(document.getElementById('panelName')) document.getElementById('panelName').textContent = user.displayName || user.email;
+        if(document.getElementById('panelAvatar')) document.getElementById('panelAvatar').textContent = uName.charAt(0).toUpperCase();
+
+        document.getElementById('hubAiCard').classList.remove('locked');
+        document.getElementById('aiLockBadge').style.display = 'none';
+
+        if (document.getElementById('adminPanel')) document.getElementById('adminPanel').style.display = isAdmin ? 'block' : 'none';
+        if (document.getElementById('adminContactView')) document.getElementById('adminContactView').style.display = isAdmin ? 'block' : 'none';
+        if (document.getElementById('userContactView')) document.getElementById('userContactView').style.display = isAdmin ? 'none' : 'block';
+
+        if (isAdmin) {
+            updateTierUI("Studio");
+            loadAdminInbox();
+        } else {
+            loadUserMessages();
+            try {
+                const userDoc = await getDoc(doc(db, "users", user.uid));
+                if (userDoc.exists() && userDoc.data().tier) updateTierUI(userDoc.data().tier);
+                else updateTierUI("Hobbyist");
+            } catch(e) { updateTierUI("Hobbyist"); }
+        }
+      } else {
+        userProfile.style.display = 'none';
+        if (window.isGuest) topbarLoginBtn.style.display = 'inline-flex';
+        else { landingPage.classList.remove('hidden'); mainApp.classList.add('app-hidden'); document.body.style.overflow = "hidden"; }
+      }
+    });
+
+    // --- INFINITE NON-EXPIRING REDEEM CODE LOGIC ---
+    const redeemBtn = document.getElementById('redeemBtn');
+    const redeemInput = document.getElementById('redeemInput');
+    if (redeemBtn && redeemInput) {
+        redeemBtn.addEventListener('click', async () => {
+            const code = redeemInput.value.trim().toUpperCase();
+            if (!code) return;
+            redeemBtn.textContent = '...';
+            
+            try {
+                const codeRef = doc(db, "redeem_codes", code);
+                const codeSnap = await getDoc(codeRef);
+                
+                if (codeSnap.exists()) {
+                    const codeData = codeSnap.data();
+                    if (currentUserTier === codeData.tier || currentUserTier === 'Studio') {
+                        window.appModal({title: "Notice", msg: "You already have a premium subscription! No need to redeem this."});
+                    } else {
+                        await setDoc(doc(db, "users", auth.currentUser.uid), { tier: codeData.tier, updatedAt: serverTimestamp() }, { merge: true });
+                        updateTierUI(codeData.tier);
+                        window.appModal({title: "Success!", msg: `🎉 Magic Unlocked! You are now on the ${codeData.tier} Tier.`});
+                        redeemInput.value = '';
+                    }
+                } else {
+                    window.appModal({title: "Invalid", msg: "❌ Invalid code. Please check for typos."});
+                }
+            } catch(e) { window.appModal({title: "Error", msg: "Error connecting to validation server."}); }
+            redeemBtn.textContent = 'Apply';
+        });
+    }
+
+    const generateCodeBtn = document.getElementById('generateCodeBtn');
+    const newCodeDisplay = document.getElementById('newCodeDisplay');
+    if (generateCodeBtn) {
+        generateCodeBtn.addEventListener('click', async () => {
+            generateCodeBtn.textContent = "Generating...";
+            const newCode = `WISH-${Math.random().toString(36).substring(2, 6).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
+            try {
+                await setDoc(doc(db, "redeem_codes", newCode), { tier: "Studio", createdBy: auth.currentUser.email, createdAt: serverTimestamp() });
+                newCodeDisplay.value = newCode; generateCodeBtn.textContent = "Generate Code";
+            } catch(e) { window.appModal({title: "Error", msg: "Failed to generate code."}); generateCodeBtn.textContent = "Generate Code"; }
+        });
+    }
+
+    // --- CONTACT US / INBOX SEND LOGIC ---
+    const sendContactBtn = document.getElementById('sendContactBtn');
+    const refreshInboxBtn = document.getElementById('refreshInboxBtn');
+    
+    if(sendContactBtn) {
+        sendContactBtn.addEventListener('click', async () => {
+            const msgInput = document.getElementById('contactMsg');
+            const msg = msgInput.value.trim();
+            if(!msg) return;
+            sendContactBtn.textContent = "Sending...";
+            try {
+                await addDoc(collection(db, "contact_messages"), {
+                    uid: auth.currentUser.uid, 
+                    email: auth.currentUser.email, 
+                    message: msg, 
+                    reaction: null, 
+                    reply: null,
+                    createdAt: serverTimestamp()
+                });
+                window.appModal({title: "Sent!", msg: "Your message has been sent directly to the developers. Check back here for a reply."});
+                msgInput.value = '';
+                loadUserMessages(); 
+            } catch(e) { window.appModal({title: "Error", msg: "Failed to send message. Please try again."}); }
+            sendContactBtn.textContent = "Send Message";
+        });
+    }
+
+    if(refreshInboxBtn) refreshInboxBtn.addEventListener('click', loadAdminInbox);
+
+    async function sha256Hex(text) {
+      const enc = new TextEncoder().encode(text);
+      const buf = await crypto.subtle.digest('SHA-256', enc);
+      return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+    }
+
+    const publishBtn = document.getElementById('publishBtn');
+    if(publishBtn) {
+      publishBtn.addEventListener('click', async () => {
+        if (!window.currentHtml) { window.appModal({title: "Action Required", msg: "Please generate or edit a page first before publishing!"}); return; }
+        
+        if(currentUserTier === 'Hobbyist') {
+            const q = query(collection(db, "published_pages"), where("authorUid", "==", auth.currentUser.uid));
+            const snap = await getDocs(q);
+            if(snap.size >= 3) {
+                window.appModal({title: "Limit Reached", msg: "🔒 Hobbyist plan limit reached (3 active wishes).\nUpgrade to Artisan or Studio to publish more!"});
+                return;
+            }
+        }
+
+        window.appModal({
+            type: 'prompt',
+            title: "Lock Your Magic",
+            msg: "Set a password the recipient will need to enter to view this wish:\n(Leave blank for a public link)",
+            onConfirm: async (pwd) => {
+                if (pwd === null) return; 
+                publishBtn.textContent = "Publishing Securely..."; 
+                publishBtn.disabled = true;
+                
+                try {
+                  let payloadToStore;
+                  
+                  if (pwd.trim()) {
+                    // 1. If there's a password, encrypt the HTML *before* sending to Firebase
+                    const encrypted = await WishCrypto.encrypt(window.currentHtml, pwd.trim());
+                    payloadToStore = {
+                      isEncrypted: true, 
+                      encryptedData: encrypted,
+                      authorUid: auth.currentUser.uid, 
+                      authorEmail: auth.currentUser.email,
+                      createdAt: serverTimestamp()
+                    };
+                  } else {
+                    // 2. If no password, save the public HTML normally
+                    payloadToStore = {
+                      isEncrypted: false, 
+                      html: window.currentHtml,
+                      authorUid: auth.currentUser.uid, 
+                      authorEmail: auth.currentUser.email,
+                      createdAt: serverTimestamp()
+                    };
+                  }
+                  
+                  // 3. Send the secure payload to Firestore
+                  const docRef = await addDoc(collection(db, "published_pages"), payloadToStore);
+                  
+                  // 4. Trigger the new native sharing / QR code modal!
+                  shareWish(docRef.id);
+                  
+                } catch (e) { 
+                  window.appModal({title: "Error", msg: "Publish failed. Please try again."});
+                } finally { 
+                  publishBtn.textContent = "Publish Online"; 
+                  publishBtn.disabled = false; 
+                }
+            }
+        });
+      });
+    }
+
+    const myWishesModal = document.getElementById('myWishesModal');
+    const myWishesList = document.getElementById('myWishesList');
+    const closeMyWishesBtn = document.getElementById('closeMyWishesBtn');
+    const menuMyWishes = document.getElementById('menuMyWishes');
+    function escapeHtml(s){ return (s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+    if (menuMyWishes) { menuMyWishes.addEventListener('click', () => { document.getElementById('profileDropdown').classList.remove('show'); myWishesModal.style.display = 'flex'; loadMyWishes(); }); }
+    if (closeMyWishesBtn) closeMyWishesBtn.addEventListener('click', () => { myWishesModal.style.display = 'none'; });
+    if (myWishesModal) myWishesModal.addEventListener('click', (e) => { if (e.target === myWishesModal) myWishesModal.style.display = 'none'; });
+
+    async function loadMyWishes(){
+      myWishesList.innerHTML = '<div style="color:#888; font-size:13px; padding:20px 0; text-align:center;">Loading your crafted moments...</div>';
+      try {
+        const q = query(collection(db, "published_pages"), where("authorUid", "==", auth.currentUser.uid));
+        const snap = await getDocs(q);
+        if (snap.empty) { myWishesList.innerHTML = '<div style="color:#888; font-size:13px; padding:20px 0; text-align:center;">No saved wishes yet. Publish one to see it here.</div>'; return; }
+        
+        let wishes = [];
+        snap.forEach(docSnap => wishes.push({ id: docSnap.id, data: docSnap.data() }));
+        wishes.sort((a, b) => {
+            const t1 = a.data.createdAt ? a.data.createdAt.toMillis() : 0;
+            const t2 = b.data.createdAt ? b.data.createdAt.toMillis() : 0;
+            return t2 - t1;
+        });
+
+        myWishesList.innerHTML = '';
+        wishes.forEach(wishItem => {
+          const data = wishItem.data;
+          const docId = wishItem.id;
+          const dt = data.createdAt ? data.createdAt.toDate().toLocaleString() : 'Just now';
+          const row = document.createElement('div');
+          row.style.cssText = 'display:flex; flex-direction:column; gap:14px; padding:18px; background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.08); border-radius:12px; transition: border 0.2s;';
+          row.onmouseover = () => row.style.borderColor = 'rgba(212,175,106,0.3)'; row.onmouseout = () => row.style.borderColor = 'rgba(255,255,255,0.08)';
+
+          row.innerHTML = `
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:10px;">
+              <div style="min-width:0; flex: 1;">
+                <div style="font-size:15px; color:#fff; font-family:var(--sans); font-weight: 600; margin-bottom: 6px; letter-spacing: 0.02em;">Wish ID: <span style="font-family:var(--mono); color:var(--gold); font-weight: 400;">${escapeHtml(docId)}</span></div>
+                <div style="font-size:12px; color:var(--cream-dim); display:flex; align-items:center; gap:8px;"><span>🗓 ${escapeHtml(dt)}</span><span class="status-badge">${data.passwordHash ? '🔒 Password Protected' : '🔓 Public Link'}</span></div>
+              </div>
+            </div>
+            <div class="dash-actions">
+              <button class="dash-btn wish-load-btn">✎ Edit Code</button>
+              <button class="dash-btn wish-link-btn">🔗 Copy Link</button>
+              <button class="dash-btn wish-pwd-btn">🔑 Password</button>
+              <button class="dash-btn danger wish-del-btn" style="margin-left:auto;">🗑 Delete</button>
+            </div>
+          `;
+
+          row.querySelector('.wish-load-btn').addEventListener('click', () => {
+            window.currentHtml = data.html; window.versions = [data.html];
+            document.getElementById('emptyStage').classList.remove('visible'); document.getElementById('loadingStage').classList.remove('visible'); document.getElementById('errorStage').classList.remove('visible');
+            if (typeof renderPreview === 'function') renderPreview(data.html);
+            document.getElementById('stageActions').style.visibility = 'visible';
+            const eb = document.getElementById('editBlock'); if (eb) eb.classList.add('visible');
+            const cl = document.getElementById('chromeLabel'); if (cl) cl.textContent = 'live preview';
+            const s1 = document.getElementById('step1'); const s2 = document.getElementById('step2');
+            if (s1) s1.classList.remove('active'); if (s2) s2.classList.add('active');
+            const el = document.getElementById('editLog'); if (el) el.innerHTML = '';
+            myWishesModal.style.display = 'none';
+          });
+
+          row.querySelector('.wish-link-btn').addEventListener('click', () => {
+            shareWish(docId);
+          });
+
+          row.querySelector('.wish-pwd-btn').addEventListener('click', () => {
+            const hasPwd = data.passwordHash ? true : false;
+            window.appModal({
+                type: 'prompt', title: hasPwd ? "Update Password" : "Lock Wish",
+                msg: hasPwd ? "This wish is currently PROTECTED.\nEnter a new password to change it, or leave the box BLANK to remove the password completely:" : "This wish is currently PUBLIC.\nEnter a password below to lock it:",
+                onConfirm: async (pwd) => {
+                    if (pwd === null) return; 
+                    const btn = row.querySelector('.wish-pwd-btn'); const origText = btn.innerHTML; btn.innerHTML = '⏳ Saving...';
+                    try {
+                      const newHash = pwd.trim() ? await sha256Hex(pwd.trim()) : null;
+                      await updateDoc(doc(db, "published_pages", docId), { passwordHash: newHash });
+                      data.passwordHash = newHash; const statusBadge = row.querySelector('.status-badge');
+                      if (statusBadge) { statusBadge.innerHTML = newHash ? '🔒 Password Protected' : '🔓 Public Link'; statusBadge.style.color = newHash ? 'var(--gold)' : 'var(--cream-dim)'; }
+                      btn.innerHTML = '✅ Saved!'; setTimeout(() => btn.innerHTML = origText, 2000);
+                    } catch(e) { window.appModal({title: "Error", msg: "Failed to update password."}); btn.innerHTML = origText; }
+                }
+            });
+          });
+
+          row.querySelector('.wish-del-btn').addEventListener('click', () => {
+            window.appModal({
+                type: 'confirm', title: "Delete Wish?", msg: "Permanently delete this crafted wish? The live link will immediately break for the recipient.",
+                onConfirm: async (res) => {
+                    if(res) {
+                        try {
+                            await deleteDoc(doc(db, "published_pages", docId)); row.remove();
+                            if(myWishesList.children.length === 0) { myWishesList.innerHTML = '<div style="color:#888; font-size:13px; padding:20px 0; text-align:center;">No saved wishes left.</div>'; }
+                        } catch(e) { window.appModal({title: "Error", msg: "Error deleting wish. Check Firebase security rules."}); }
+                    }
+                }
+            });
+          });
+          myWishesList.appendChild(row);
+        });
+      } catch (e) { myWishesList.innerHTML = '<div style="color:#e88; font-size:13px; padding:20px 0; text-align:center;">Could not load wishes.</div>'; }
+    }
+  }
+
+  const WishCrypto = {
+    buf2b64: (buf) => btoa(String.fromCharCode(...new Uint8Array(buf))),
+    b642buf: (str) => Uint8Array.from(atob(str), c => c.charCodeAt(0)),
+    async deriveKey(password, salt) {
+      const keyMaterial = await crypto.subtle.importKey("raw", new TextEncoder().encode(password), "PBKDF2", false, ["deriveKey"]);
+      return crypto.subtle.deriveKey({ name: "PBKDF2", salt: salt, iterations: 100000, hash: "SHA-256" }, keyMaterial, { name: "AES-GCM", length: 256 }, false, ["encrypt", "decrypt"]);
+    },
+    async encrypt(plaintext, password) {
+      const salt = crypto.getRandomValues(new Uint8Array(16));
+      const iv = crypto.getRandomValues(new Uint8Array(12));
+      const key = await this.deriveKey(password, salt);
+      const ciphertext = await crypto.subtle.encrypt({ name: "AES-GCM", iv: iv }, key, new TextEncoder().encode(plaintext));
+      return { isEncrypted: true, salt: this.buf2b64(salt), iv: this.buf2b64(iv), ciphertext: this.buf2b64(ciphertext) };
+    }
+  };
+
+  async function shareWish(docId) {
+    const viewUrl = `${window.location.origin}${window.location.pathname.replace(/[^/]*$/, '')}view.html?id=${docId}`;
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: 'A Gift for You ✨', text: 'I crafted an interactive experience for you!', url: viewUrl });
+        return;
+      } catch (err) { if (err.name !== 'AbortError') console.error(err); }
+    }
+    const qrCanvas = document.createElement('canvas');
+    await QRCode.toCanvas(qrCanvas, viewUrl, { width: 240, margin: 2, color: { dark: '#D4AF6A', light: '#0B0C10' } });
+    const qrImage = qrCanvas.toDataURL();
+    window.appModal({ title: "Share Your Gift", msg: "Scan this QR code or copy the link below:\n\n" + viewUrl, type: 'prompt', inputVal: viewUrl });
+    document.getElementById('smMsg').insertAdjacentHTML('beforeend', `<br><br><img src="${qrImage}" style="border-radius:12px; margin: 0 auto; display:block;">`);
+  }
+
+  
+</script>
+
+  <div id="myWishesModal" style="display:none; position:fixed; inset:0; z-index:99999; background:rgba(0,0,0,0.7); align-items:center; justify-content:center;">
+    <div style="background:#12141a; border:1px solid var(--line,#333); border-radius:14px; width:min(640px,92vw); max-height:80vh; display:flex; flex-direction:column; overflow:hidden;">
+      <div style="display:flex; align-items:center; justify-content:space-between; padding:16px 20px; border-bottom:1px solid rgba(255,255,255,0.08);">
+        <h3 style="margin:0; font-size:15px; color:var(--gold,#D4AF6A);">My Saved Wishes</h3>
+        <button id="closeMyWishesBtn" style="background:none; border:none; color:#aaa; font-size:20px; cursor:pointer; line-height:1;">&times;</button>
+      </div>
+      <div id="myWishesList" class="custom-scroll" style="overflow-y:auto; padding:12px 20px; display:flex; flex-direction:column; gap:8px;">
+        <div style="color:#888; font-size:13px; padding:20px 0; text-align:center;">Loading...</div>
+      </div>
+    </div>
+  </div>
+ 
+  <!-- ================= FULL SCREEN PANELS ================= -->
+
+  <!-- 1. ACCOUNT PANEL -->
+  <div class="fs-panel-overlay" id="accountPanel">
+    <div class="fs-panel-card wide">
+      <div class="fs-panel-glow"></div>
+      <button class="fs-panel-close">&times;</button>
+      <div class="fs-panel-content">
+        <h2 class="fs-title">Account & Billing</h2>
+        <p class="fs-subtitle">Manage your profile, active subscriptions, and redeem codes.</p>
+        
+        <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:20px; margin-bottom: 40px; background: rgba(255,255,255,0.03); padding: 20px 24px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.05); backdrop-filter: blur(10px);">
+          <div style="display:flex; align-items:center; gap:20px;">
+            <div style="width:64px; height:64px; background: linear-gradient(135deg, var(--gold), #c79a52); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:28px; font-weight:bold; color:var(--ink); box-shadow: inset 0 -3px 6px rgba(0,0,0,0.2);" id="panelAvatar">U</div>
+            <div>
+              <div style="font-size: 18px; font-weight: 600; color: #fff;" id="panelName">Loading User...</div>
+              <div class="pro-badge" style="margin-top: 6px;">✦ Artisan Tier</div>
+            </div>
+          </div>
+          
+          <div class="redeem-wrapper">
+              <div style="font-size: 11px; color: var(--cream-dim); text-transform:uppercase; letter-spacing:0.1em; font-weight:600;">Redeem Gift Code</div>
+              <div class="redeem-box">
+                  <input type="text" id="redeemInput" placeholder="e.g. STUDIO-MAGIC">
+                  <button id="redeemBtn">Apply</button>
+              </div>
+          </div>
+        </div>
+
+        <div id="adminPanel" style="display:none; margin-bottom: 30px; padding: 20px; background: rgba(212,175,106,0.05); border: 1px solid rgba(212,175,106,0.3); border-radius: 16px; backdrop-filter: blur(10px);">
+            <div style="display:flex; align-items:center; gap: 10px; margin-bottom: 12px;">
+                <span style="font-size: 20px;">👑</span>
+                <div>
+                    <h3 style="color: var(--gold); font-family: var(--serif); font-size: 18px; margin: 0;">Admin Portal</h3>
+                    <p style="font-size: 12px; color: var(--cream-dim); margin: 4px 0 0 0;">Generate secure, infinite-use Studio codes.</p>
+                </div>
+            </div>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <button id="generateCodeBtn" class="generate-btn" style="padding: 10px 20px; font-size: 13px; margin: 0;">Generate Code</button>
+                <input type="text" id="newCodeDisplay" readonly style="flex:1; min-width: 200px; background: rgba(0,0,0,0.4); border: 1px dashed rgba(255,255,255,0.2); color: var(--gold); padding: 10px 14px; border-radius: 8px; font-family: var(--mono); font-size: 14px; outline: none;" placeholder="Generated code will appear here..." onclick="this.select()">
+            </div>
+        </div>
+
+        <div style="font-family: var(--serif); font-size: 26px; color: #fff; margin-bottom: 6px;">Upgrade Your Magic</div>
+        <p style="font-size: 14px; color: var(--cream-dim);">Unlock 3D WebGL scenes, unlimited hosting, and advanced AI cinematic generation.</p>
+
+        <div class="pricing-grid">
+          <div class="pricing-card">
+              <div class="pricing-title">Hobbyist</div><div class="pricing-price">Free</div>
+              <ul class="pricing-features"><li>Standard templates</li><li>Up to 3 wishes</li><li>Standard AI</li><li>Basic passcode</li></ul>
+              <button class="dash-btn" style="justify-content:center; width:100%; border-style:dashed;" disabled>Current Plan</button>
+          </div>
+          <div class="pricing-card popular">
+              <div class="pricing-title">Artisan</div><div class="pricing-price">$5<span> / month</span></div>
+              <ul class="pricing-features"><li>Interactive Vaults</li><li>Unlimited wishes</li><li>Dynamic Passwords</li><li>High-res storage</li></ul>
+              <button class="generate-btn" style="width:100%; padding:12px; font-size:14px; margin:0;" onclick="window.appModal({title: 'Coming Soon', msg: 'Stripe Checkout integration is coming in the next update!'})">Upgrade to Artisan</button>
+          </div>
+          <div class="pricing-card">
+              <div class="pricing-title">Studio</div><div class="pricing-price">$15<span> / month</span></div>
+              <ul class="pricing-features"><li>Everything in Artisan</li><li>Custom domain</li><li>Remove branding</li><li>Priority support</li></ul>
+              <button class="dash-btn" style="justify-content:center; width:100%;" onclick="window.appModal({title: 'Coming Soon', msg: 'Stripe Checkout integration is coming in the next update!'})">Select Studio</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. EXPANDED SETTINGS PANEL -->
+  <div class="fs-panel-overlay" id="settingsPanel">
+    <div class="fs-panel-card wide">
+      <div class="fs-panel-glow" style="background: radial-gradient(circle at 50% 0%, rgba(76,139,130,0.12), transparent 60%);"></div>
+      <button class="fs-panel-close">&times;</button>
+      <div class="fs-panel-content">
+        <h2 class="fs-title">Preferences</h2>
+        <p class="fs-subtitle">Tune the builder to your workflow. Settings auto-save to your browser.</p>
+
+        <div class="settings-category">Editor & Canvas</div>
+        <div class="fs-row"><div><div class="fs-label">Auto-Save Canvas</div><div style="font-size: 12px; color: var(--cream-dim);">Continuously save manual edits</div></div><label class="fs-switch"><input type="checkbox" id="set_autosave" checked><span class="fs-slider"></span></label></div>
+        <div class="fs-row"><div><div class="fs-label">Haptic Feedback</div><div style="font-size: 12px; color: var(--cream-dim);">Vibrate on block placement (mobile)</div></div><label class="fs-switch"><input type="checkbox" id="set_haptic" checked><span class="fs-slider"></span></label></div>
+        <div class="fs-row"><div><div class="fs-label">Show Grid Lines</div><div style="font-size: 12px; color: var(--cream-dim);">Display layout guides in Pro Builder</div></div><label class="fs-switch"><input type="checkbox" id="set_grid"><span class="fs-slider"></span></label></div>
+        <div class="fs-row"><div><div class="fs-label">Snap to Grid</div><div style="font-size: 12px; color: var(--cream-dim);">Force elements to align perfectly</div></div><label class="fs-switch"><input type="checkbox" id="set_snap" checked><span class="fs-slider"></span></label></div>
+
+        <div class="settings-category">AI Generation</div>
+        <div class="fs-row"><div><div class="fs-label">Cinematic AI Mode</div><div style="font-size: 12px; color: var(--cream-dim);">Prioritize visual flair over load speed</div></div><label class="fs-switch"><input type="checkbox" id="set_cinematic_ai" checked><span class="fs-slider"></span></label></div>
+        <div class="fs-row"><div><div class="fs-label">Auto-Inject Emojis</div><div style="font-size: 12px; color: var(--cream-dim);">Allow AI to place contextual emojis</div></div><label class="fs-switch"><input type="checkbox" id="set_emojis" checked><span class="fs-slider"></span></label></div>
+        <div class="fs-row"><div><div class="fs-label">Verbose Writing Style</div><div style="font-size: 12px; color: var(--cream-dim);">Generate longer, detailed paragraphs</div></div><label class="fs-switch"><input type="checkbox" id="set_verbose"><span class="fs-slider"></span></label></div>
+        <div class="fs-row"><div><div class="fs-label">Include Developer Comments</div><div style="font-size: 12px; color: var(--cream-dim);">Add HTML comments in exported code</div></div><label class="fs-switch"><input type="checkbox" id="set_comments"><span class="fs-slider"></span></label></div>
+
+        <div class="settings-category">Privacy & Security</div>
+        <div class="fs-row"><div><div class="fs-label">Default to Password Protected</div><div style="font-size: 12px; color: var(--cream-dim);">Always prompt for a password on publish</div></div><label class="fs-switch"><input type="checkbox" id="set_default_pwd"><span class="fs-slider"></span></label></div>
+        <div class="fs-row"><div><div class="fs-label">Hide Author Name</div><div style="font-size: 12px; color: var(--cream-dim);">Do not embed your email in the HTML metadata</div></div><label class="fs-switch"><input type="checkbox" id="set_hide_author"><span class="fs-slider"></span></label></div>
+        <div class="fs-row"><div><div class="fs-label">Disable Analytics Tracking</div><div style="font-size: 12px; color: var(--cream-dim);">Do not collect pageview counts on published wishes</div></div><label class="fs-switch"><input type="checkbox" id="set_no_track"><span class="fs-slider"></span></label></div>
+
+        <div class="settings-category">Interface & Experience</div>
+        <div class="fs-row"><div><div class="fs-label">Dark Mode Canvas</div><div style="font-size: 12px; color: var(--cream-dim);">Force empty preview canvas to be dark</div></div><label class="fs-switch"><input type="checkbox" id="set_dark_canvas" checked><span class="fs-slider"></span></label></div>
+        <div class="fs-row"><div><div class="fs-label">Reduce UI Animations</div><div style="font-size: 12px; color: var(--cream-dim);">Disable hovering 3D tilts and glows</div></div><label class="fs-switch"><input type="checkbox" id="set_reduce_anim"><span class="fs-slider"></span></label></div>
+        <div class="fs-row"><div><div class="fs-label">Compact Sidebar</div><div style="font-size: 12px; color: var(--cream-dim);">Shrink inputs for smaller desktop screens</div></div><label class="fs-switch"><input type="checkbox" id="set_compact"><span class="fs-slider"></span></label></div>
+        <div class="fs-row"><div><div class="fs-label">Sound Effects</div><div style="font-size: 12px; color: var(--cream-dim);">Play clicks on buttons and reveals</div></div><label class="fs-switch"><input type="checkbox" id="set_sfx" checked><span class="fs-slider"></span></label></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. CONTACT US PANEL -->
+  <div class="fs-panel-overlay" id="contactPanel">
+    <div class="fs-panel-card wide">
+      <div class="fs-panel-glow" style="background: radial-gradient(circle at 50% 0%, rgba(66, 133, 244, 0.12), transparent 60%);"></div>
+      <button class="fs-panel-close">&times;</button>
+      <div class="fs-panel-content">
+        <h2 class="fs-title">Developer Support</h2>
+        
+        <!-- Standard User View -->
+        <div id="userContactView">
+            <p class="fs-subtitle">Send a message directly to the developers. We will reply here.</p>
+            <textarea id="contactMsg" placeholder="Type your feature request or bug report here..." style="min-height: 100px; margin-bottom: 12px; width: 100%; padding: 16px; border-radius: 12px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: #fff; font-family: var(--sans); resize: none; outline: none;"></textarea>
+            <button class="generate-btn" id="sendContactBtn" style="width: 100%; margin-bottom: 32px;">Send Message</button>
+            
+            <div style="font-family: var(--serif); font-size: 18px; color: var(--gold); margin-bottom: 12px; border-bottom: 1px solid rgba(212,175,106,0.2); padding-bottom: 8px;">Your Support Tickets</div>
+            <div id="userMsgList" class="custom-scroll" style="max-height: 300px; overflow-y: auto; padding-right: 6px;">
+                <!-- User History Loads Here -->
+            </div>
+        </div>
+
+        <!-- Admin View (Inbox) -->
+        <div id="adminContactView" style="display: none;">
+            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid rgba(212,175,106,0.2); padding-bottom: 12px; margin-bottom: 16px;">
+                <p class="fs-subtitle" style="color: var(--gold); margin:0;">Admin Inbox: Live User Messages</p>
+                <button class="dash-btn" id="refreshInboxBtn" style="margin:0;">↻ Refresh</button>
+            </div>
+            <div id="adminMsgList" class="custom-scroll" style="display:flex; flex-direction:column; max-height: 500px; overflow-y: auto; padding-right: 6px;"
+                <!-- Admin Messages load here -->
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. ABOUT US PANEL -->
+  <div class="fs-panel-overlay" id="aboutPanel">
+    <div class="fs-panel-card">
+      <div class="fs-panel-glow" style="background: radial-gradient(circle at 50% 0%, rgba(201,123,132,0.1), transparent 60%);"></div>
+      <button class="fs-panel-close">&times;</button>
+      <div class="fs-panel-content" style="text-align: center;">
+        <div style="font-family: var(--serif); font-size: 42px; font-weight: 700; color: #fff; margin-bottom: 8px;">Wish<span style="color: var(--gold);">Craft</span></div>
+        <div style="font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--cream-dim); margin-bottom: 30px;">Build a gift, not a template</div>
+        <p style="font-size: 14.5px; color: var(--cream-dim); line-height: 1.7; max-width: 400px; margin: 0 auto 30px;">WishCraft was built on a simple premise: digital gifts should feel as deliberate, beautiful, and permanent as physical ones. By combining AI architecture with premium glassmorphism design, we allow you to craft experiences, not just e-cards.</p>
+        <div style="padding: 16px; background: rgba(255,255,255,0.03); border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); font-family: var(--mono); font-size: 12px; color: #888;">Version 1.0.5 - Dashboard Release<br>Designed & Engineered with ❤️</div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- 5. HELP & FAQ PANEL -->
+  <div class="fs-panel-overlay" id="faqPanel">
+    <div class="fs-panel-card wide">
+      <div class="fs-panel-glow" style="background: radial-gradient(circle at 50% 0%, rgba(212,175,106,0.12), transparent 60%);"></div>
+      <button class="fs-panel-close">&times;</button>
+      <div class="fs-panel-content">
+        <h2 class="fs-title">Help & FAQ</h2>
+        <p class="fs-subtitle">Everything you need to know about crafting digital moments.</p>
+        
+        <div class="custom-scroll" style="max-height: 60vh; overflow-y: auto; padding-right: 10px; display: flex; flex-direction: column; gap: 16px; text-align: left;">
+            
+            <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); padding: 20px; border-radius: 12px;">
+                <div style="font-family: var(--serif); font-weight: 600; color: var(--gold); font-size: 16px; margin-bottom: 8px;">How do I publish a wish?</div>
+                <div style="font-size: 13.5px; color: var(--cream-dim); line-height: 1.6;">Once you have generated your page, click the "Publish Online" button in the top right corner. You can optionally protect it with a password. You will instantly receive a live link to share!</div>
+            </div>
+
+            <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); padding: 20px; border-radius: 12px;">
+                <div style="font-family: var(--serif); font-weight: 600; color: var(--gold); font-size: 16px; margin-bottom: 8px;">Can I edit a wish after publishing?</div>
+                <div style="font-size: 13.5px; color: var(--cream-dim); line-height: 1.6;">Yes! Go to "My Wishes Dashboard" in the menu. Click "✎ Edit Code" to load the page back into the builder. Once you finish your edits, simply publish it again.</div>
+            </div>
+
+            <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); padding: 20px; border-radius: 12px;">
+                <div style="font-family: var(--serif); font-weight: 600; color: var(--gold); font-size: 16px; margin-bottom: 8px;">What is an Interactive Vault?</div>
+                <div style="font-size: 13.5px; color: var(--cream-dim); line-height: 1.6;">Vaults are cinematic lock screens that build anticipation. Before the recipient can read your letter, they might have to "scan" their thumbprint, scratch off a digital lottery ticket, or enter a passcode.</div>
+            </div>
+
+            <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); padding: 20px; border-radius: 12px;">
+                <div style="font-family: var(--serif); font-weight: 600; color: var(--gold); font-size: 16px; margin-bottom: 8px;">Where do I get a Redeem Code?</div>
+                <div style="font-size: 13.5px; color: var(--cream-dim); line-height: 1.6;">Premium redeem codes are given out during promotional events, on our social media channels, or directly via developer support. They unlock Artisan or Studio tier features instantly!</div>
+            </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. API DOCUMENTATION PANEL -->
+  <div class="fs-panel-overlay" id="docsPanel">
+    <div class="fs-panel-card wide">
+      <div class="fs-panel-glow" style="background: radial-gradient(circle at 50% 0%, rgba(76,139,130,0.12), transparent 60%);"></div>
+      <button class="fs-panel-close">&times;</button>
+      <div class="fs-panel-content">
+        <h2 class="fs-title">API Documentation</h2>
+        <p class="fs-subtitle">Automate your gift generation. <span style="color:var(--gold);">Requires Studio Tier.</span></p>
+        
+        <div class="custom-scroll" style="max-height: 60vh; overflow-y: auto; padding-right: 10px; text-align: left;">
+            
+            <div style="font-family: var(--mono); color: var(--teal); margin-bottom: 12px; font-size: 14px; font-weight: bold;">POST /v1/wishes/generate</div>
+            <p style="font-size: 13px; color: var(--cream-dim); line-height: 1.6; margin-bottom: 20px;">Programmatically generate a completely new WishCraft page by sending JSON intake parameters to our secure endpoint.</p>
+            
+            <div style="font-weight: 600; color: #fff; margin: 20px 0 8px; font-family: var(--sans);">Example Request</div>
+            <div style="background: #000; border: 1px solid rgba(255,255,255,0.1); padding: 16px; border-radius: 12px; font-family: var(--mono); font-size: 13px; color: #a9b7c6; overflow-x: auto; margin-bottom: 24px; box-shadow: inset 0 0 20px rgba(0,0,0,0.8);">
+<pre style="margin:0;"><span style="color: #cc7832;">fetch</span>(<span style="color: #6a8759;">'https://api.wishcraft.app/v1/wishes/generate'</span>, {
+  <span style="color: #9876aa;">method</span>: <span style="color: #6a8759;">'POST'</span>,
+  <span style="color: #9876aa;">headers</span>: {
+    <span style="color: #6a8759;">'Authorization'</span>: <span style="color: #6a8759;">'Bearer wc_live_YOUR_KEY'</span>,
+    <span style="color: #6a8759;">'Content-Type'</span>: <span style="color: #6a8759;">'application/json'</span>
+  },
+  <span style="color: #9876aa;">body</span>: <span style="color: #cc7832;">JSON</span>.<span style="color: #ffc66d;">stringify</span>({
+    <span style="color: #9876aa;">"recipientName"</span>: <span style="color: #6a8759;">"Alex"</span>,
+    <span style="color: #9876aa;">"themeName"</span>: <span style="color: #6a8759;">"midnight-arcade"</span>,
+    <span style="color: #9876aa;">"complexity"</span>: <span style="color: #6a8759;">"interactive-vault"</span>,
+    <span style="color: #9876aa;">"features"</span>: [<span style="color: #6a8759;">"Confetti Finale"</span>, <span style="color: #6a8759;">"Love Meter"</span>]
+  })
+});</pre>
+            </div>
+            
+            <div style="font-weight: 600; color: #fff; margin: 20px 0 8px; font-family: var(--sans);">Authentication</div>
+            <p style="font-size: 13px; color: var(--cream-dim); line-height: 1.6;">API keys can be generated from the Admin dashboard once your account is upgraded to the Studio tier. Never share your secret key in client-side code.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+  <!-- ================= CUSTOM SYSTEM MODAL ================= -->
+  <div class="sys-modal-overlay" id="sysModal">
+    <div class="sys-modal-card">
+        <h3 class="sys-modal-title" id="smTitle">Notice</h3>
+        <p class="sys-modal-msg" id="smMsg">Message</p>
+        <input type="text" class="sys-modal-input" id="smInput" autocomplete="off">
+        <div class="sys-modal-actions">
+            <button class="sys-modal-btn sys-modal-cancel" id="smCancel">Cancel</button>
+            <button class="sys-modal-btn" id="smConfirm">OK</button>
+        </div>
+    </div>
+  </div>
+
+</body>
+</html>
