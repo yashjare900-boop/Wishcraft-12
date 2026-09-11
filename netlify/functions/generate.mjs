@@ -1,16 +1,3 @@
-async function fetchWithTimeout(url, options, timeoutMs = 5000) {
-  const controller = new AbortController();
-  const id = setTimeout(() => controller.abort(), timeoutMs);
-  try {
-    const res = await fetch(url, { ...options, signal: controller.signal });
-    clearTimeout(id);
-    return res;
-  } catch (err) {
-    clearTimeout(id);
-    throw err;
-  }
-}
-
 export default async (req, context) => {
   // Handle CORS preflight
   if (req.method === 'OPTIONS') {
@@ -73,7 +60,7 @@ export default async (req, context) => {
     });
   }
 
-  // Model choice: prioritize Gemini 3.7 Flash, with ultra-fast fallback if Google is overloaded
+  // Model choice: prioritize Gemini 3.7 Flash, with ultra-fast fallback to 3.5-flash-lite
   const candidateModels = [
     model,
     process.env.GEMINI_MODEL,
@@ -83,110 +70,79 @@ export default async (req, context) => {
   ].filter(Boolean);
 
   const uniqueModels = [...new Set(candidateModels)];
-
   const encoder = new TextEncoder();
-  let geminiRes = null;
-  let lastErrorMsg = 'Failed to connect to Gemini API';
 
-  for (const selectedModel of uniqueModels) {
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/${selectedModel}:streamGenerateContent?key=${apiKey}&alt=sse`;
-    // For 3.7-flash, cap connection wait at 4.5s so we fail over to 3.5-flash-lite before Netlify's 10s inactivity limit
-    const timeoutMs = (selectedModel === 'gemini-3.7-flash') ? 4500 : 25000;
-
-    try {
-      const res = await fetchWithTimeout(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          system_instruction: systemPrompt ? { parts: [{ text: systemPrompt }] } : undefined,
-          contents: [{ role: 'user', parts: [{ text: userContent }] }]
-        })
-      }, timeoutMs);
-
-      if (res.ok) {
-        geminiRes = res;
-        console.log(`[Gemini API] Successfully connected using model: ${selectedModel}`);
-        break;
-      }
-
-      const errText = await res.text();
-      console.warn(`[Gemini API] Model ${selectedModel} returned ${res.status}: ${errText.slice(0, 150)}`);
-
-      try {
-        const errObj = JSON.parse(errText);
-        if (errObj.error?.message) lastErrorMsg = errObj.error.message;
-      } catch (_) {
-        lastErrorMsg = `API error ${res.status}`;
-      }
-
-      // If overloaded (503), rate limited (429), or deprecated (404), try next candidate
-      if (res.status === 503 || res.status === 429 || res.status === 404) {
-        continue;
-      }
-
-      return new Response(JSON.stringify({ error: { message: lastErrorMsg } }), {
-        status: res.status,
-        headers: {
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*'
-        }
-      });
-    } catch (fetchErr) {
-      console.warn(`[Gemini API] Model ${selectedModel} timeout/error (${fetchErr.name}): ${fetchErr.message}. Trying next fallback...`);
-      lastErrorMsg = fetchErr.message;
-    }
-  }
-
-  if (!geminiRes) {
-    return new Response(JSON.stringify({ error: { message: lastErrorMsg } }), {
-      status: 502,
-      headers: {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*'
-      }
-    });
-  }
-
-  // Native Netlify Functions v2 streaming
+  // Return Response IMMEDIATELY with ReadableStream
+  // This sends HTTP 200 headers to Netlify in <10ms, completely bypassing the 10s inactivity timeout!
   const readable = new ReadableStream({
     async start(controller) {
-      // Send an immediate space to keep edge connection active
+      // Send immediate byte to establish active data flow
       controller.enqueue(encoder.encode(" "));
 
-      const reader = geminiRes.body.getReader();
-      const decoder = new TextDecoder();
-      let buffer = '';
+      let successful = false;
 
-      try {
-        while (true) {
-          const { done, value } = await reader.read();
-          if (done) break;
+      for (const selectedModel of uniqueModels) {
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/${selectedModel}:streamGenerateContent?key=${apiKey}&alt=sse`;
 
-          buffer += decoder.decode(value, { stream: true });
-          const lines = buffer.split('\n');
-          buffer = lines.pop() || '';
+        try {
+          const res = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              system_instruction: systemPrompt ? { parts: [{ text: systemPrompt }] } : undefined,
+              contents: [{ role: 'user', parts: [{ text: userContent }] }]
+            })
+          });
 
-          for (const line of lines) {
-            const trimmed = line.trim();
-            if (trimmed.startsWith('data: ')) {
-              const jsonStr = trimmed.slice(6);
-              try {
-                const parsed = JSON.parse(jsonStr);
-                const chunkText = parsed.candidates?.[0]?.content?.parts?.[0]?.text || '';
-                if (chunkText) {
-                  controller.enqueue(encoder.encode(chunkText));
+          if (!res.ok) {
+            console.warn(`[Gemini API] Model ${selectedModel} returned HTTP ${res.status}. Trying fallback...`);
+            continue;
+          }
+
+          console.log(`[Gemini API] Streaming from model: ${selectedModel}`);
+          const reader = res.body.getReader();
+          const decoder = new TextDecoder();
+          let buffer = '';
+
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+
+            buffer += decoder.decode(value, { stream: true });
+            const lines = buffer.split('\n');
+            buffer = lines.pop() || '';
+
+            for (const line of lines) {
+              const trimmed = line.trim();
+              if (trimmed.startsWith('data: ')) {
+                const jsonStr = trimmed.slice(6);
+                try {
+                  const parsed = JSON.parse(jsonStr);
+                  const chunkText = parsed.candidates?.[0]?.content?.parts?.[0]?.text || '';
+                  if (chunkText) {
+                    controller.enqueue(encoder.encode(chunkText));
+                    successful = true;
+                  }
+                } catch (_) {
+                  // ignore partial line JSON parse
                 }
-              } catch (e) {
-                // ignore partial JSON chunk
               }
             }
           }
+
+          if (successful) {
+            break; // Finished streaming from this model
+          }
+        } catch (fetchErr) {
+          console.warn(`[Gemini API] Model ${selectedModel} connection error: ${fetchErr.message}`);
         }
-      } catch (streamErr) {
-        console.error('[Netlify Stream Error]', streamErr);
-      } finally {
-        controller.close();
       }
+
+      if (!successful) {
+        controller.enqueue(encoder.encode(`\n<!-- Error: All Gemini models were busy or unavailable. Please try again. -->`));
+      }
+
+      controller.close();
     }
   });
 
