@@ -1044,6 +1044,15 @@
   <nav class="l-nav">
     <div class="l-nav-brand">Wish<span class="dot">Craft</span></div>
     <div class="l-nav-actions">
+      <button class="api-key-pill-btn landing-api-btn" onclick="openApiKeyModal()" title="Configure your Gemini API key">
+        <span class="api-key-icon">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/>
+          </svg>
+        </span>
+        <span class="api-btn-text">API Key</span>
+        <span class="api-key-status-dot" title="Custom key active"></span>
+      </button>
       <button class="l-btn-ghost" id="navLoginBtn">Log in</button>
       <button class="l-btn-outline" id="navSignupBtn">Sign Up</button>
     </div>
@@ -1103,13 +1112,13 @@
       <div class="tag">occasion pages, made per-person</div>
     </div>
     <div class="topbar-right">
-      <button class="api-key-pill-btn" id="apiKeyModalBtn" title="Configure your Gemini API key">
+      <button class="api-key-pill-btn" id="apiKeyModalBtn" onclick="openApiKeyModal()" title="Configure your Gemini API key">
         <span class="api-key-icon">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/>
           </svg>
         </span>
-        <span id="apiKeyBtnText">API Key</span>
+        <span class="api-btn-text" id="apiKeyBtnText">API Key</span>
         <span class="api-key-status-dot" id="apiKeyStatusDot" title="Custom key active"></span>
       </button>
       
@@ -1674,7 +1683,7 @@
     
     document.querySelectorAll('#complexityGrid .theme-card').forEach(c => c.classList.remove('selected'));
     card.classList.add('selected');
-    window.selectedComplexity = card.dataset.val; 
+    selectedComplexity = card.dataset.val; 
   });
 
   // 3. TONES BOUNCER
@@ -2051,9 +2060,6 @@ Integrate user details explicitly into the design.`;
   const customApiKeyBox = document.getElementById('customApiKeyBox');
   const userCustomKeyInput = document.getElementById('userCustomKeyInput');
   const saveAndCraftBtn = document.getElementById('saveAndCraftBtn');
-  const apiKeyModalBtn = document.getElementById('apiKeyModalBtn');
-  const apiKeyBtnText = document.getElementById('apiKeyBtnText');
-  const apiKeyStatusDot = document.getElementById('apiKeyStatusDot');
 
   const apiKeyModal = document.getElementById('apiKeyModal');
   const closeApiKeyModalBtn = document.getElementById('closeApiKeyModalBtn');
@@ -2064,39 +2070,71 @@ Integrate user details explicitly into the design.`;
 
   function updateApiKeyUIState() {
     const key = localStorage.getItem('wishcraft_custom_api_key');
-    if (key && key.trim()) {
-      if (apiKeyModalBtn) apiKeyModalBtn.classList.add('has-key');
-      if (apiKeyBtnText) apiKeyBtnText.textContent = 'Key Active';
-      if (modalApiKeyInput) modalApiKeyInput.value = key.trim();
-    } else {
-      if (apiKeyModalBtn) apiKeyModalBtn.classList.remove('has-key');
-      if (apiKeyBtnText) apiKeyBtnText.textContent = 'API Key';
-      if (modalApiKeyInput) modalApiKeyInput.value = '';
+    const hasKey = !!(key && key.trim());
+    
+    // Update all API Key pill buttons across landing and workshop
+    document.querySelectorAll('.api-key-pill-btn').forEach(btn => {
+      if (hasKey) {
+        btn.classList.add('has-key');
+      } else {
+        btn.classList.remove('has-key');
+      }
+      const label = btn.querySelector('.api-btn-text') || btn.querySelector('#apiKeyBtnText');
+      if (label) {
+        label.textContent = hasKey ? 'Key Active' : 'API Key';
+      }
+    });
+
+    if (modalApiKeyInput) {
+      modalApiKeyInput.value = hasKey ? key.trim() : '';
     }
   }
+
+  // Define global window helpers so inline onclick and manual triggers both work flawlessly
+  window.openApiKeyModal = function() {
+    updateApiKeyUIState();
+    if (apiKeyModal) {
+      apiKeyModal.classList.add('show');
+      setTimeout(() => {
+        if (modalApiKeyInput) modalApiKeyInput.focus();
+      }, 100);
+    }
+  };
+
+  window.closeApiKeyModal = function() {
+    if (apiKeyModal) {
+      apiKeyModal.classList.remove('show');
+    }
+  };
 
   // Initialize status on boot
   updateApiKeyUIState();
 
-  if (apiKeyModalBtn && apiKeyModal) {
-    apiKeyModalBtn.addEventListener('click', () => {
-      updateApiKeyUIState();
-      apiKeyModal.classList.add('show');
-      setTimeout(() => { if (modalApiKeyInput) modalApiKeyInput.focus(); }, 120);
+  // Attach event listener to all API Key pill buttons as a fallback to inline onclick
+  document.querySelectorAll('.api-key-pill-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      window.openApiKeyModal();
     });
-  }
+  });
 
-  if (closeApiKeyModalBtn && apiKeyModal) {
+  if (closeApiKeyModalBtn) {
     closeApiKeyModalBtn.addEventListener('click', () => {
-      apiKeyModal.classList.remove('show');
+      window.closeApiKeyModal();
     });
   }
 
   if (apiKeyModal) {
     apiKeyModal.addEventListener('click', (e) => {
-      if (e.target === apiKeyModal) apiKeyModal.classList.remove('show');
+      if (e.target === apiKeyModal) window.closeApiKeyModal();
     });
   }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && apiKeyModal && apiKeyModal.classList.contains('show')) {
+      window.closeApiKeyModal();
+    }
+  });
 
   if (toggleApiKeyVisibility && modalApiKeyInput) {
     toggleApiKeyVisibility.addEventListener('click', () => {
@@ -2112,12 +2150,12 @@ Integrate user details explicitly into the design.`;
       if (!key) {
         localStorage.removeItem('wishcraft_custom_api_key');
         updateApiKeyUIState();
-        apiKeyModal.classList.remove('show');
+        window.closeApiKeyModal();
         return;
       }
       localStorage.setItem('wishcraft_custom_api_key', key);
       updateApiKeyUIState();
-      apiKeyModal.classList.remove('show');
+      window.closeApiKeyModal();
     });
   }
 
@@ -2126,7 +2164,7 @@ Integrate user details explicitly into the design.`;
       localStorage.removeItem('wishcraft_custom_api_key');
       modalApiKeyInput.value = '';
       updateApiKeyUIState();
-      apiKeyModal.classList.remove('show');
+      window.closeApiKeyModal();
     });
   }
 
