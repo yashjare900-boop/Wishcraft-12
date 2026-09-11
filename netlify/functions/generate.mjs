@@ -1,5 +1,18 @@
 import { stream } from '@netlify/functions';
 
+async function fetchWithTimeout(url, options, timeoutMs = 5000) {
+  const controller = new AbortController();
+  const id = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    const res = await fetch(url, { ...options, signal: controller.signal });
+    clearTimeout(id);
+    return res;
+  } catch (err) {
+    clearTimeout(id);
+    throw err;
+  }
+}
+
 export default stream(async (req, context) => {
   // Handle CORS preflight
   if (req.method === 'OPTIONS') {
@@ -62,7 +75,7 @@ export default stream(async (req, context) => {
     });
   }
 
-  // Model choice: prioritize Gemini 3.7 Flash, with automatic fallback if Google is overloaded
+  // Model choice: prioritize Gemini 3.7 Flash, with ultra-fast fallback if Google is overloaded
   const candidateModels = [
     model,
     process.env.GEMINI_MODEL,
@@ -71,7 +84,6 @@ export default stream(async (req, context) => {
     'gemini-3.6-flash'
   ].filter(Boolean);
 
-  // Remove duplicates while keeping order
   const uniqueModels = [...new Set(candidateModels)];
 
   const encoder = new TextEncoder();
@@ -80,16 +92,18 @@ export default stream(async (req, context) => {
 
   for (const selectedModel of uniqueModels) {
     const url = `https://generativelanguage.googleapis.com/v1beta/models/${selectedModel}:streamGenerateContent?key=${apiKey}&alt=sse`;
+    // For 3.7-flash, cap connection wait at 4.5s so we fail over to 3.5-flash-lite before Netlify's 10s inactivity limit
+    const timeoutMs = (selectedModel === 'gemini-3.7-flash') ? 4500 : 25000;
 
     try {
-      const res = await fetch(url, {
+      const res = await fetchWithTimeout(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           system_instruction: systemPrompt ? { parts: [{ text: systemPrompt }] } : undefined,
           contents: [{ role: 'user', parts: [{ text: userContent }] }]
         })
-      });
+      }, timeoutMs);
 
       if (res.ok) {
         geminiRes = res;
@@ -107,12 +121,11 @@ export default stream(async (req, context) => {
         lastErrorMsg = `API error ${res.status}`;
       }
 
-      // If overloaded (503), rate limited (429), or deprecated (404), continue to next fallback model
+      // If overloaded (503), rate limited (429), or deprecated (404), try next candidate
       if (res.status === 503 || res.status === 429 || res.status === 404) {
         continue;
       }
 
-      // If user input error (400), don't retry other models
       return new Response(JSON.stringify({ error: { message: lastErrorMsg } }), {
         status: res.status,
         headers: {
@@ -121,7 +134,7 @@ export default stream(async (req, context) => {
         }
       });
     } catch (fetchErr) {
-      console.warn(`[Gemini API] Fetch error with model ${selectedModel}: ${fetchErr.message}`);
+      console.warn(`[Gemini API] Model ${selectedModel} timeout/error (${fetchErr.name}): ${fetchErr.message}. Trying next fallback...`);
       lastErrorMsg = fetchErr.message;
     }
   }
@@ -139,6 +152,9 @@ export default stream(async (req, context) => {
   // Stream chunks back through Netlify (60s limit with continuous data)
   const readable = new ReadableStream({
     async start(controller) {
+      // Send an immediate byte to ensure Netlify edge router never detects inactivity
+      controller.enqueue(encoder.encode(" "));
+
       const reader = geminiRes.body.getReader();
       const decoder = new TextDecoder();
       let buffer = '';
