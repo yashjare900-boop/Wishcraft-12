@@ -1,6 +1,6 @@
-export default async (req, context) => {
+export default async (request, context) => {
   // Handle CORS preflight
-  if (req.method === 'OPTIONS') {
+  if (request.method === 'OPTIONS') {
     return new Response(null, {
       status: 204,
       headers: {
@@ -11,7 +11,7 @@ export default async (req, context) => {
     });
   }
 
-  if (req.method !== 'POST') {
+  if (request.method !== 'POST') {
     return new Response(JSON.stringify({ error: { message: 'Method Not Allowed' } }), {
       status: 405,
       headers: {
@@ -21,7 +21,9 @@ export default async (req, context) => {
     });
   }
 
-  const apiKey = process.env.GEMINI_API_KEY || (typeof Netlify !== 'undefined' && Netlify.env ? Netlify.env.get('GEMINI_API_KEY') : undefined);
+  const apiKey = (typeof Netlify !== 'undefined' && Netlify.env?.get('GEMINI_API_KEY')) ||
+                 (typeof Deno !== 'undefined' && Deno.env?.get('GEMINI_API_KEY'));
+
   if (!apiKey || !apiKey.trim()) {
     return new Response(JSON.stringify({
       error: {
@@ -38,7 +40,7 @@ export default async (req, context) => {
 
   let body;
   try {
-    body = await req.json();
+    body = await request.json();
   } catch (err) {
     return new Response(JSON.stringify({ error: { message: 'Invalid JSON request body' } }), {
       status: 400,
@@ -61,9 +63,12 @@ export default async (req, context) => {
   }
 
   // Model choice: prioritize Gemini 3.7 Flash, with ultra-fast fallback to 3.5-flash-lite
+  const customModel = (typeof Netlify !== 'undefined' && Netlify.env?.get('GEMINI_MODEL')) ||
+                      (typeof Deno !== 'undefined' && Deno.env?.get('GEMINI_MODEL'));
+
   const candidateModels = [
     model,
-    process.env.GEMINI_MODEL,
+    customModel,
     'gemini-3.7-flash',
     'gemini-3.5-flash-lite',
     'gemini-3.6-flash'
@@ -72,13 +77,9 @@ export default async (req, context) => {
   const uniqueModels = [...new Set(candidateModels)];
   const encoder = new TextEncoder();
 
-  // Return Response IMMEDIATELY with ReadableStream
-  // This sends HTTP 200 headers to Netlify in <10ms, completely bypassing the 10s inactivity timeout!
-  const readable = new ReadableStream({
+  // Netlify Edge Functions natively support streaming via ReadableStream
+  const bodyStream = new ReadableStream({
     async start(controller) {
-      // Send immediate byte to establish active data flow
-      controller.enqueue(encoder.encode(" "));
-
       let successful = false;
 
       for (const selectedModel of uniqueModels) {
@@ -95,11 +96,11 @@ export default async (req, context) => {
           });
 
           if (!res.ok) {
-            console.warn(`[Gemini API] Model ${selectedModel} returned HTTP ${res.status}. Trying fallback...`);
+            console.warn(`[Gemini Edge] Model ${selectedModel} returned HTTP ${res.status}. Trying next fallback...`);
             continue;
           }
 
-          console.log(`[Gemini API] Streaming from model: ${selectedModel}`);
+          console.log(`[Gemini Edge] Successfully streaming from: ${selectedModel}`);
           const reader = res.body.getReader();
           const decoder = new TextDecoder();
           let buffer = '';
@@ -123,30 +124,28 @@ export default async (req, context) => {
                     controller.enqueue(encoder.encode(chunkText));
                     successful = true;
                   }
-                } catch (_) {
-                  // ignore partial line JSON parse
-                }
+                } catch (_) {}
               }
             }
           }
 
           if (successful) {
-            break; // Finished streaming from this model
+            break;
           }
         } catch (fetchErr) {
-          console.warn(`[Gemini API] Model ${selectedModel} connection error: ${fetchErr.message}`);
+          console.warn(`[Gemini Edge] Model ${selectedModel} fetch error:`, fetchErr);
         }
       }
 
       if (!successful) {
-        controller.enqueue(encoder.encode(`\n<!-- Error: All Gemini models were busy or unavailable. Please try again. -->`));
+        controller.enqueue(encoder.encode(`\n<!-- Error: All Gemini models were unavailable or busy. Please try again. -->`));
       }
 
       controller.close();
     }
   });
 
-  return new Response(readable, {
+  return new Response(bodyStream, {
     status: 200,
     headers: {
       'Content-Type': 'text/plain; charset=utf-8',
@@ -155,8 +154,4 @@ export default async (req, context) => {
       'X-Accel-Buffering': 'no'
     }
   });
-};
-
-export const config = {
-  path: '/api/generate'
 };

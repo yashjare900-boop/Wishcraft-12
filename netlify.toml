@@ -1,11 +1,13 @@
 [build]
   publish = "."
-  functions = "netlify/functions"
 
-[[redirects]]
-  from = "/api/*"
-  to = "/.netlify/functions/:splat"
-  status = 200
+[[edge_functions]]
+  path = "/api/generate"
+  function = "generate"
+
+[[edge_functions]]
+  path = "/api/health"
+  function = "health"
 
 [[headers]]
   for = "/*.html"
