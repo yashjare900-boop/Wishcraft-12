@@ -62,12 +62,11 @@ export default stream(async (req, context) => {
     });
   }
 
-  // Model selection: default to gemini-3.5-flash-lite for ultra-fast <3s generation
-  // (gemini-3.7-flash is currently overloaded on Google's servers taking >20s and hitting Netlify's 10s limit)
+  // Model selection: prioritize gemini-3.5-flash-lite FIRST to stay under Netlify's 10s execution window
   const candidateModels = [
     model,
-    process.env.GEMINI_MODEL,
     'gemini-3.5-flash-lite',
+    process.env.GEMINI_MODEL,
     'gemini-3.7-flash'
   ].filter(Boolean);
 
