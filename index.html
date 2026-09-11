@@ -752,11 +752,284 @@
   .action-btn:hover { background: var(--gold); color: var(--ink); border-color: var(--gold); }
   .action-btn.del:hover { background: var(--rose); color: #fff; border-color: var(--rose); }
 
-  /* --- GOLDEN CINEMATIC SCROLLBAR --- */
-  .custom-scroll::-webkit-scrollbar { width: 6px; }
-  .custom-scroll::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); border-radius: 10px; }
-  .custom-scroll::-webkit-scrollbar-thumb { background: rgba(212,175,106,0.4); border-radius: 10px; }
-  .custom-scroll::-webkit-scrollbar-thumb:hover { background: var(--gold); }
+  /* --- CINEMATIC API KEY TRIGGER BUTTON & ASKING BOX --- */
+  .api-key-pill-btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 7px 15px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(212, 175, 106, 0.32);
+    color: var(--gold);
+    font-family: var(--sans);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25), inset 0 0 12px rgba(212, 175, 106, 0.04);
+    user-select: none;
+    white-space: nowrap;
+    outline: none;
+  }
+  .api-key-pill-btn:hover {
+    background: rgba(212, 175, 106, 0.1);
+    border-color: var(--gold);
+    color: #fff;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 18px rgba(212, 175, 106, 0.22), inset 0 0 16px rgba(212, 175, 106, 0.1);
+  }
+  .api-key-pill-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+  }
+  .api-key-pill-btn .api-key-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--gold);
+    transition: transform 0.25s ease;
+  }
+  .api-key-pill-btn:hover .api-key-icon {
+    transform: rotate(-15deg) scale(1.1);
+  }
+  .api-key-pill-btn .api-key-status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--teal);
+    box-shadow: 0 0 8px var(--teal);
+    display: none;
+  }
+  .api-key-pill-btn.has-key .api-key-status-dot {
+    display: inline-block;
+  }
+  .api-key-pill-btn.has-key {
+    border-color: rgba(76, 139, 130, 0.5);
+    color: var(--cream);
+  }
+  .api-key-pill-btn.has-key:hover {
+    border-color: var(--teal);
+    background: rgba(76, 139, 130, 0.12);
+  }
+
+  @media (max-width: 640px) {
+    .api-key-pill-btn {
+      padding: 6px 11px;
+      font-size: 11.5px;
+      gap: 5px;
+    }
+    .api-key-pill-btn span.btn-label-desktop {
+      display: inline;
+    }
+  }
+
+  /* Stylish Custom API Asking Box Overlay */
+  .api-modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 999999;
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), visibility 0.3s ease;
+  }
+  .api-modal-overlay.show {
+    opacity: 1;
+    visibility: visible;
+  }
+  .api-modal-card {
+    position: relative;
+    width: 100%;
+    max-width: 480px;
+    background: #0E1015;
+    border: 1px solid rgba(212, 175, 106, 0.28);
+    border-radius: 20px;
+    padding: 32px 28px;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.85), 0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+    transform: translateY(20px) scale(0.96);
+    transition: all 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+    overflow: hidden;
+  }
+  .api-modal-overlay.show .api-modal-card {
+    transform: translateY(0) scale(1);
+  }
+  .api-modal-glow {
+    position: absolute;
+    top: -40%;
+    left: -20%;
+    width: 140%;
+    height: 140%;
+    background: radial-gradient(circle at 50% 0%, rgba(212, 175, 106, 0.14), transparent 65%);
+    pointer-events: none;
+    z-index: 0;
+    animation: panelBreathe 7s infinite alternate ease-in-out;
+    filter: blur(40px);
+  }
+  .api-modal-content {
+    position: relative;
+    z-index: 1;
+  }
+  .api-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+  .api-modal-title {
+    font-family: var(--serif);
+    font-size: 22px;
+    font-weight: 600;
+    color: #fff;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+  }
+  .api-modal-close {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: var(--cream-dim);
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 18px;
+    transition: 0.2s;
+  }
+  .api-modal-close:hover {
+    background: rgba(212, 175, 106, 0.1);
+    border-color: var(--gold-dim);
+    color: var(--gold);
+  }
+  .api-modal-desc {
+    font-size: 13.5px;
+    color: var(--cream-dim);
+    line-height: 1.55;
+    margin: 0 0 22px 0;
+  }
+  .api-modal-desc a {
+    color: var(--gold);
+    text-decoration: none;
+    border-bottom: 1px dashed var(--gold-dim);
+  }
+  .api-modal-desc a:hover {
+    border-bottom-style: solid;
+  }
+  .api-input-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.45);
+    border: 1px solid rgba(212, 175, 106, 0.25);
+    border-radius: 12px;
+    padding: 3px 6px 3px 14px;
+    margin-bottom: 14px;
+    box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.4);
+    transition: all 0.2s ease;
+  }
+  .api-input-wrap:focus-within {
+    border-color: var(--gold);
+    box-shadow: 0 0 16px rgba(212, 175, 106, 0.2), inset 0 2px 8px rgba(0, 0, 0, 0.4);
+  }
+  .api-key-input-field {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #fff;
+    font-family: var(--mono);
+    font-size: 13px;
+    padding: 10px 0;
+    min-width: 0;
+  }
+  .api-key-input-field::placeholder {
+    color: rgba(240, 236, 227, 0.25);
+    font-family: var(--sans);
+    font-size: 12.5px;
+  }
+  .api-input-visibility-toggle {
+    background: transparent;
+    border: none;
+    color: var(--cream-dim);
+    cursor: pointer;
+    padding: 8px 10px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    border-radius: 6px;
+    transition: color 0.15s ease;
+  }
+  .api-input-visibility-toggle:hover {
+    color: var(--gold);
+  }
+  .api-modal-footer {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    justify-content: flex-end;
+    margin-top: 20px;
+  }
+  .api-clear-btn {
+    background: transparent;
+    border: 1px solid var(--line);
+    color: var(--cream-dim);
+    border-radius: 10px;
+    padding: 10px 16px;
+    font-size: 12.5px;
+    cursor: pointer;
+    font-family: var(--sans);
+    font-weight: 500;
+    transition: 0.2s;
+  }
+  .api-clear-btn:hover {
+    border-color: var(--rose);
+    color: var(--rose);
+    background: rgba(201, 123, 132, 0.06);
+  }
+  .api-save-btn {
+    background: linear-gradient(135deg, var(--gold), #c79a52);
+    color: var(--ink);
+    border: none;
+    border-radius: 10px;
+    padding: 10px 22px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: var(--sans);
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 14px rgba(212, 175, 106, 0.25);
+  }
+  .api-save-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(212, 175, 106, 0.4);
+    background: #fff;
+  }
+  .api-key-badge-note {
+    font-size: 11px;
+    color: var(--cream-dim);
+    line-height: 1.4;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 10px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
 
 </style>
 </head>
@@ -830,7 +1103,15 @@
       <div class="tag">occasion pages, made per-person</div>
     </div>
     <div class="topbar-right">
-      <button class="ghost-btn" id="apiKeyModalBtn" style="padding: 7px 12px; font-size:12px; display:inline-flex; align-items:center; gap:5px; color:var(--gold); border-color:rgba(212,175,106,0.35);">🔑 API Key</button>
+      <button class="api-key-pill-btn" id="apiKeyModalBtn" title="Configure your Gemini API key">
+        <span class="api-key-icon">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/>
+          </svg>
+        </span>
+        <span id="apiKeyBtnText">API Key</span>
+        <span class="api-key-status-dot" id="apiKeyStatusDot" title="Custom key active"></span>
+      </button>
       
      <!-- AUTH UI -->
       <button class="ghost-btn" id="topbarLoginBtn" style="padding: 7px 12px; font-size:12px; display:none;">Log In / Sign Up</button>
@@ -1142,24 +1423,33 @@
           
           <div style="display: flex; gap: 10px; justify-content: center; align-items: center; margin-top: 10px; flex-wrap: wrap;">
             <button class="ghost-btn" id="retryBtn" style="padding: 10px 24px;">Try Again</button>
-            <button class="ghost-btn" id="toggleApiKeyBoxBtn" style="padding: 10px 18px; border-color: var(--gold); color: var(--gold);">Insert My API Key</button>
+            <button class="api-key-pill-btn" id="toggleApiKeyBoxBtn" style="padding: 9px 18px; font-size: 12.5px;">
+              <span class="api-key-icon">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                  <path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/>
+                </svg>
+              </span>
+              <span>Insert My API Key</span>
+            </button>
           </div>
 
           <!-- Custom API Key Input Box -->
-          <div id="customApiKeyBox" style="display: none; margin-top: 20px; padding: 18px; border: 1px solid rgba(212,175,106,0.35); border-radius: 12px; background: rgba(18,18,20,0.85); backdrop-filter: blur(16px); max-width: 440px; width: 100%; text-align: left; box-shadow: 0 8px 32px rgba(0,0,0,0.4);">
+          <div id="customApiKeyBox" style="display: none; margin-top: 20px; padding: 22px 20px; border: 1px solid rgba(212,175,106,0.32); border-radius: 16px; background: rgba(14,16,21,0.88); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); max-width: 440px; width: 100%; text-align: left; box-shadow: 0 18px 45px rgba(0,0,0,0.65), inset 0 0 25px rgba(212,175,106,0.04);">
             <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
-              <span style="font-size: 13px; font-weight: 600; color: var(--gold); display: flex; align-items: center; gap: 6px;">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
-                Enter Your Gemini API Key
+              <span style="font-size: 13.5px; font-weight: 600; color: #fff; display: flex; align-items: center; gap: 7px; font-family: var(--serif);">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+                Gemini API Key
               </span>
-              <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener" style="font-size: 11px; color: var(--text-2); text-decoration: underline;">Get free key ↗</a>
+              <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener" style="font-size: 11.5px; color: var(--gold); text-decoration: none; border-bottom: 1px dashed var(--gold-dim);">Get free key ↗</a>
             </div>
-            <p style="font-size: 12px; color: var(--text-2); margin-bottom: 12px; line-height: 1.4;">
-              Server busy or free quota reached? Paste your free Gemini API key to craft your page directly without server limits.
+            <p style="font-size: 12.5px; color: var(--cream-dim); margin-bottom: 14px; line-height: 1.5;">
+              Server busy or free quota reached? Insert your free Gemini API key to craft your page directly without server limits.
             </p>
-            <div style="display: flex; gap: 8px;">
-              <input type="password" id="userCustomKeyInput" placeholder="Paste key (AIzaSy...)" style="flex: 1; padding: 10px 12px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); color: var(--text-1); font-size: 12px; font-family: var(--mono); outline: none;" />
-              <button class="generate-btn" id="saveAndCraftBtn" style="padding: 10px 16px; font-size: 13px; margin: 0; white-space: nowrap;">Craft Page</button>
+            <div class="api-input-wrap" style="margin-bottom: 10px;">
+              <input type="password" id="userCustomKeyInput" class="api-key-input-field" placeholder="Paste key (AIzaSy...)" autocomplete="off" spellcheck="false" />
+            </div>
+            <div style="display: flex; justify-content: flex-end; margin-top: 12px;">
+              <button class="api-save-btn" id="saveAndCraftBtn" style="width: 100%; justify-content: center; display: flex; align-items: center; gap: 6px;">✦ Save & Craft Page</button>
             </div>
           </div>
         </div>
@@ -1756,12 +2046,89 @@ Integrate user details explicitly into the design.`;
     }
   });
 
-  // ---------- Custom API Key Controls ----------
+  // ---------- Custom API Key Controls & Modal ----------
   const toggleApiKeyBoxBtn = document.getElementById('toggleApiKeyBoxBtn');
   const customApiKeyBox = document.getElementById('customApiKeyBox');
   const userCustomKeyInput = document.getElementById('userCustomKeyInput');
   const saveAndCraftBtn = document.getElementById('saveAndCraftBtn');
   const apiKeyModalBtn = document.getElementById('apiKeyModalBtn');
+  const apiKeyBtnText = document.getElementById('apiKeyBtnText');
+  const apiKeyStatusDot = document.getElementById('apiKeyStatusDot');
+
+  const apiKeyModal = document.getElementById('apiKeyModal');
+  const closeApiKeyModalBtn = document.getElementById('closeApiKeyModalBtn');
+  const modalApiKeyInput = document.getElementById('modalApiKeyInput');
+  const toggleApiKeyVisibility = document.getElementById('toggleApiKeyVisibility');
+  const clearApiKeyBtn = document.getElementById('clearApiKeyBtn');
+  const saveApiKeyModalBtn = document.getElementById('saveApiKeyModalBtn');
+
+  function updateApiKeyUIState() {
+    const key = localStorage.getItem('wishcraft_custom_api_key');
+    if (key && key.trim()) {
+      if (apiKeyModalBtn) apiKeyModalBtn.classList.add('has-key');
+      if (apiKeyBtnText) apiKeyBtnText.textContent = 'Key Active';
+      if (modalApiKeyInput) modalApiKeyInput.value = key.trim();
+    } else {
+      if (apiKeyModalBtn) apiKeyModalBtn.classList.remove('has-key');
+      if (apiKeyBtnText) apiKeyBtnText.textContent = 'API Key';
+      if (modalApiKeyInput) modalApiKeyInput.value = '';
+    }
+  }
+
+  // Initialize status on boot
+  updateApiKeyUIState();
+
+  if (apiKeyModalBtn && apiKeyModal) {
+    apiKeyModalBtn.addEventListener('click', () => {
+      updateApiKeyUIState();
+      apiKeyModal.classList.add('show');
+      setTimeout(() => { if (modalApiKeyInput) modalApiKeyInput.focus(); }, 120);
+    });
+  }
+
+  if (closeApiKeyModalBtn && apiKeyModal) {
+    closeApiKeyModalBtn.addEventListener('click', () => {
+      apiKeyModal.classList.remove('show');
+    });
+  }
+
+  if (apiKeyModal) {
+    apiKeyModal.addEventListener('click', (e) => {
+      if (e.target === apiKeyModal) apiKeyModal.classList.remove('show');
+    });
+  }
+
+  if (toggleApiKeyVisibility && modalApiKeyInput) {
+    toggleApiKeyVisibility.addEventListener('click', () => {
+      const isPassword = modalApiKeyInput.type === 'password';
+      modalApiKeyInput.type = isPassword ? 'text' : 'password';
+      toggleApiKeyVisibility.textContent = isPassword ? '🔒' : '👁️';
+    });
+  }
+
+  if (saveApiKeyModalBtn && modalApiKeyInput) {
+    saveApiKeyModalBtn.addEventListener('click', () => {
+      const key = modalApiKeyInput.value.trim();
+      if (!key) {
+        localStorage.removeItem('wishcraft_custom_api_key');
+        updateApiKeyUIState();
+        apiKeyModal.classList.remove('show');
+        return;
+      }
+      localStorage.setItem('wishcraft_custom_api_key', key);
+      updateApiKeyUIState();
+      apiKeyModal.classList.remove('show');
+    });
+  }
+
+  if (clearApiKeyBtn && modalApiKeyInput) {
+    clearApiKeyBtn.addEventListener('click', () => {
+      localStorage.removeItem('wishcraft_custom_api_key');
+      modalApiKeyInput.value = '';
+      updateApiKeyUIState();
+      apiKeyModal.classList.remove('show');
+    });
+  }
 
   if (toggleApiKeyBoxBtn && customApiKeyBox) {
     toggleApiKeyBoxBtn.addEventListener('click', () => {
@@ -1782,35 +2149,9 @@ Integrate user details explicitly into the design.`;
         return;
       }
       localStorage.setItem('wishcraft_custom_api_key', enteredKey);
-      if (apiKeyModalBtn) apiKeyModalBtn.textContent = '🔑 Custom Key (Set)';
+      updateApiKeyUIState();
       // Trigger generation immediately
       generateBtn.click();
-    });
-  }
-
-  if (apiKeyModalBtn) {
-    const existingKey = localStorage.getItem('wishcraft_custom_api_key');
-    if (existingKey) apiKeyModalBtn.textContent = '🔑 Custom Key (Set)';
-
-    apiKeyModalBtn.addEventListener('click', () => {
-      const current = localStorage.getItem('wishcraft_custom_api_key') || '';
-      const promptText = current 
-        ? `Your custom Gemini API Key is currently configured:\n${current.slice(0, 8)}...${current.slice(-4)}\n\nEnter a new API key, or clear the field to revert to backend default:` 
-        : `Enter your Google Gemini API key to craft directly with unlimited quota (get one free at https://aistudio.google.com/app/apikey):`;
-      
-      const newKey = prompt(promptText, current);
-      if (newKey !== null) {
-        const trimmed = newKey.trim();
-        if (trimmed) {
-          localStorage.setItem('wishcraft_custom_api_key', trimmed);
-          apiKeyModalBtn.textContent = '🔑 Custom Key (Set)';
-          alert("Gemini API key saved! Generations will now run directly via your key.");
-        } else {
-          localStorage.removeItem('wishcraft_custom_api_key');
-          apiKeyModalBtn.textContent = '🔑 API Key';
-          alert("Custom API key removed. Generations will use the default backend.");
-        }
-      }
     });
   }
 
@@ -2984,6 +3325,44 @@ Integrate user details explicitly into the design.`;
   </div>
 
   
+  <!-- ================= STYLISH GEMINI API KEY ASKING MODAL ================= -->
+  <div class="api-modal-overlay" id="apiKeyModal">
+    <div class="api-modal-card">
+      <div class="api-modal-glow"></div>
+      <div class="api-modal-content">
+        <div class="api-modal-header">
+          <h3 class="api-modal-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/>
+            </svg>
+            Gemini API Key
+          </h3>
+          <button class="api-modal-close" id="closeApiKeyModalBtn" aria-label="Close modal">&times;</button>
+        </div>
+        
+        <p class="api-modal-desc">
+          Craft cinematic pages with your own key. Directly bypasses all server queues and rate limits. 
+          <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener">Get a free key at Google AI Studio ↗</a>
+        </p>
+
+        <div class="api-input-wrap">
+          <input type="password" class="api-key-input-field" id="modalApiKeyInput" placeholder="Paste your API key (AIzaSy...)" autocomplete="off" spellcheck="false">
+          <button class="api-input-visibility-toggle" id="toggleApiKeyVisibility" type="button" title="Toggle visibility">👁️</button>
+        </div>
+
+        <div class="api-key-badge-note">
+          <span style="color:var(--gold);">✦</span>
+          <span>Keys are stored locally in your browser and never shared.</span>
+        </div>
+
+        <div class="api-modal-footer">
+          <button class="api-clear-btn" id="clearApiKeyBtn">Clear Key</button>
+          <button class="api-save-btn" id="saveApiKeyModalBtn">Save & Apply</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- ================= CUSTOM SYSTEM MODAL ================= -->
   <div class="sys-modal-overlay" id="sysModal">
     <div class="sys-modal-card">
