@@ -48,12 +48,13 @@ app.post('/api/generate', async (req, res) => {
     });
   }
 
-  // Model choice: allow client override, or env var, or modern 3.x default
+  // Model choice: prioritize Gemini 3.7 Flash, with automatic fallback
   const candidateModels = [
     model,
     process.env.GEMINI_MODEL,
-    'gemini-3.6-flash',
-    'gemini-3.5-flash-lite'
+    'gemini-3.7-flash',
+    'gemini-3.5-flash-lite',
+    'gemini-3.6-flash'
   ].filter(Boolean);
   
   const selectedModel = candidateModels[0];
