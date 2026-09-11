@@ -1599,13 +1599,36 @@ Integrate user details explicitly into the design.`;
       body: JSON.stringify({ systemPrompt, userContent })
     });
 
-    const data = await response.json();
+    const contentType = response.headers.get('content-type') || '';
 
-    if (!response.ok || !data.success) {
-      throw new Error(data.error?.message || 'Server error occurred during generation');
+    if (!response.ok) {
+      let errMsg = `Generation failed (${response.status})`;
+      try {
+        const errJson = await response.json();
+        if (errJson.error?.message) errMsg = errJson.error.message;
+      } catch (_) {
+        const errText = await response.text();
+        if (errText.includes('Inactivity Timeout') || response.status === 504) {
+          errMsg = 'Generation timed out. Please try again with a simpler request.';
+        } else if (errText.length < 200) {
+          errMsg = errText;
+        }
+      }
+      throw new Error(errMsg);
     }
 
-    return data.html;
+    const raw = await response.text();
+
+    // In case backend returned wrapped JSON
+    if (contentType.includes('application/json')) {
+      try {
+        const data = JSON.parse(raw);
+        if (data.html) return data.html;
+      } catch (_) {}
+    }
+
+    // Clean any markdown fences from the returned HTML
+    return raw.replace(/^```html\s*/i, "").replace(/^```\s*/i, "").replace(/```\s*$/i, "").trim();
   }
 
   // ---------- Generation Handling ----------
