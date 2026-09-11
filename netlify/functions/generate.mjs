@@ -1,5 +1,3 @@
-import { stream } from '@netlify/functions';
-
 async function fetchWithTimeout(url, options, timeoutMs = 5000) {
   const controller = new AbortController();
   const id = setTimeout(() => controller.abort(), timeoutMs);
@@ -13,7 +11,7 @@ async function fetchWithTimeout(url, options, timeoutMs = 5000) {
   }
 }
 
-export default stream(async (req, context) => {
+export default async (req, context) => {
   // Handle CORS preflight
   if (req.method === 'OPTIONS') {
     return new Response(null, {
@@ -149,10 +147,10 @@ export default stream(async (req, context) => {
     });
   }
 
-  // Stream chunks back through Netlify (60s limit with continuous data)
+  // Native Netlify Functions v2 streaming
   const readable = new ReadableStream({
     async start(controller) {
-      // Send an immediate byte to ensure Netlify edge router never detects inactivity
+      // Send an immediate space to keep edge connection active
       controller.enqueue(encoder.encode(" "));
 
       const reader = geminiRes.body.getReader();
@@ -201,7 +199,7 @@ export default stream(async (req, context) => {
       'X-Accel-Buffering': 'no'
     }
   });
-});
+};
 
 export const config = {
   path: '/api/generate'
