@@ -57,11 +57,12 @@ app.post('/api/generate', async (req, res) => {
     'gemini-3.6-flash'
   ].filter(Boolean);
   
-  const selectedModel = candidateModels[0];
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/${selectedModel}:generateContent?key=${apiKey}`;
+  const uniqueModels = [...new Set(candidateModels)];
+  let lastError = 'Failed to generate content';
 
-  const maxRetries = 3;
-  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+  for (const selectedModel of uniqueModels) {
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/${selectedModel}:generateContent?key=${apiKey}`;
+
     try {
       const response = await fetch(url, {
         method: 'POST',
@@ -74,33 +75,32 @@ app.post('/api/generate', async (req, res) => {
 
       const data = await response.json();
 
-      if (!response.ok) {
-        throw new Error(data.error?.message || `Google API error (${response.status})`);
-      }
+      if (response.ok && data.candidates?.[0]?.content?.parts?.[0]?.text) {
+        const rawText = data.candidates[0].content.parts[0].text;
+        const cleanedHtml = rawText
+          .replace(/^```html\s*/i, '')
+          .replace(/^```\s*/i, '')
+          .replace(/```\s*$/i, '')
+          .trim();
 
-      const rawText = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
-      const cleanedHtml = rawText
-        .replace(/^```html\s*/i, '')
-        .replace(/^```\s*/i, '')
-        .replace(/```\s*$/i, '')
-        .trim();
-
-      return res.json({
-        success: true,
-        html: cleanedHtml
-      });
-    } catch (err) {
-      console.warn(`[Gemini API] Attempt ${attempt}/${maxRetries} failed: ${err.message}`);
-      if (attempt === maxRetries) {
-        return res.status(502).json({
-          error: { message: err.message || 'Failed to generate content from Gemini API' }
+        return res.json({
+          success: true,
+          model: selectedModel,
+          html: cleanedHtml
         });
       }
-      // Exponential backoff
-      const delay = Math.pow(2, attempt) * 750;
-      await new Promise(resolve => setTimeout(resolve, delay));
+
+      lastError = data.error?.message || `Google API error (${response.status})`;
+      console.warn(`[Gemini API] Model ${selectedModel} failed: ${lastError}. Trying next model...`);
+    } catch (err) {
+      lastError = err.message;
+      console.warn(`[Gemini API] Error contacting ${selectedModel}: ${err.message}`);
     }
   }
+
+  return res.status(502).json({
+    error: { message: lastError }
+  });
 });
 
 // Start server

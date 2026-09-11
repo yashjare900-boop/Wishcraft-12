@@ -104,18 +104,8 @@ export default stream(async (req, context) => {
         lastErrMsg = `Google API error (${res.status})`;
       }
 
-      // If overloaded (503), quota exceeded (429), or deprecated (404), continue to fallback model
-      if (res.status === 503 || res.status === 429 || res.status === 404) {
-        continue;
-      }
-
-      return new Response(JSON.stringify({ error: { message: lastErrMsg } }), {
-        status: res.status,
-        headers: {
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*'
-        }
-      });
+      // Always try the next model in candidateModels if the current one fails (quota, busy, etc.)
+      continue;
     } catch (fetchErr) {
       console.warn(`[Gemini API] Model ${selectedModel} fetch error: ${fetchErr.message}`);
       lastErrMsg = fetchErr.message;
