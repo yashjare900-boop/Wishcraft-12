@@ -62,11 +62,12 @@ export default stream(async (req, context) => {
     });
   }
 
-  // Model selection: prioritize gemini-3.5-flash-lite FIRST to stay under Netlify's 10s execution window
+  // Model selection: ignore exhausted gemini-3.6-flash, prioritize gemini-3.5-flash-lite or gemini-3.7-flash
+  const envModel = (process.env.GEMINI_MODEL && process.env.GEMINI_MODEL !== 'gemini-3.6-flash') ? process.env.GEMINI_MODEL : null;
   const candidateModels = [
     model,
+    envModel,
     'gemini-3.5-flash-lite',
-    process.env.GEMINI_MODEL,
     'gemini-3.7-flash'
   ].filter(Boolean);
 
