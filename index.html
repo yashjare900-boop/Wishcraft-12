@@ -1382,7 +1382,7 @@
         <div class="lock-badge" id="templateLockBadge" style="display:none;">🔒 Login Required</div>
         <div class="hub-ic-wrap" style="border-color: rgba(255,117,140,0.3); background: rgba(255,117,140,0.06);"><div class="hub-ic" style="color:#ffb199;">💎</div></div>
         <h3>Using Template</h3>
-        <p>Choose from our handcrafted cinematic masterpiece templates — like the Royal Velvet Premiere with 3D stardust, biometric thumb verification, scratch cards, and living memory vaults. Customize and launch instantly.</p>
+        <p>Choose from handcrafted cinematic masterpiece templates featuring liquid glass cards, 3D stardust particle heart, biometric scan verification, scratch-off reveals, and secret memory vaults. Customize and launch instantly.</p>
         <div class="hub-cta" style="color:#ffb199;">Browse Templates →</div>
       </div>
     </div>
@@ -1562,7 +1562,7 @@
 
       <div class="field-group">
         <label class="field-label">Vault Secret / Passcode (Optional)</label>
-        <input type="text" id="passcode" placeholder="e.g. 151126 or secret word">
+        <input type="text" id="passcode" placeholder="e.g. 2026 or secret word">
       </div>
 
       <div class="field-group">
@@ -1694,13 +1694,20 @@
           <div class="tmpl-grid">
             <!-- Royal Velvet Premiere Card -->
             <div class="tmpl-card">
-              <div class="tmpl-preview-box">
-                <img src="Blackmagic Resolve/10.jpg" alt="Royal Velvet Premiere" onerror="this.src='https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=600&q=80'">
+              <div class="tmpl-preview-box" style="display:flex; align-items:center; justify-content:center; background: radial-gradient(circle at center, #2e1522 0%, #150810 100%);">
+                <div style="text-align:center; padding: 20px;">
+                  <div style="font-size: 10px; letter-spacing: 4px; color: rgba(255,255,255,0.6); text-transform:uppercase; margin-bottom: 8px;">EDITION 01 // PREMIERE</div>
+                  <div style="font-family:'Playfair Display',serif; font-size: 26px; font-style:italic; font-weight:700; color: #fff; line-height: 1.1;">
+                    Special<br><span style="background:linear-gradient(to right,#ffb199,#ff758c); -webkit-background-clip:text; -webkit-text-fill-color:transparent;">One.</span>
+                  </div>
+                  <div style="width: 32px; height: 2px; background: #ffb199; margin: 10px auto; opacity: 0.8;"></div>
+                  <div style="font-size: 10px; letter-spacing: 2px; color: rgba(255,255,255,0.75); text-transform:uppercase;">Cinematic Reveal Journey</div>
+                </div>
                 <div class="tmpl-preview-badge">✦ Recommended</div>
               </div>
               <div class="tmpl-info">
-                <h4>Royal Velvet // Sister Premiere</h4>
-                <p>The flagship Blackmagic Resolve 10-chapter journey featuring liquid blur blobs, 3D orbiting stardust heart, thumb biometric scan, interactive scratch cards, and living memory vaults.</p>
+                <h4>Royal Velvet // Cinematic Premiere</h4>
+                <p>A flagship 10-chapter luxury experience featuring liquid blur blobs, 3D orbiting stardust heart, thumb biometric scan, interactive scratch cards, and living memory vaults.</p>
                 <div class="tmpl-tags">
                   <span class="tmpl-tag">10 Chapters</span>
                   <span class="tmpl-tag">3D Stardust</span>
@@ -1722,15 +1729,15 @@
           <div style="display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:12px;">
             <div>
               <h4 style="font-family:var(--serif); font-size:18px; color:#fff; margin:0 0 4px;">Personalize "Royal Velvet Premiere"</h4>
-              <p style="font-size:12px; color:var(--cream-dim); margin:0;">Tune the recipient's name, message, photos, and secret passcode.</p>
+              <p style="font-size:12px; color:var(--cream-dim); margin:0;">Customize recipient details, secret passcode, hint, personal letter, and photos.</p>
             </div>
             <button class="tmpl-btn-ghost" id="backToTmplGalleryBtn" style="padding:6px 12px; font-size:11.5px;">← Back</button>
           </div>
 
           <div class="tmpl-field-row">
             <div class="tmpl-input-group">
-              <label>Recipient Name & Honorific</label>
-              <input type="text" id="tmplRecipient" value="Tanu Didi" placeholder="e.g. Tanu Didi or Alex">
+              <label>Recipient Name</label>
+              <input type="text" id="tmplRecipient" value="My Dearest" placeholder="e.g. Sarah / Bestie / Alex">
             </div>
             <div class="tmpl-input-group">
               <label>Occasion / Title</label>
@@ -1740,23 +1747,47 @@
 
           <div class="tmpl-field-row">
             <div class="tmpl-input-group">
-              <label>Tagline / Premiere Subtitle</label>
-              <input type="text" id="tmplTagline" value="The grace of a queen, the heart of a sister." placeholder="Subtext on the opening card">
+              <label>Tagline / Subtitle</label>
+              <input type="text" id="tmplTagline" value="A celebration of grace, laughter, and timeless memories." placeholder="Subtext on the opening card">
             </div>
             <div class="tmpl-input-group">
-              <label>Secret Vault Passcode</label>
-              <input type="text" id="tmplPasscode" value="151126" placeholder="e.g. 151126 or secret word">
+              <label>Sender Sign-off</label>
+              <input type="text" id="tmplSender" value="Forever Yours" placeholder="e.g. Forever Yours / With Love">
             </div>
+          </div>
+
+          <div class="tmpl-field-row">
+            <div class="tmpl-input-group">
+              <label>Secret Vault Passcode</label>
+              <input type="text" id="tmplPasscode" value="2026" placeholder="e.g. 2026 or secret word">
+            </div>
+            <div class="tmpl-input-group">
+              <label>Passcode Hint</label>
+              <input type="text" id="tmplHint" value="The year of magic" placeholder="e.g. Our special year or favorite place">
+            </div>
+          </div>
+
+          <!-- Photo Upload & Custom Images -->
+          <div class="tmpl-input-group">
+            <label>Memory Photos (Upload or URLs)</label>
+            <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 8px;">
+              <label for="tmplPhotoUpload" style="background: rgba(255,255,255,0.08); border: 1px solid rgba(212,175,106,0.4); color: var(--gold); border-radius: 8px; padding: 7px 14px; font-size: 12px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; margin: 0;">
+                <span>📷 Upload Photos</span>
+              </label>
+              <input type="file" id="tmplPhotoUpload" multiple accept="image/*" style="display: none;">
+              <span id="tmplPhotoCount" style="font-size: 11.5px; color: var(--cream-dim);">0 custom photos added</span>
+            </div>
+            <div id="tmplPhotoPreviews" style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px;"></div>
           </div>
 
           <div class="tmpl-input-group">
             <label>Chapter 03 Affection Quote</label>
-            <input type="text" id="tmplQuote" value="To the world, you are someone special, but to me, you are the one who makes everything better.">
+            <input type="text" id="tmplQuote" value="To the world you may be one person, but to me you make everything better.">
           </div>
 
           <div class="tmpl-input-group">
             <label>Personal Letter / Message (Paragraph 1)</label>
-            <textarea id="tmplLetter" rows="3">I wanted to build something that felt as special as you are. A simple card was never going to be enough for someone who dreams as big as you do.</textarea>
+            <textarea id="tmplLetter" rows="3">I wanted to create something truly magical and unforgettable for you today. A regular card could never capture how much you mean to everyone around you.</textarea>
           </div>
 
           <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:8px;">
@@ -3065,20 +3096,88 @@ Integrate user details explicitly into the design.`;
 
   if (cancelCustomizerBtn) cancelCustomizerBtn.addEventListener('click', window.closeTemplatesModal);
 
+  // Photo upload handler for Curated Template Customizer
+  window.customTmplPhotos = [];
+  const tmplPhotoUpload = document.getElementById('tmplPhotoUpload');
+  const tmplPhotoCount = document.getElementById('tmplPhotoCount');
+  const tmplPhotoPreviews = document.getElementById('tmplPhotoPreviews');
+
+  function updateTmplPhotoDisplay() {
+    if (tmplPhotoCount) {
+      tmplPhotoCount.textContent = window.customTmplPhotos.length + ' photo' + (window.customTmplPhotos.length === 1 ? '' : 's') + ' added';
+    }
+    if (tmplPhotoPreviews) {
+      tmplPhotoPreviews.innerHTML = '';
+      window.customTmplPhotos.forEach((src, idx) => {
+        const thumb = document.createElement('div');
+        thumb.style.position = 'relative';
+        thumb.style.width = '48px';
+        thumb.style.height = '48px';
+        thumb.style.borderRadius = '8px';
+        thumb.style.overflow = 'hidden';
+        thumb.style.border = '1px solid rgba(212,175,106,0.5)';
+        thumb.innerHTML = `
+          <img src="${src}" style="width:100%; height:100%; object-fit:cover;">
+          <button type="button" data-idx="${idx}" style="position:absolute; top:2px; right:2px; width:16px; height:16px; border-radius:50%; background:rgba(0,0,0,0.7); color:#fff; border:none; font-size:10px; cursor:pointer; display:flex; align-items:center; justify-content:center; padding:0; line-height:1;">✕</button>
+        `;
+        const delBtn = thumb.querySelector('button');
+        delBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          window.customTmplPhotos.splice(idx, 1);
+          updateTmplPhotoDisplay();
+        });
+        tmplPhotoPreviews.appendChild(thumb);
+      });
+    }
+  }
+
+  if (tmplPhotoUpload) {
+    tmplPhotoUpload.addEventListener('change', (e) => {
+      const files = Array.from(e.target.files || []);
+      if (!files.length) return;
+      files.forEach(file => {
+        if (!file.type.startsWith('image/')) return;
+        const reader = new FileReader();
+        reader.onload = (evt) => {
+          window.customTmplPhotos.push(evt.target.result);
+          updateTmplPhotoDisplay();
+        };
+        reader.readAsDataURL(file);
+      });
+      tmplPhotoUpload.value = '';
+    });
+  }
+
   // Template HTML Generator function adapted from Blackmagic Resolve
   window.buildCuratedTemplateHtml = function(custom) {
     const c = Object.assign({
-      recipientName: "Tanu Didi",
-      tagline: "The grace of a queen, the heart of a sister.",
-      passcode: "151126",
-      quote: "To the world, you are someone special, but to me, you are the one who makes everything better.",
-      letter: "I wanted to build something that felt as special as you are. A simple card was never going to be enough for someone who dreams as big as you do.",
-      occasion: "Birthday Premiere"
+      recipientName: "My Dearest",
+      sender: "Forever Yours",
+      tagline: "A celebration of grace, laughter, and timeless memories.",
+      passcode: "2026",
+      hint: "The year of magic",
+      quote: "To the world you may be one person, but to me you make everything better.",
+      letter: "I wanted to create something truly magical and unforgettable for you today. A regular card could never capture how much you mean to everyone around you.",
+      occasion: "Birthday Premiere",
+      photos: []
     }, custom || {});
 
     const nameParts = c.recipientName.split(' ');
     const firstName = nameParts[0] || "Special";
     const restName = nameParts.slice(1).join(' ') || "One";
+
+    const defaultFallbacks = [
+      "https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=600&q=80",
+      "https://images.unsplash.com/photo-1529156069898-49953eb1f5ff?w=600&q=80",
+      "https://images.unsplash.com/photo-1513002749550-c59d786b8e6c?w=600&q=80",
+      "https://images.unsplash.com/photo-1490578474895-699bc4e3f44f?w=600&q=80",
+      "https://images.unsplash.com/photo-1475727946784-2890c8fdb9c8?w=600&q=80",
+      "https://images.unsplash.com/photo-1506869640319-ce1a18b91424?w=600&q=80"
+    ];
+
+    const userPhotos = Array.isArray(c.photos) && c.photos.length > 0 ? c.photos : [];
+    const primaryPhoto = userPhotos.length > 0 ? userPhotos[0] : defaultFallbacks[0];
+    const carouselPhotos = userPhotos.length > 0 ? userPhotos.concat(defaultFallbacks).slice(0, 6) : defaultFallbacks;
 
     return `<!DOCTYPE html>
 <html lang="en">
@@ -3087,7 +3186,7 @@ Integrate user details explicitly into the design.`;
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>` + escapeHtml(c.recipientName) + ` // Premiere Experience</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Poppins:wght@300;400;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
   <` + `script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"><` + `/script>
   <` + `script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"><` + `/script>
@@ -3101,6 +3200,7 @@ Integrate user details explicitly into the design.`;
       --error-red: #ff3366;
       --scan-fill: 0%;
       --scan-fill-raw: 0;
+      --glass-bg: rgba(255, 255, 255, 0.03);
     }
     * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
     html, body {
@@ -3323,13 +3423,117 @@ Integrate user details explicitly into the design.`;
       font-size: 1.2rem; text-align: center; letter-spacing: 6px; outline: none; margin: 18px 0;
     }
 
-    /* Letter */
-    .letter-scroll-wrap { width: 100%; max-width: 520px; max-height: 82vh; overflow-y: auto; padding-right: 6px; }
-    .letter-block {
-      background: rgba(255, 255, 255, 0.035); border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 22px; padding: 22px; margin-bottom: 14px; backdrop-filter: blur(20px);
-      text-align: left; line-height: 1.7; font-size: 13.5px; color: #f2e9ed;
+    /* Scene 10: The Masterpiece Glass Letter (from page9.html) */
+    #sc10 {
+      padding: 0; overflow-y: auto; overflow-x: hidden; scroll-behavior: smooth;
+      align-items: stretch; justify-content: flex-start; flex-direction: column;
     }
+    #petal-container {
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      pointer-events: none; z-index: 2; overflow: hidden;
+    }
+    .petal {
+      position: absolute; top: -20px;
+      background: linear-gradient(135deg, rgba(255, 177, 153, 0.4), rgba(255, 117, 140, 0.1));
+      backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
+      border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 15px 0px 15px 0px;
+      box-shadow: 0 0 15px rgba(255, 117, 140, 0.2); animation: fall linear forwards;
+    }
+    @keyframes fall {
+      to { transform: translateY(110vh) rotate(720deg) translateX(50px); }
+    }
+    .intro-screen {
+      min-height: 100vh; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; text-align: center;
+      padding: 20px; position: relative; z-index: 10; flex-shrink: 0;
+    }
+    .intro-title {
+      font-family: 'Playfair Display', serif; font-size: clamp(2.8rem, 12vw, 4.8rem);
+      font-style: italic; font-weight: 700;
+      background: linear-gradient(to right, #fff, var(--accent-gold));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 0 20px rgba(255, 177, 153, 0.4)); margin-bottom: 20px;
+      opacity: 0; animation: slowFadeIn 2s ease forwards 0.5s;
+    }
+    .intro-sub {
+      font-family: 'Space Mono', monospace; font-size: 0.8rem;
+      letter-spacing: 6px; color: var(--primary-pink); text-transform: uppercase;
+      opacity: 0; animation: slowFadeIn 2s ease forwards 1.2s;
+    }
+    .scroll-indicator {
+      position: absolute; bottom: 40px; display: flex;
+      flex-direction: column; align-items: center;
+      opacity: 0; animation: slowFadeIn 2s ease forwards 2s;
+    }
+    .scroll-text {
+      font-size: 0.6rem; letter-spacing: 5px; margin-bottom: 15px;
+      color: rgba(255, 255, 255, 0.5); text-transform: uppercase;
+    }
+    .scroll-line {
+      width: 1px; height: 50px;
+      background: linear-gradient(to bottom, var(--accent-gold), transparent);
+      animation: stretch 2s infinite ease-in-out;
+    }
+    .letter-wrapper {
+      padding: 20px 20px 100px; position: relative; z-index: 10;
+      width: 100%; display: flex; justify-content: center;
+    }
+    .glass-letter {
+      max-width: 620px; width: 100%; background: var(--glass-bg);
+      backdrop-filter: blur(25px) saturate(160%); -webkit-backdrop-filter: blur(25px) saturate(160%);
+      border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 40px;
+      padding: 70px 32px 60px;
+      box-shadow: 0 40px 80px rgba(0,0,0,0.55), inset 0 0 20px rgba(255,255,255,0.02);
+      position: relative; overflow: hidden;
+    }
+    .glass-letter::before {
+      content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+      transform: skewX(-20deg); pointer-events: none;
+    }
+    .letter-block {
+      margin-bottom: 45px; opacity: 1; transform: translateY(0);
+      transition: all 1.2s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+    .letter-text {
+      font-size: 1.05rem; line-height: 2; color: rgba(255, 255, 255, 0.88);
+      font-weight: 300; text-align: center;
+    }
+    .letter-highlight {
+      font-family: 'Playfair Display', serif; font-size: 1.25rem; font-style: italic; font-weight: 700;
+      background: linear-gradient(to right, var(--accent-gold), var(--primary-pink));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; padding: 0 4px;
+    }
+    .signature-block {
+      text-align: center; margin-top: 60px; padding-top: 45px;
+      display: flex; flex-direction: column; align-items: center; position: relative;
+    }
+    .signature-block::before {
+      content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+      width: 60px; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--accent-gold), transparent);
+    }
+    .flower-icon {
+      width: 46px; height: 46px; margin-bottom: 22px;
+      filter: drop-shadow(0 0 10px rgba(255, 177, 153, 0.45));
+    }
+    .signature-text {
+      font-family: 'Playfair Display', serif; font-size: 2.3rem; font-style: italic; font-weight: 700;
+      background: linear-gradient(160deg, #ffffff 30%, var(--primary-pink) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 8px;
+    }
+    .signature-sub {
+      font-size: 0.72rem; letter-spacing: 5px; color: rgba(255,255,255,0.45);
+      text-transform: uppercase; margin-bottom: 25px;
+    }
+
+    @keyframes stretch {
+      0% { transform: scaleY(0); transform-origin: top; }
+      50% { transform: scaleY(1); transform-origin: top; }
+      50.1% { transform: scaleY(1); transform-origin: bottom; }
+      100% { transform: scaleY(0); transform-origin: bottom; }
+    }
+    @keyframes slowFadeIn { to { opacity: 1; } }
 
     @keyframes liquid {
       0% { border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; }
@@ -3378,7 +3582,7 @@ Integrate user details explicitly into the design.`;
   <div class="scene-wrap" id="sc2">
     <div class="polaroid-glass">
       <div class="polaroid-img-wrap">
-        <img src="Blackmagic Resolve/10.jpg" alt="Memory" onerror="this.src='https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=600&q=80'">
+        <img src="` + escapeHtml(primaryPhoto) + `" alt="Memory" onerror="this.src='https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=600&q=80'">
         <div class="glass-frost" id="frost"></div>
       </div>
       <div class="caption-area" style="margin:16px 0;">
@@ -3500,29 +3704,63 @@ Integrate user details explicitly into the design.`;
     <div class="terminal-card" id="termBox">
       <p class="top-label">Chapter 09 // Vault Access</p>
       <h2 style="font-family:'Playfair Display',serif; font-size:1.6rem; font-style:italic;">Secret Passcode</h2>
-      <p style="font-size:11px; color:rgba(255,255,255,0.65); margin-top:6px;">Hint: ` + escapeHtml(c.passcode) + `</p>
+      <p style="font-size:11px; color:rgba(255,255,255,0.65); margin-top:6px;">Hint: ` + escapeHtml(c.hint || "The secret key") + `</p>
       <input type="password" id="passInp" class="pass-input" placeholder="PASSCODE" maxlength="12" autocomplete="off">
       <div id="passStat" style="font-size:12px; min-height:18px; margin-bottom:12px; color:var(--accent-gold); letter-spacing:2px;"></div>
       <button class="nav-btn" onclick="checkPass()">Verify & Decrypt →</button>
     </div>
   </div>
 
-  <!-- Scene 10: Letter Scroll -->
+  <!-- Scene 10: Letter Scroll (Fidelity to page9.html) -->
   <div class="scene-wrap" id="sc10">
-    <div class="letter-scroll-wrap">
-      <div class="glass-card" style="margin-bottom:14px; padding:26px 20px;">
-        <p class="top-label">Chapter 10 // The Vault</p>
-        <h2 style="font-family:'Playfair Display',serif; font-size:2rem; font-style:italic;">Dear ` + escapeHtml(c.recipientName) + `,</h2>
+    <div id="petal-container"></div>
+
+    <section class="intro-screen">
+      <h1 class="intro-title">Dear ` + escapeHtml(firstName) + `,</h1>
+      <p class="intro-sub">Access Granted</p>
+      <div class="scroll-indicator">
+        <span class="scroll-text">SCROLL</span>
+        <div class="scroll-line"></div>
       </div>
-      <div class="letter-block"><p>` + escapeHtml(c.letter) + `</p></div>
-      <div class="letter-block"><p>Whether commanding a ship across the deepest oceans or climbing the highest peaks, know that you will always be cherished, supported, and loved.</p></div>
-      <div class="letter-block"><p>Never stop exploring. Never settle for the ordinary. The world is waiting for you, Captain.</p></div>
-      <div class="glass-card" style="padding:28px 20px; text-align:center; background:rgba(255,117,140,0.06);">
-        <div style="font-size:26px; margin-bottom:8px;">👑</div>
-        <h2 style="font-family:'Playfair Display',serif; font-style:italic; font-size:1.8rem; margin-bottom:4px; color:#ffb199;">` + escapeHtml(c.occasion) + `.</h2>
-        <p style="font-size:11px; letter-spacing:3px; color:rgba(255,255,255,0.7); text-transform:uppercase;">FOREVER & ALWAYS</p>
-        <button class="nav-btn" style="margin-top:20px;" onclick="nextScene(1)">↺ Replay Journey</button>
-      </div>
+    </section>
+
+    <div class="letter-wrapper">
+      <main class="glass-letter">
+        <div class="letter-block">
+          <p class="letter-text">` + escapeHtml(c.letter) + `</p>
+        </div>
+        <div class="letter-block">
+          <p class="letter-text">
+            From every quiet conversation to every milestone along the way, your presence brings warmth and inspiration to everything you touch. You have an extraordinary spirit that lifts everyone around you.
+          </p>
+        </div>
+        <div class="letter-block">
+          <p class="letter-text">
+            Whether reaching for tomorrow's boldest dreams or celebrating today's simplest joys, know that you are held in the highest regard, always admired, supported, and loved.
+          </p>
+        </div>
+        <div class="letter-block">
+          <p class="letter-text">
+            Never stop exploring. Never settle for the ordinary. May this year shower you with laughter, boundless success, and unforgettable moments.
+          </p>
+        </div>
+        <div class="letter-block signature-block">
+          <svg class="flower-icon" viewBox="0 0 24 24" fill="none" stroke="url(#goldPink)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+            <defs>
+              <linearGradient id="goldPink" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#ffb199" />
+                <stop offset="100%" stop-color="#ff758c" />
+              </linearGradient>
+            </defs>
+            <path d="M12 22c-4-4-8-9-8-14a8 8 0 1 1 16 0c0 5-4 10-8 14z"></path>
+            <path d="M12 22c-2-4-4-9-4-14a4 4 0 1 1 8 0c0 5-2 10-4 14z"></path>
+            <path d="M12 14c-1-2-2-4-2-6a2 2 0 1 1 4 0c0 2-1 4-2 6z"></path>
+          </svg>
+          <h2 class="signature-text">` + escapeHtml(c.occasion) + `</h2>
+          <p class="signature-sub">` + escapeHtml(c.sender || "Forever Yours") + `</p>
+          <button class="nav-btn" style="margin-top: 15px;" onclick="nextScene(1)">↺ Replay Journey</button>
+        </div>
+      </main>
     </div>
   </div>
 
@@ -3550,6 +3788,7 @@ Integrate user details explicitly into the design.`;
       if(n === 4) initHeart();
       if(n === 6) initScratch();
       if(n === 7) initCar();
+      if(n === 10) initScene10Petals();
     }
 
     // Audio
@@ -3699,14 +3938,7 @@ Integrate user details explicitly into the design.`;
     function initCar() {
       const car = document.getElementById('carousel3D');
       if(!car || car.__ok) return; car.__ok = true;
-      const imgs = [
-        "Blackmagic Resolve/10.jpg",
-        "https://images.unsplash.com/photo-1529156069898-49953eb1f5ff?w=400&q=80",
-        "https://images.unsplash.com/photo-1513002749550-c59d786b8e6c?w=400&q=80",
-        "https://images.unsplash.com/photo-1490578474895-699bc4e3f44f?w=400&q=80",
-        "https://images.unsplash.com/photo-1475727946784-2890c8fdb9c8?w=400&q=80",
-        "https://images.unsplash.com/photo-1506869640319-ce1a18b91424?w=400&q=80"
-      ];
+      const imgs = ` + JSON.stringify(carouselPhotos) + `;
       const count = imgs.length; const radius = 180;
       imgs.forEach((src, idx) => {
         const d = document.createElement('div');
@@ -3764,6 +3996,27 @@ Integrate user details explicitly into the design.`;
     }
     const pInp = document.getElementById('passInp');
     if(pInp) pInp.addEventListener('keydown', e => { if(e.key === 'Enter') checkPass(); });
+
+    // Scene 10 Falling Glass Petals (from page9.html)
+    let petalInterval = null;
+    function initScene10Petals() {
+      const container = document.getElementById('petal-container');
+      if (!container || petalInterval) return;
+      function createPetal() {
+        if (cur !== 10) return;
+        const petal = document.createElement('div');
+        petal.classList.add('petal');
+        petal.style.left = Math.random() * 100 + 'vw';
+        const size = Math.random() * 10 + 10;
+        petal.style.width = size + 'px';
+        petal.style.height = (size * 1.2) + 'px';
+        petal.style.animationDuration = (Math.random() * 6 + 6) + 's';
+        petal.style.opacity = Math.random() * 0.4 + 0.2;
+        container.appendChild(petal);
+        setTimeout(() => { petal.remove(); }, 12000);
+      }
+      petalInterval = setInterval(createPetal, 500);
+    }
   <` + `/script>
 </body>
 </html>`;
@@ -3798,20 +4051,25 @@ Integrate user details explicitly into the design.`;
 
   if (launchCustomizedTmplBtn) {
     launchCustomizedTmplBtn.addEventListener('click', () => {
-      const rName = (document.getElementById('tmplRecipient') ? document.getElementById('tmplRecipient').value.trim() : '') || "Tanu Didi";
+      const rName = (document.getElementById('tmplRecipient') ? document.getElementById('tmplRecipient').value.trim() : '') || "My Dearest";
       const occ = (document.getElementById('tmplOccasion') ? document.getElementById('tmplOccasion').value.trim() : '') || "Birthday Premiere";
-      const tag = (document.getElementById('tmplTagline') ? document.getElementById('tmplTagline').value.trim() : '') || "The grace of a queen, the heart of a sister.";
-      const pass = (document.getElementById('tmplPasscode') ? document.getElementById('tmplPasscode').value.trim() : '') || "151126";
-      const quote = (document.getElementById('tmplQuote') ? document.getElementById('tmplQuote').value.trim() : '') || "To the world, you are someone special, but to me, you are the one who makes everything better.";
-      const letter = (document.getElementById('tmplLetter') ? document.getElementById('tmplLetter').value.trim() : '') || "I wanted to build something that felt as special as you are.";
+      const tag = (document.getElementById('tmplTagline') ? document.getElementById('tmplTagline').value.trim() : '') || "A celebration of grace, laughter, and timeless memories.";
+      const sender = (document.getElementById('tmplSender') ? document.getElementById('tmplSender').value.trim() : '') || "Forever Yours";
+      const pass = (document.getElementById('tmplPasscode') ? document.getElementById('tmplPasscode').value.trim() : '') || "2026";
+      const hint = (document.getElementById('tmplHint') ? document.getElementById('tmplHint').value.trim() : '') || "The year of magic";
+      const quote = (document.getElementById('tmplQuote') ? document.getElementById('tmplQuote').value.trim() : '') || "To the world you may be one person, but to me you make everything better.";
+      const letter = (document.getElementById('tmplLetter') ? document.getElementById('tmplLetter').value.trim() : '') || "I wanted to create something truly magical and unforgettable for you today. A regular card could never capture how much you mean to everyone around you.";
 
       const customHtml = window.buildCuratedTemplateHtml({
         recipientName: rName,
         occasion: occ,
         tagline: tag,
+        sender: sender,
         passcode: pass,
+        hint: hint,
         quote: quote,
-        letter: letter
+        letter: letter,
+        photos: window.customTmplPhotos || []
       });
 
       launchTemplateIntoStudio(customHtml, 'Template // ' + rName);
