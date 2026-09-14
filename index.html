@@ -1674,6 +1674,184 @@
   </div>
 </div>
 
+  <!-- ================= 7. CURATED TEMPLATES MODAL ================= -->
+  <div class="tmpl-modal-overlay" id="curatedTemplatesModal">
+    <div class="tmpl-modal-card">
+      <div class="tmpl-modal-header">
+        <h3 class="tmpl-modal-title">
+          <span class="tmpl-crown">👑</span> Curated Masterpiece Templates
+        </h3>
+        <button class="tmpl-modal-close" id="closeTmplModalBtn" aria-label="Close modal">&times;</button>
+      </div>
+      
+      <div class="tmpl-modal-body">
+        <!-- Template Gallery Grid -->
+        <div id="tmplGalleryView">
+          <p style="font-size: 13.5px; color: var(--cream-dim); margin-bottom: 20px; line-height: 1.6;">
+            Handcrafted, multi-chapter cinematic experiences built with glassmorphism, 3D WebGL particle simulations, and tactile reveals. Pick a template to customize and preview live.
+          </p>
+
+          <div class="tmpl-grid">
+            <!-- Royal Velvet Premiere Card -->
+            <div class="tmpl-card">
+              <div class="tmpl-preview-box">
+                <img src="Blackmagic Resolve/10.jpg" alt="Royal Velvet Premiere" onerror="this.src='https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=600&q=80'">
+                <div class="tmpl-preview-badge">✦ Recommended</div>
+              </div>
+              <div class="tmpl-info">
+                <h4>Royal Velvet // Sister Premiere</h4>
+                <p>The flagship Blackmagic Resolve 10-chapter journey featuring liquid blur blobs, 3D orbiting stardust heart, thumb biometric scan, interactive scratch cards, and living memory vaults.</p>
+                <div class="tmpl-tags">
+                  <span class="tmpl-tag">10 Chapters</span>
+                  <span class="tmpl-tag">3D Stardust</span>
+                  <span class="tmpl-tag">Biometric Gate</span>
+                  <span class="tmpl-tag">Scratch Reveal</span>
+                  <span class="tmpl-tag">Sound Effects</span>
+                </div>
+              </div>
+              <div class="tmpl-actions">
+                <button class="tmpl-btn-ghost" id="previewTmplBtn">👁️ Quick Preview</button>
+                <button class="tmpl-btn-primary" id="openCustomizerBtn">✦ Customize & Launch</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Customizer Form (Revealed when user clicks Customize & Launch) -->
+        <div class="tmpl-customizer" id="tmplCustomizerView">
+          <div style="display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:12px;">
+            <div>
+              <h4 style="font-family:var(--serif); font-size:18px; color:#fff; margin:0 0 4px;">Personalize "Royal Velvet Premiere"</h4>
+              <p style="font-size:12px; color:var(--cream-dim); margin:0;">Tune the recipient's name, message, photos, and secret passcode.</p>
+            </div>
+            <button class="tmpl-btn-ghost" id="backToTmplGalleryBtn" style="padding:6px 12px; font-size:11.5px;">← Back</button>
+          </div>
+
+          <div class="tmpl-field-row">
+            <div class="tmpl-input-group">
+              <label>Recipient Name & Honorific</label>
+              <input type="text" id="tmplRecipient" value="Tanu Didi" placeholder="e.g. Tanu Didi or Alex">
+            </div>
+            <div class="tmpl-input-group">
+              <label>Occasion / Title</label>
+              <input type="text" id="tmplOccasion" value="Birthday Premiere" placeholder="e.g. Birthday / Anniversary">
+            </div>
+          </div>
+
+          <div class="tmpl-field-row">
+            <div class="tmpl-input-group">
+              <label>Tagline / Premiere Subtitle</label>
+              <input type="text" id="tmplTagline" value="The grace of a queen, the heart of a sister." placeholder="Subtext on the opening card">
+            </div>
+            <div class="tmpl-input-group">
+              <label>Secret Vault Passcode</label>
+              <input type="text" id="tmplPasscode" value="151126" placeholder="e.g. 151126 or secret word">
+            </div>
+          </div>
+
+          <div class="tmpl-input-group">
+            <label>Chapter 03 Affection Quote</label>
+            <input type="text" id="tmplQuote" value="To the world, you are someone special, but to me, you are the one who makes everything better.">
+          </div>
+
+          <div class="tmpl-input-group">
+            <label>Personal Letter / Message (Paragraph 1)</label>
+            <textarea id="tmplLetter" rows="3">I wanted to build something that felt as special as you are. A simple card was never going to be enough for someone who dreams as big as you do.</textarea>
+          </div>
+
+          <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:8px;">
+            <button class="tmpl-btn-ghost" id="cancelCustomizerBtn">Cancel</button>
+            <button class="tmpl-btn-primary" id="launchCustomizedTmplBtn" style="padding:12px 28px; font-size:13.5px;">
+              ✦ Generate & Open in Studio Preview
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= STYLISH GEMINI API KEY ASKING MODAL ================= -->
+  <div class="api-modal-overlay" id="apiKeyModal">
+    <div class="api-modal-card">
+      <div class="api-modal-glow"></div>
+      <div class="api-modal-content">
+        <div class="api-modal-header">
+          <h3 class="api-modal-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/>
+            </svg>
+            AI Generation Key
+          </h3>
+          <button class="api-modal-close" id="closeApiKeyModalBtn" aria-label="Close modal">&times;</button>
+        </div>
+        
+        <p class="api-modal-desc">
+          Choose whether to craft pages using WishCraft's cloud engine or connect your own free Gemini API key to bypass all limits.
+        </p>
+
+        <!-- Key Source Choice Selector -->
+        <div class="api-choice-container">
+          <div class="api-choice-card active" id="choiceWebKey">
+            <div class="api-choice-header">
+              <span class="api-choice-title">
+                <span>🌐</span> Web Key
+              </span>
+              <span class="api-choice-radio"></span>
+            </div>
+            <span class="api-choice-desc">Use WishCraft's default server quota. Zero setup needed.</span>
+          </div>
+
+          <div class="api-choice-card" id="choiceCustomKey">
+            <div class="api-choice-header">
+              <span class="api-choice-title">
+                <span>⚡</span> My Own Key
+              </span>
+              <span class="api-choice-radio"></span>
+            </div>
+            <span class="api-choice-desc">Direct browser AI connection. Ultra-fast, zero timeouts.</span>
+          </div>
+        </div>
+
+        <!-- Custom Key Input Section (shown when My Own Key is selected) -->
+        <div id="customKeyInputSection" style="display: none;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+            <label style="font-size: 12px; font-weight: 600; color: var(--gold); font-family: var(--sans);">Your Gemini API Key</label>
+            <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener" style="font-size: 11px; color: var(--gold); text-decoration: none; border-bottom: 1px dashed var(--gold-dim);">Get Free Key ↗</a>
+          </div>
+
+          <div class="api-input-wrap">
+            <input type="password" class="api-key-input-field" id="modalApiKeyInput" placeholder="Paste key (AIzaSy...)" autocomplete="off" spellcheck="false">
+            <button class="api-input-visibility-toggle" id="toggleApiKeyVisibility" type="button" title="Toggle visibility">👁️</button>
+          </div>
+
+          <div class="api-key-badge-note">
+            <span style="color:var(--gold);">✦</span>
+            <span>Your key is saved locally in this browser and never stored on our servers.</span>
+          </div>
+        </div>
+
+        <div class="api-modal-footer">
+          <button class="api-clear-btn" id="clearApiKeyBtn">Reset to Default</button>
+          <button class="api-save-btn" id="saveApiKeyModalBtn">Save & Apply</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= CUSTOM SYSTEM MODAL ================= -->
+  <div class="sys-modal-overlay" id="sysModal">
+    <div class="sys-modal-card">
+        <h3 class="sys-modal-title" id="smTitle">Notice</h3>
+        <p class="sys-modal-msg" id="smMsg">Message</p>
+        <input type="text" class="sys-modal-input" id="smInput" autocomplete="off">
+        <div class="sys-modal-actions">
+            <button class="sys-modal-btn sys-modal-cancel" id="smCancel">Cancel</button>
+            <button class="sys-modal-btn" id="smConfirm">OK</button>
+        </div>
+    </div>
+  </div>
+
 <script>
 
   // ---------- Cinematic System Modal Engine ----------
@@ -2848,16 +3026,20 @@ Integrate user details explicitly into the design.`;
   const tmplCustomizerView = document.getElementById('tmplCustomizerView');
 
   window.openTemplatesModal = function() {
-    if (curatedModal) {
-      curatedModal.classList.add('show');
+    const modal = curatedModal || document.getElementById('curatedTemplatesModal');
+    const gallery = tmplGalleryView || document.getElementById('tmplGalleryView');
+    const customizer = tmplCustomizerView || document.getElementById('tmplCustomizerView');
+    if (modal) {
+      modal.classList.add('show');
       // Reset view to gallery
-      if (tmplGalleryView) tmplGalleryView.style.display = 'block';
-      if (tmplCustomizerView) tmplCustomizerView.classList.remove('open');
+      if (gallery) gallery.style.display = 'block';
+      if (customizer) customizer.classList.remove('open');
     }
   };
 
   window.closeTemplatesModal = function() {
-    if (curatedModal) curatedModal.classList.remove('show');
+    const modal = curatedModal || document.getElementById('curatedTemplatesModal');
+    if (modal) modal.classList.remove('show');
   };
 
   if (closeTmplModalBtn) closeTmplModalBtn.addEventListener('click', window.closeTemplatesModal);
@@ -4436,186 +4618,6 @@ Integrate user details explicitly into the design.`;
             <p style="font-size: 13px; color: var(--cream-dim); line-height: 1.6;">API keys can be generated from the Admin dashboard once your account is upgraded to the Studio tier. Never share your secret key in client-side code.</p>
         </div>
       </div>
-    </div>
-  </div>
-
-  
-  <!-- ================= 7. CURATED TEMPLATES MODAL ================= -->
-  <div class="tmpl-modal-overlay" id="curatedTemplatesModal">
-    <div class="tmpl-modal-card">
-      <div class="tmpl-modal-header">
-        <h3 class="tmpl-modal-title">
-          <span class="tmpl-crown">👑</span> Curated Masterpiece Templates
-        </h3>
-        <button class="tmpl-modal-close" id="closeTmplModalBtn" aria-label="Close modal">&times;</button>
-      </div>
-      
-      <div class="tmpl-modal-body">
-        <!-- Template Gallery Grid -->
-        <div id="tmplGalleryView">
-          <p style="font-size: 13.5px; color: var(--cream-dim); margin-bottom: 20px; line-height: 1.6;">
-            Handcrafted, multi-chapter cinematic experiences built with glassmorphism, 3D WebGL particle simulations, and tactile reveals. Pick a template to customize and preview live.
-          </p>
-
-          <div class="tmpl-grid">
-            <!-- Royal Velvet Premiere Card -->
-            <div class="tmpl-card">
-              <div class="tmpl-preview-box">
-                <img src="Blackmagic Resolve/10.jpg" alt="Royal Velvet Premiere" onerror="this.src='https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=600&q=80'">
-                <div class="tmpl-preview-badge">✦ Recommended</div>
-              </div>
-              <div class="tmpl-info">
-                <h4>Royal Velvet // Sister Premiere</h4>
-                <p>The flagship Blackmagic Resolve 10-chapter journey featuring liquid blur blobs, 3D orbiting stardust heart, thumb biometric scan, interactive scratch cards, and living memory vaults.</p>
-                <div class="tmpl-tags">
-                  <span class="tmpl-tag">10 Chapters</span>
-                  <span class="tmpl-tag">3D Stardust</span>
-                  <span class="tmpl-tag">Biometric Gate</span>
-                  <span class="tmpl-tag">Scratch Reveal</span>
-                  <span class="tmpl-tag">Sound Effects</span>
-                </div>
-              </div>
-              <div class="tmpl-actions">
-                <button class="tmpl-btn-ghost" id="previewTmplBtn">👁️ Quick Preview</button>
-                <button class="tmpl-btn-primary" id="openCustomizerBtn">✦ Customize & Launch</button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Customizer Form (Revealed when user clicks Customize & Launch) -->
-        <div class="tmpl-customizer" id="tmplCustomizerView">
-          <div style="display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:12px;">
-            <div>
-              <h4 style="font-family:var(--serif); font-size:18px; color:#fff; margin:0 0 4px;">Personalize "Royal Velvet Premiere"</h4>
-              <p style="font-size:12px; color:var(--cream-dim); margin:0;">Tune the recipient's name, message, photos, and secret passcode.</p>
-            </div>
-            <button class="tmpl-btn-ghost" id="backToTmplGalleryBtn" style="padding:6px 12px; font-size:11.5px;">← Back</button>
-          </div>
-
-          <div class="tmpl-field-row">
-            <div class="tmpl-input-group">
-              <label>Recipient Name & Honorific</label>
-              <input type="text" id="tmplRecipient" value="Tanu Didi" placeholder="e.g. Tanu Didi or Alex">
-            </div>
-            <div class="tmpl-input-group">
-              <label>Occasion / Title</label>
-              <input type="text" id="tmplOccasion" value="Birthday Premiere" placeholder="e.g. Birthday / Anniversary">
-            </div>
-          </div>
-
-          <div class="tmpl-field-row">
-            <div class="tmpl-input-group">
-              <label>Tagline / Premiere Subtitle</label>
-              <input type="text" id="tmplTagline" value="The grace of a queen, the heart of a sister." placeholder="Subtext on the opening card">
-            </div>
-            <div class="tmpl-input-group">
-              <label>Secret Vault Passcode</label>
-              <input type="text" id="tmplPasscode" value="151126" placeholder="e.g. 151126 or secret word">
-            </div>
-          </div>
-
-          <div class="tmpl-input-group">
-            <label>Chapter 03 Affection Quote</label>
-            <input type="text" id="tmplQuote" value="To the world, you are someone special, but to me, you are the one who makes everything better.">
-          </div>
-
-          <div class="tmpl-input-group">
-            <label>Personal Letter / Message (Paragraph 1)</label>
-            <textarea id="tmplLetter" rows="3">I wanted to build something that felt as special as you are. A simple card was never going to be enough for someone who dreams as big as you do.</textarea>
-          </div>
-
-          <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:8px;">
-            <button class="tmpl-btn-ghost" id="cancelCustomizerBtn">Cancel</button>
-            <button class="tmpl-btn-primary" id="launchCustomizedTmplBtn" style="padding:12px 28px; font-size:13.5px;">
-              ✦ Generate & Open in Studio Preview
-            </button>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </div>
-
-  
-  <!-- ================= STYLISH GEMINI API KEY ASKING MODAL ================= -->
-  <div class="api-modal-overlay" id="apiKeyModal">
-    <div class="api-modal-card">
-      <div class="api-modal-glow"></div>
-      <div class="api-modal-content">
-        <div class="api-modal-header">
-          <h3 class="api-modal-title">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/>
-            </svg>
-            AI Generation Key
-          </h3>
-          <button class="api-modal-close" id="closeApiKeyModalBtn" aria-label="Close modal">&times;</button>
-        </div>
-        
-        <p class="api-modal-desc">
-          Choose whether to craft pages using WishCraft's cloud engine or connect your own free Gemini API key to bypass all limits.
-        </p>
-
-        <!-- Key Source Choice Selector -->
-        <div class="api-choice-container">
-          <div class="api-choice-card active" id="choiceWebKey">
-            <div class="api-choice-header">
-              <span class="api-choice-title">
-                <span>🌐</span> Web Key
-              </span>
-              <span class="api-choice-radio"></span>
-            </div>
-            <span class="api-choice-desc">Use WishCraft's default server quota. Zero setup needed.</span>
-          </div>
-
-          <div class="api-choice-card" id="choiceCustomKey">
-            <div class="api-choice-header">
-              <span class="api-choice-title">
-                <span>⚡</span> My Own Key
-              </span>
-              <span class="api-choice-radio"></span>
-            </div>
-            <span class="api-choice-desc">Direct browser AI connection. Ultra-fast, zero timeouts.</span>
-          </div>
-        </div>
-
-        <!-- Custom Key Input Section (shown when My Own Key is selected) -->
-        <div id="customKeyInputSection" style="display: none;">
-          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
-            <label style="font-size: 12px; font-weight: 600; color: var(--gold); font-family: var(--sans);">Your Gemini API Key</label>
-            <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener" style="font-size: 11px; color: var(--gold); text-decoration: none; border-bottom: 1px dashed var(--gold-dim);">Get Free Key ↗</a>
-          </div>
-
-          <div class="api-input-wrap">
-            <input type="password" class="api-key-input-field" id="modalApiKeyInput" placeholder="Paste key (AIzaSy...)" autocomplete="off" spellcheck="false">
-            <button class="api-input-visibility-toggle" id="toggleApiKeyVisibility" type="button" title="Toggle visibility">👁️</button>
-          </div>
-
-          <div class="api-key-badge-note">
-            <span style="color:var(--gold);">✦</span>
-            <span>Your key is saved locally in this browser and never stored on our servers.</span>
-          </div>
-        </div>
-
-        <div class="api-modal-footer">
-          <button class="api-clear-btn" id="clearApiKeyBtn">Reset to Default</button>
-          <button class="api-save-btn" id="saveApiKeyModalBtn">Save & Apply</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ================= CUSTOM SYSTEM MODAL ================= -->
-  <div class="sys-modal-overlay" id="sysModal">
-    <div class="sys-modal-card">
-        <h3 class="sys-modal-title" id="smTitle">Notice</h3>
-        <p class="sys-modal-msg" id="smMsg">Message</p>
-        <input type="text" class="sys-modal-input" id="smInput" autocomplete="off">
-        <div class="sys-modal-actions">
-            <button class="sys-modal-btn sys-modal-cancel" id="smCancel">Cancel</button>
-            <button class="sys-modal-btn" id="smConfirm">OK</button>
-        </div>
     </div>
   </div>
 
