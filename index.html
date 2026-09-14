@@ -1668,7 +1668,7 @@
           </div>
         </div>
 
-        <iframe id="preview" title="Generated page preview" sandbox="allow-scripts allow-same-origin"></iframe>
+        <iframe id="preview" title="Generated page preview" sandbox="allow-scripts allow-forms allow-popups allow-modals"></iframe>
       </div>
     </div>
   </div>
@@ -2907,8 +2907,8 @@ Integrate user details explicitly into the design.`;
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Poppins:wght@300;400;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"><\\/script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"><\\/script>
+  <` + `script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"><` + `/script>
+  <` + `script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"><` + `/script>
   <style>
     :root {
       --primary-pink: #ff758c;
@@ -3344,7 +3344,7 @@ Integrate user details explicitly into the design.`;
     </div>
   </div>
 
-  <script>
+  <` + `script>
     const CORRECT_CODE = "` + escapeHtml(c.passcode) + `";
     const CHAPTER_NAMES = {1:"PREMIERE", 2:"MEMORY", 3:"AFFECTION", 4:"VENTRICLE", 5:"BIOMETRIC", 6:"PROMISES", 7:"ARCHIVES", 8:"WISH", 9:"SECURITY", 10:"THE LETTER"};
     let cur = 1;
@@ -3582,7 +3582,7 @@ Integrate user details explicitly into the design.`;
     }
     const pInp = document.getElementById('passInp');
     if(pInp) pInp.addEventListener('keydown', e => { if(e.key === 'Enter') checkPass(); });
-  </script>
+  <` + `/script>
 </body>
 </html>`;
   };
@@ -3675,9 +3675,10 @@ Integrate user details explicitly into the design.`;
   const heroSignupBtn = document.getElementById('heroSignupBtn');
   const navLoginBtn = document.getElementById('navLoginBtn');
   const navSignupBtn = document.getElementById('navSignupBtn');
-  const topbarLoginBtn_firebase = document.getElementById('topbarLoginBtn');
+  const topbarLoginBtn = document.getElementById('topbarLoginBtn');
   const logoutBtn = document.getElementById('logoutBtn');
-  // landingPage and mainApp already declared in main script
+  const landingPage = document.getElementById('landingPage');
+  const mainApp = document.getElementById('main-app');
   const userProfile = document.getElementById('userProfile');
 
   function updateTierUI(tier) {

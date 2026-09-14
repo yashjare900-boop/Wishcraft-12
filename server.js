@@ -20,6 +20,9 @@ app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 // Serve static frontend files
 app.use(express.static(__dirname));
 
+// Favicon handler
+app.get('/favicon.ico', (req, res) => res.status(204).end());
+
 // Health check endpoint
 app.get('/api/health', (req, res) => {
   const hasKey = Boolean(process.env.GEMINI_API_KEY && process.env.GEMINI_API_KEY.trim());
