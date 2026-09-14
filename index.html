@@ -1237,6 +1237,36 @@
     border-color: var(--gold); box-shadow: 0 0 10px rgba(212,175,106,0.25);
   }
 
+  /* Category Filter Pills */
+  .tmpl-cat-bar {
+    display: flex; gap: 8px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 20px;
+    scrollbar-width: thin; scrollbar-color: rgba(212,175,106,0.3) transparent;
+  }
+  .tmpl-cat-pill {
+    padding: 7px 15px; border-radius: 20px; font-size: 12px; font-weight: 500;
+    cursor: pointer; border: 1px solid var(--line); color: var(--cream-dim);
+    background: rgba(255,255,255,0.03); white-space: nowrap; transition: all 0.2s ease;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .tmpl-cat-pill:hover {
+    color: #fff; border-color: rgba(212,175,106,0.5); background: rgba(255,255,255,0.06);
+  }
+  .tmpl-cat-pill.active {
+    background: linear-gradient(135deg, rgba(212,175,106,0.22), rgba(255,117,140,0.18));
+    border-color: var(--gold); color: #fff; font-weight: 600;
+    box-shadow: 0 0 14px rgba(212,175,106,0.2);
+  }
+
+  /* Customizer Section Groups */
+  .tmpl-sec-group {
+    background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 14px; padding: 14px 16px; display: flex; flex-direction: column; gap: 12px;
+  }
+  .tmpl-sec-title {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--gold); font-weight: 600; display: flex; align-items: center; gap: 6px;
+    border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 6px;
+  }
 </style>
 </head>
 <body>
@@ -1687,13 +1717,23 @@
       <div class="tmpl-modal-body">
         <!-- Template Gallery Grid -->
         <div id="tmplGalleryView">
-          <p style="font-size: 13.5px; color: var(--cream-dim); margin-bottom: 20px; line-height: 1.6;">
+          <p style="font-size: 13.5px; color: var(--cream-dim); margin-bottom: 16px; line-height: 1.6;">
             Handcrafted, multi-chapter cinematic experiences built with glassmorphism, 3D WebGL particle simulations, and tactile reveals. Pick a template to customize and preview live.
           </p>
 
-          <div class="tmpl-grid">
+          <!-- Category Filter Bar -->
+          <div class="tmpl-cat-bar" id="tmplCatBar">
+            <button class="tmpl-cat-pill active" data-cat="all">✦ All Experiences</button>
+            <button class="tmpl-cat-pill" data-cat="birthday">🎂 Birthday</button>
+            <button class="tmpl-cat-pill" data-cat="anniversary">💍 Anniversary</button>
+            <button class="tmpl-cat-pill" data-cat="sister">🌸 Sister & Family</button>
+            <button class="tmpl-cat-pill" data-cat="love">💖 Love & Romance</button>
+            <button class="tmpl-cat-pill" data-cat="friendship">🥂 Friendship</button>
+          </div>
+
+          <div class="tmpl-grid" id="tmplGrid">
             <!-- Royal Velvet Premiere Card -->
-            <div class="tmpl-card">
+            <div class="tmpl-card" data-categories="all birthday anniversary sister love friendship">
               <div class="tmpl-preview-box" style="display:flex; align-items:center; justify-content:center; background: radial-gradient(circle at center, #2e1522 0%, #150810 100%);">
                 <div style="text-align:center; padding: 20px;">
                   <div style="font-size: 10px; letter-spacing: 4px; color: rgba(255,255,255,0.6); text-transform:uppercase; margin-bottom: 8px;">EDITION 01 // PREMIERE</div>
@@ -1713,7 +1753,7 @@
                   <span class="tmpl-tag">3D Stardust</span>
                   <span class="tmpl-tag">Biometric Gate</span>
                   <span class="tmpl-tag">Scratch Reveal</span>
-                  <span class="tmpl-tag">Sound Effects</span>
+                  <span class="tmpl-tag">Fully Editable</span>
                 </div>
               </div>
               <div class="tmpl-actions">
@@ -1729,68 +1769,142 @@
           <div style="display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:12px;">
             <div>
               <h4 style="font-family:var(--serif); font-size:18px; color:#fff; margin:0 0 4px;">Personalize "Royal Velvet Premiere"</h4>
-              <p style="font-size:12px; color:var(--cream-dim); margin:0;">Customize recipient details, secret passcode, hint, personal letter, and photos.</p>
+              <p style="font-size:12px; color:var(--cream-dim); margin:0;">Every text across all 10 chapters is editable below. Leave defaults or write your own heartfelt words.</p>
             </div>
-            <button class="tmpl-btn-ghost" id="backToTmplGalleryBtn" style="padding:6px 12px; font-size:11.5px;">← Back</button>
+            <button class="tmpl-btn-ghost" id="backToTmplGalleryBtn" style="padding:6px 12px; font-size:11.5px;">← Back to Gallery</button>
           </div>
 
-          <div class="tmpl-field-row">
+          <!-- GROUP 1: Identity & Premiere Opening (Scenes 1 & 2) -->
+          <div class="tmpl-sec-group">
+            <div class="tmpl-sec-title"><span>✦</span> 1. Identity & Premiere Opening (Scenes 1 & 2)</div>
+            <div class="tmpl-field-row">
+              <div class="tmpl-input-group">
+                <label>Recipient Name</label>
+                <input type="text" id="tmplRecipient" value="My Dearest" placeholder="e.g. Sarah / Bestie / Sister / Alex">
+              </div>
+              <div class="tmpl-input-group">
+                <label>Occasion / Title</label>
+                <input type="text" id="tmplOccasion" value="Birthday Premiere" placeholder="e.g. Birthday / Anniversary / Sisterhood">
+              </div>
+            </div>
+            <div class="tmpl-field-row">
+              <div class="tmpl-input-group">
+                <label>Opening Tagline / Subtitle</label>
+                <input type="text" id="tmplTagline" value="A celebration of grace, laughter, and timeless memories." placeholder="Subtext on the opening card">
+              </div>
+              <div class="tmpl-input-group">
+                <label>Scene 2 Polaroid Headline</label>
+                <input type="text" id="tmplPolaroidCaption" value="Pure Grace." placeholder="e.g. Pure Grace. / Pure Magic.">
+              </div>
+            </div>
+          </div>
+
+          <!-- GROUP 2: Chamber of Affection & 3D Heart (Scenes 3 & 4) -->
+          <div class="tmpl-sec-group">
+            <div class="tmpl-sec-title"><span>💖</span> 2. Chamber of Affection (Scenes 3 & 4)</div>
             <div class="tmpl-input-group">
-              <label>Recipient Name</label>
-              <input type="text" id="tmplRecipient" value="My Dearest" placeholder="e.g. Sarah / Bestie / Alex">
+              <label>Chapter 03 Affection Quote</label>
+              <input type="text" id="tmplQuote" value="To the world you may be one person, but to me you make everything better.">
+            </div>
+            <div class="tmpl-field-row">
+              <div class="tmpl-input-group">
+                <label>Scene 4 Heart Chamber Quote</label>
+                <input type="text" id="tmplHeartQuote" value="Side by side or miles apart, we are always connected by the heart.">
+              </div>
+              <div class="tmpl-input-group">
+                <label>Scene 4 Chamber Title</label>
+                <input type="text" id="tmplHeartTitle" value="The Reserved Chamber" placeholder="e.g. The Reserved Chamber / An Eternal Orbit">
+              </div>
+            </div>
+          </div>
+
+          <!-- GROUP 3: Interactive Treats & Scratch Cards (Scene 6) -->
+          <div class="tmpl-sec-group">
+            <div class="tmpl-sec-title"><span>🎁</span> 3. Interactive Treats & Scratch Cards (Scene 6)</div>
+            <div class="tmpl-field-row">
+              <div class="tmpl-input-group">
+                <label>Treat 1 Title</label>
+                <input type="text" id="tmplTreat1Title" value="Shopping Spree!">
+              </div>
+              <div class="tmpl-input-group">
+                <label>Treat 1 Description</label>
+                <input type="text" id="tmplTreat1Desc" value="My treat. Pick your favorites.">
+              </div>
+            </div>
+            <div class="tmpl-field-row">
+              <div class="tmpl-input-group">
+                <label>Treat 2 Title</label>
+                <input type="text" id="tmplTreat2Title" value="Royal Dinner!">
+              </div>
+              <div class="tmpl-input-group">
+                <label>Treat 2 Description</label>
+                <input type="text" id="tmplTreat2Desc" value="Your favorite restaurant, anytime.">
+              </div>
+            </div>
+          </div>
+
+          <!-- GROUP 4: Ceremony & Vault Gate (Scenes 8 & 9) -->
+          <div class="tmpl-sec-group">
+            <div class="tmpl-sec-title"><span>🔐</span> 4. Ceremony & Vault Gate (Scenes 8 & 9)</div>
+            <div class="tmpl-input-group">
+              <label>Scene 8 Candle Wish Reveal Message</label>
+              <input type="text" id="tmplWishMessage" value="May Every Dream Flourish">
+            </div>
+            <div class="tmpl-field-row">
+              <div class="tmpl-input-group">
+                <label>Secret Vault Passcode</label>
+                <input type="text" id="tmplPasscode" value="2026" placeholder="e.g. 2026 or secret word">
+              </div>
+              <div class="tmpl-input-group">
+                <label>Passcode Hint</label>
+                <input type="text" id="tmplHint" value="The year of magic" placeholder="e.g. Our special year or favorite place">
+              </div>
+            </div>
+          </div>
+
+          <!-- GROUP 5: The Vault Letter & Sign-off (Scene 10) -->
+          <div class="tmpl-sec-group">
+            <div class="tmpl-sec-title"><span>📜</span> 5. The Vault Letter & Sign-off (Scene 10)</div>
+            <div class="tmpl-input-group">
+              <label>Letter Paragraph 1</label>
+              <textarea id="tmplLetter1" rows="2">I wanted to create something truly magical and unforgettable for you today. A regular card could never capture how much you mean to everyone around you.</textarea>
             </div>
             <div class="tmpl-input-group">
-              <label>Occasion / Title</label>
-              <input type="text" id="tmplOccasion" value="Birthday Premiere" placeholder="e.g. Birthday / Anniversary">
+              <label>Letter Paragraph 2</label>
+              <textarea id="tmplLetter2" rows="2">From every quiet conversation to every milestone along the way, your presence brings warmth and inspiration to everything you touch. You have an extraordinary spirit that lifts everyone around you.</textarea>
             </div>
-          </div>
-
-          <div class="tmpl-field-row">
-            <div class="tmpl-input-group">
-              <label>Tagline / Subtitle</label>
-              <input type="text" id="tmplTagline" value="A celebration of grace, laughter, and timeless memories." placeholder="Subtext on the opening card">
-            </div>
-            <div class="tmpl-input-group">
-              <label>Sender Sign-off</label>
-              <input type="text" id="tmplSender" value="Forever Yours" placeholder="e.g. Forever Yours / With Love">
-            </div>
-          </div>
-
-          <div class="tmpl-field-row">
-            <div class="tmpl-input-group">
-              <label>Secret Vault Passcode</label>
-              <input type="text" id="tmplPasscode" value="2026" placeholder="e.g. 2026 or secret word">
+            <div class="tmpl-field-row">
+              <div class="tmpl-input-group">
+                <label>Letter Paragraph 3</label>
+                <textarea id="tmplLetter3" rows="2">Whether reaching for tomorrow's boldest dreams or celebrating today's simplest joys, know that you are held in the highest regard, always admired, supported, and loved.</textarea>
+              </div>
+              <div class="tmpl-input-group">
+                <label>Letter Paragraph 4</label>
+                <textarea id="tmplLetter4" rows="2">Never stop exploring. Never settle for the ordinary. May this year shower you with laughter, boundless success, and unforgettable moments.</textarea>
+              </div>
             </div>
             <div class="tmpl-input-group">
-              <label>Passcode Hint</label>
-              <input type="text" id="tmplHint" value="The year of magic" placeholder="e.g. Our special year or favorite place">
+              <label>Sender Sign-off / Signature</label>
+              <input type="text" id="tmplSender" value="Forever Yours" placeholder="e.g. Forever Yours / With Endless Love, Alex">
             </div>
           </div>
 
-          <!-- Photo Upload & Custom Images -->
-          <div class="tmpl-input-group">
-            <label>Memory Photos (Upload or URLs)</label>
-            <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 8px;">
-              <label for="tmplPhotoUpload" style="background: rgba(255,255,255,0.08); border: 1px solid rgba(212,175,106,0.4); color: var(--gold); border-radius: 8px; padding: 7px 14px; font-size: 12px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; margin: 0;">
-                <span>📷 Upload Photos</span>
-              </label>
-              <input type="file" id="tmplPhotoUpload" multiple accept="image/*" style="display: none;">
-              <span id="tmplPhotoCount" style="font-size: 11.5px; color: var(--cream-dim);">0 custom photos added</span>
+          <!-- GROUP 6: Photo Memories (Upload or URLs) -->
+          <div class="tmpl-sec-group">
+            <div class="tmpl-sec-title"><span>📸</span> 6. Photo Memories</div>
+            <div class="tmpl-input-group" style="margin:0;">
+              <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 8px;">
+                <label for="tmplPhotoUpload" style="background: rgba(255,255,255,0.08); border: 1px solid rgba(212,175,106,0.4); color: var(--gold); border-radius: 8px; padding: 7px 14px; font-size: 12px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; margin: 0;">
+                  <span>📷 Upload Custom Photos</span>
+                </label>
+                <input type="file" id="tmplPhotoUpload" multiple accept="image/*" style="display: none;">
+                <span id="tmplPhotoCount" style="font-size: 11.5px; color: var(--cream-dim);">0 custom photos added (default elegant photography will fill remaining spots)</span>
+              </div>
+              <div id="tmplPhotoPreviews" style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px;"></div>
             </div>
-            <div id="tmplPhotoPreviews" style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px;"></div>
           </div>
 
-          <div class="tmpl-input-group">
-            <label>Chapter 03 Affection Quote</label>
-            <input type="text" id="tmplQuote" value="To the world you may be one person, but to me you make everything better.">
-          </div>
-
-          <div class="tmpl-input-group">
-            <label>Personal Letter / Message (Paragraph 1)</label>
-            <textarea id="tmplLetter" rows="3">I wanted to create something truly magical and unforgettable for you today. A regular card could never capture how much you mean to everyone around you.</textarea>
-          </div>
-
-          <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:8px;">
+          <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:10px;">
             <button class="tmpl-btn-ghost" id="cancelCustomizerBtn">Cancel</button>
             <button class="tmpl-btn-primary" id="launchCustomizedTmplBtn" style="padding:12px 28px; font-size:13.5px;">
               ✦ Generate & Open in Studio Preview
@@ -3154,10 +3268,21 @@ Integrate user details explicitly into the design.`;
       recipientName: "My Dearest",
       sender: "Forever Yours",
       tagline: "A celebration of grace, laughter, and timeless memories.",
+      polaroidCaption: "Pure Grace.",
+      quote: "To the world you may be one person, but to me you make everything better.",
+      heartQuote: "Side by side or miles apart,\nwe are always connected by the heart.",
+      heartTitle: "The Reserved Chamber",
+      treat1Title: "Shopping Spree!",
+      treat1Desc: "My treat. Pick your favorites.",
+      treat2Title: "Royal Dinner!",
+      treat2Desc: "Your favorite restaurant, anytime.",
+      wishMessage: "May Every Dream Flourish",
       passcode: "2026",
       hint: "The year of magic",
-      quote: "To the world you may be one person, but to me you make everything better.",
-      letter: "I wanted to create something truly magical and unforgettable for you today. A regular card could never capture how much you mean to everyone around you.",
+      letter1: "I wanted to create something truly magical and unforgettable for you today. A regular card could never capture how much you mean to everyone around you.",
+      letter2: "From every quiet conversation to every milestone along the way, your presence brings warmth and inspiration to everything you touch. You have an extraordinary spirit that lifts everyone around you.",
+      letter3: "Whether reaching for tomorrow's boldest dreams or celebrating today's simplest joys, know that you are held in the highest regard, always admired, supported, and loved.",
+      letter4: "Never stop exploring. Never settle for the ordinary. May this year shower you with laughter, boundless success, and unforgettable moments.",
       occasion: "Birthday Premiere",
       photos: []
     }, custom || {});
@@ -3587,7 +3712,7 @@ Integrate user details explicitly into the design.`;
       </div>
       <div class="caption-area" style="margin:16px 0;">
         <p style="font-size:0.7rem; letter-spacing:3px; color:var(--accent-gold); text-transform:uppercase;">Chapter 02 // Memory</p>
-        <h2 style="font-family:'Playfair Display',serif; font-size:1.8rem; font-style:italic;">Pure <span style="background:linear-gradient(to right,var(--accent-gold),var(--primary-pink)); -webkit-background-clip:text; -webkit-text-fill-color:transparent;">Grace.</span></h2>
+        <h2 style="font-family:'Playfair Display',serif; font-size:1.8rem; font-style:italic;">` + escapeHtml(c.polaroidCaption || "Pure Grace.") + `</h2>
       </div>
       <button class="nav-btn" onclick="nextScene(3)">Continue →</button>
     </div>
@@ -3610,8 +3735,8 @@ Integrate user details explicitly into the design.`;
   <div class="scene-wrap" id="sc4">
     <div id="heartCanvasContainer"></div>
     <div class="heart-ui">
-      <div class="quote">"Side by side or miles apart,<br>we are always connected by the heart."</div>
-      <h1>The <span class="highlight">Reserved Chamber</span></h1>
+      <div class="quote">` + escapeHtml(c.heartQuote || "Side by side or miles apart,\nwe are always connected by the heart.").replace(/\n/g, '<br>') + `</div>
+      <h1><span class="highlight">` + escapeHtml(c.heartTitle || "The Reserved Chamber") + `</span></h1>
       <p>Held forever in orbit</p>
     </div>
     <div class="heart-nav">
@@ -3646,16 +3771,16 @@ Integrate user details explicitly into the design.`;
         <div class="promise-card">
           <div class="gift-content">
             <div style="font-size:24px; margin-bottom:2px;">🛍️</div>
-            <div style="font-family:'Playfair Display',serif; font-weight:700; font-size:1.25rem; color:#ffb199;">Shopping Spree!</div>
-            <div style="font-size:0.75rem; color:rgba(255,255,255,0.75);">My treat. Pick your favorites.</div>
+            <div style="font-family:'Playfair Display',serif; font-weight:700; font-size:1.25rem; color:#ffb199;">` + escapeHtml(c.treat1Title || "Shopping Spree!") + `</div>
+            <div style="font-size:0.75rem; color:rgba(255,255,255,0.75);">` + escapeHtml(c.treat1Desc || "My treat. Pick your favorites.") + `</div>
           </div>
           <canvas class="scratch-pad" id="canv1"></canvas>
         </div>
         <div class="promise-card">
           <div class="gift-content">
             <div style="font-size:24px; margin-bottom:2px;">🍽️</div>
-            <div style="font-family:'Playfair Display',serif; font-weight:700; font-size:1.25rem; color:#ffb199;">Royal Dinner!</div>
-            <div style="font-size:0.75rem; color:rgba(255,255,255,0.75);">Your favorite restaurant, anytime.</div>
+            <div style="font-family:'Playfair Display',serif; font-weight:700; font-size:1.25rem; color:#ffb199;">` + escapeHtml(c.treat2Title || "Royal Dinner!") + `</div>
+            <div style="font-size:0.75rem; color:rgba(255,255,255,0.75);">` + escapeHtml(c.treat2Desc || "Your favorite restaurant, anytime.") + `</div>
           </div>
           <canvas class="scratch-pad" id="canv2"></canvas>
         </div>
@@ -3693,7 +3818,7 @@ Integrate user details explicitly into the design.`;
         <div class="stick"></div>
       </div>
       <div id="candleSuccess" style="display:none; margin-top:14px;">
-        <h1 style="font-family:'Playfair Display',serif; font-style:italic; font-size:2rem; background:linear-gradient(to right,#fff,var(--primary-pink)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; margin-bottom:10px;">May Every Dream Flourish</h1>
+        <h1 style="font-family:'Playfair Display',serif; font-style:italic; font-size:2rem; background:linear-gradient(to right,#fff,var(--primary-pink)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; margin-bottom:10px;">` + escapeHtml(c.wishMessage || "May Every Dream Flourish") + `</h1>
         <button class="nav-btn" onclick="nextScene(9)">Unlock Vault Gate →</button>
       </div>
     </div>
@@ -3727,22 +3852,16 @@ Integrate user details explicitly into the design.`;
     <div class="letter-wrapper">
       <main class="glass-letter">
         <div class="letter-block">
-          <p class="letter-text">` + escapeHtml(c.letter) + `</p>
+          <p class="letter-text">` + escapeHtml(c.letter1) + `</p>
         </div>
         <div class="letter-block">
-          <p class="letter-text">
-            From every quiet conversation to every milestone along the way, your presence brings warmth and inspiration to everything you touch. You have an extraordinary spirit that lifts everyone around you.
-          </p>
+          <p class="letter-text">` + escapeHtml(c.letter2) + `</p>
         </div>
         <div class="letter-block">
-          <p class="letter-text">
-            Whether reaching for tomorrow's boldest dreams or celebrating today's simplest joys, know that you are held in the highest regard, always admired, supported, and loved.
-          </p>
+          <p class="letter-text">` + escapeHtml(c.letter3) + `</p>
         </div>
         <div class="letter-block">
-          <p class="letter-text">
-            Never stop exploring. Never settle for the ordinary. May this year shower you with laughter, boundless success, and unforgettable moments.
-          </p>
+          <p class="letter-text">` + escapeHtml(c.letter4) + `</p>
         </div>
         <div class="letter-block signature-block">
           <svg class="flower-icon" viewBox="0 0 24 24" fill="none" stroke="url(#goldPink)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
@@ -4049,26 +4168,72 @@ Integrate user details explicitly into the design.`;
     });
   }
 
+  // Category Filter Pill Handling
+  const tmplCatPills = document.querySelectorAll('.tmpl-cat-pill');
+  const tmplCards = document.querySelectorAll('#tmplGrid .tmpl-card');
+  tmplCatPills.forEach(pill => {
+    pill.addEventListener('click', () => {
+      tmplCatPills.forEach(p => p.classList.remove('active'));
+      pill.classList.add('active');
+      const cat = pill.getAttribute('data-cat');
+      tmplCards.forEach(card => {
+        const cats = card.getAttribute('data-categories') || 'all';
+        if (cat === 'all' || cats.includes(cat)) {
+          card.style.display = 'flex';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    });
+  });
+
   if (launchCustomizedTmplBtn) {
     launchCustomizedTmplBtn.addEventListener('click', () => {
-      const rName = (document.getElementById('tmplRecipient') ? document.getElementById('tmplRecipient').value.trim() : '') || "My Dearest";
-      const occ = (document.getElementById('tmplOccasion') ? document.getElementById('tmplOccasion').value.trim() : '') || "Birthday Premiere";
-      const tag = (document.getElementById('tmplTagline') ? document.getElementById('tmplTagline').value.trim() : '') || "A celebration of grace, laughter, and timeless memories.";
-      const sender = (document.getElementById('tmplSender') ? document.getElementById('tmplSender').value.trim() : '') || "Forever Yours";
-      const pass = (document.getElementById('tmplPasscode') ? document.getElementById('tmplPasscode').value.trim() : '') || "2026";
-      const hint = (document.getElementById('tmplHint') ? document.getElementById('tmplHint').value.trim() : '') || "The year of magic";
-      const quote = (document.getElementById('tmplQuote') ? document.getElementById('tmplQuote').value.trim() : '') || "To the world you may be one person, but to me you make everything better.";
-      const letter = (document.getElementById('tmplLetter') ? document.getElementById('tmplLetter').value.trim() : '') || "I wanted to create something truly magical and unforgettable for you today. A regular card could never capture how much you mean to everyone around you.";
+      const getVal = (id, fallback) => {
+        const el = document.getElementById(id);
+        return (el && el.value.trim()) ? el.value.trim() : fallback;
+      };
+
+      const rName = getVal('tmplRecipient', "My Dearest");
+      const occ = getVal('tmplOccasion', "Birthday Premiere");
+      const tag = getVal('tmplTagline', "A celebration of grace, laughter, and timeless memories.");
+      const polaroid = getVal('tmplPolaroidCaption', "Pure Grace.");
+      const sender = getVal('tmplSender', "Forever Yours");
+      const pass = getVal('tmplPasscode', "2026");
+      const hint = getVal('tmplHint', "The year of magic");
+      const quote = getVal('tmplQuote', "To the world you may be one person, but to me you make everything better.");
+      const heartQuote = getVal('tmplHeartQuote', "Side by side or miles apart,\nwe are always connected by the heart.");
+      const heartTitle = getVal('tmplHeartTitle', "The Reserved Chamber");
+      const treat1T = getVal('tmplTreat1Title', "Shopping Spree!");
+      const treat1D = getVal('tmplTreat1Desc', "My treat. Pick your favorites.");
+      const treat2T = getVal('tmplTreat2Title', "Royal Dinner!");
+      const treat2D = getVal('tmplTreat2Desc', "Your favorite restaurant, anytime.");
+      const wishMsg = getVal('tmplWishMessage', "May Every Dream Flourish");
+      const letter1 = getVal('tmplLetter1', "I wanted to create something truly magical and unforgettable for you today. A regular card could never capture how much you mean to everyone around you.");
+      const letter2 = getVal('tmplLetter2', "From every quiet conversation to every milestone along the way, your presence brings warmth and inspiration to everything you touch. You have an extraordinary spirit that lifts everyone around you.");
+      const letter3 = getVal('tmplLetter3', "Whether reaching for tomorrow's boldest dreams or celebrating today's simplest joys, know that you are held in the highest regard, always admired, supported, and loved.");
+      const letter4 = getVal('tmplLetter4', "Never stop exploring. Never settle for the ordinary. May this year shower you with laughter, boundless success, and unforgettable moments.");
 
       const customHtml = window.buildCuratedTemplateHtml({
         recipientName: rName,
         occasion: occ,
         tagline: tag,
+        polaroidCaption: polaroid,
         sender: sender,
         passcode: pass,
         hint: hint,
         quote: quote,
-        letter: letter,
+        heartQuote: heartQuote,
+        heartTitle: heartTitle,
+        treat1Title: treat1T,
+        treat1Desc: treat1D,
+        treat2Title: treat2T,
+        treat2Desc: treat2D,
+        wishMessage: wishMsg,
+        letter1: letter1,
+        letter2: letter2,
+        letter3: letter3,
+        letter4: letter4,
         photos: window.customTmplPhotos || []
       });
 
