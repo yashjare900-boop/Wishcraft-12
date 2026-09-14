@@ -754,8 +754,7 @@
 
   /* --- CINEMATIC API KEY TRIGGER BUTTON & ASKING BOX --- */
   .api-key-pill-btn {
-    position: relative;
-    display: inline-flex;
+    display: none;
     align-items: center;
     gap: 7px;
     padding: 7px 15px;
@@ -774,6 +773,8 @@
     user-select: none;
     white-space: nowrap;
     outline: none;
+    position: relative;
+    z-index: 5;
   }
   .api-key-pill-btn:hover {
     background: rgba(212, 175, 106, 0.1);
@@ -816,25 +817,14 @@
     background: rgba(76, 139, 130, 0.12);
   }
 
-  @media (max-width: 640px) {
-    .api-key-pill-btn {
-      padding: 6px 11px;
-      font-size: 11.5px;
-      gap: 5px;
-    }
-    .api-key-pill-btn span.btn-label-desktop {
-      display: inline;
-    }
-  }
-
   /* Stylish Custom API Asking Box Overlay */
   .api-modal-overlay {
     position: fixed;
     inset: 0;
     z-index: 999999;
-    background: rgba(0, 0, 0, 0.75);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
+    background: rgba(0, 0, 0, 0.78);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -850,15 +840,17 @@
   .api-modal-card {
     position: relative;
     width: 100%;
-    max-width: 480px;
+    max-width: 500px;
     background: #0E1015;
     border: 1px solid rgba(212, 175, 106, 0.28);
-    border-radius: 20px;
-    padding: 32px 28px;
+    border-radius: 22px;
+    padding: 28px 24px;
     box-shadow: 0 30px 80px rgba(0, 0, 0, 0.85), 0 0 0 1px rgba(255, 255, 255, 0.05) inset;
     transform: translateY(20px) scale(0.96);
     transition: all 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
     overflow: hidden;
+    max-height: 92vh;
+    overflow-y: auto;
   }
   .api-modal-overlay.show .api-modal-card {
     transform: translateY(0) scale(1);
@@ -883,11 +875,11 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
   }
   .api-modal-title {
     font-family: var(--serif);
-    font-size: 22px;
+    font-size: 21px;
     font-weight: 600;
     color: #fff;
     margin: 0;
@@ -915,10 +907,10 @@
     color: var(--gold);
   }
   .api-modal-desc {
-    font-size: 13.5px;
+    font-size: 13px;
     color: var(--cream-dim);
-    line-height: 1.55;
-    margin: 0 0 22px 0;
+    line-height: 1.5;
+    margin: 0 0 18px 0;
   }
   .api-modal-desc a {
     color: var(--gold);
@@ -928,6 +920,75 @@
   .api-modal-desc a:hover {
     border-bottom-style: solid;
   }
+
+  /* Key Source Toggle Cards */
+  .api-choice-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 18px;
+  }
+  .api-choice-card {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 14px;
+    padding: 13px 12px;
+    cursor: pointer;
+    transition: all 0.22s ease;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    position: relative;
+  }
+  .api-choice-card:hover {
+    border-color: rgba(212, 175, 106, 0.4);
+    background: rgba(212, 175, 106, 0.04);
+  }
+  .api-choice-card.active {
+    border-color: var(--gold);
+    background: rgba(212, 175, 106, 0.1);
+    box-shadow: 0 0 20px rgba(212, 175, 106, 0.15), inset 0 0 12px rgba(212, 175, 106, 0.05);
+  }
+  .api-choice-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .api-choice-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .api-choice-radio {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(255, 255, 255, 0.25);
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .api-choice-card.active .api-choice-radio {
+    border-color: var(--gold);
+  }
+  .api-choice-card.active .api-choice-radio::after {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--gold);
+  }
+  .api-choice-desc {
+    font-size: 11px;
+    color: var(--cream-dim);
+    line-height: 1.35;
+  }
+
   .api-input-wrap {
     position: relative;
     display: flex;
@@ -936,7 +997,7 @@
     border: 1px solid rgba(212, 175, 106, 0.25);
     border-radius: 12px;
     padding: 3px 6px 3px 14px;
-    margin-bottom: 14px;
+    margin-bottom: 12px;
     box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.4);
     transition: all 0.2s ease;
   }
@@ -1031,6 +1092,34 @@
     border: 1px solid rgba(255, 255, 255, 0.05);
   }
 
+  @media (max-width: 640px) {
+    .topbar-right {
+      gap: 6px;
+    }
+    .api-key-pill-btn {
+      padding: 6px 10px;
+      font-size: 11px;
+      gap: 4px;
+    }
+    .api-modal-card {
+      padding: 22px 18px;
+      border-radius: 18px;
+    }
+    .api-choice-container {
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+    .api-modal-footer {
+      flex-direction: column-reverse;
+      gap: 8px;
+    }
+    .api-modal-footer button {
+      width: 100%;
+      text-align: center;
+      justify-content: center;
+    }
+  }
+
 </style>
 </head>
 <body>
@@ -1044,15 +1133,6 @@
   <nav class="l-nav">
     <div class="l-nav-brand">Wish<span class="dot">Craft</span></div>
     <div class="l-nav-actions">
-      <button class="api-key-pill-btn landing-api-btn" onclick="openApiKeyModal()" title="Configure your Gemini API key">
-        <span class="api-key-icon">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/>
-          </svg>
-        </span>
-        <span class="api-btn-text">API Key</span>
-        <span class="api-key-status-dot" title="Custom key active"></span>
-      </button>
       <button class="l-btn-ghost" id="navLoginBtn">Log in</button>
       <button class="l-btn-outline" id="navSignupBtn">Sign Up</button>
     </div>
@@ -1432,13 +1512,13 @@
           
           <div style="display: flex; gap: 10px; justify-content: center; align-items: center; margin-top: 10px; flex-wrap: wrap;">
             <button class="ghost-btn" id="retryBtn" style="padding: 10px 24px;">Try Again</button>
-            <button class="api-key-pill-btn" id="toggleApiKeyBoxBtn" style="padding: 9px 18px; font-size: 12.5px;">
+            <button class="api-key-pill-btn" id="toggleApiKeyBoxBtn" onclick="openApiKeyModal()" style="display:inline-flex; padding: 9px 18px; font-size: 12.5px;">
               <span class="api-key-icon">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
                   <path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/>
                 </svg>
               </span>
-              <span>Insert My API Key</span>
+              <span>API Key Settings</span>
             </button>
           </div>
 
@@ -1915,10 +1995,11 @@ Integrate user details explicitly into the design.`;
   
 
   async function callGemini(systemPrompt, userContent) {
+    const keySource = localStorage.getItem('wishcraft_key_source') || 'custom';
     const customKey = localStorage.getItem('wishcraft_custom_api_key');
 
-    // If user provided their own key, call Gemini directly from browser (bypasses server timeouts/limits)
-    if (customKey && customKey.trim()) {
+    // If user provided their own key and selected custom key mode, call Gemini directly from browser
+    if (keySource !== 'web' && customKey && customKey.trim()) {
       const models = ['gemini-3.5-flash-lite', 'gemini-3.6-flash', 'gemini-3.5-flash', 'gemini-3.7-flash'];
       let lastErr = null;
 
@@ -2067,27 +2148,57 @@ Integrate user details explicitly into the design.`;
   const toggleApiKeyVisibility = document.getElementById('toggleApiKeyVisibility');
   const clearApiKeyBtn = document.getElementById('clearApiKeyBtn');
   const saveApiKeyModalBtn = document.getElementById('saveApiKeyModalBtn');
+  const choiceWebKey = document.getElementById('choiceWebKey');
+  const choiceCustomKey = document.getElementById('choiceCustomKey');
+  const customKeyInputSection = document.getElementById('customKeyInputSection');
+
+  let activeKeyChoice = localStorage.getItem('wishcraft_key_source') || (localStorage.getItem('wishcraft_custom_api_key') ? 'custom' : 'web');
+
+  function setKeyChoice(choice) {
+    activeKeyChoice = choice;
+    if (choice === 'web') {
+      if (choiceWebKey) choiceWebKey.classList.add('active');
+      if (choiceCustomKey) choiceCustomKey.classList.remove('active');
+      if (customKeyInputSection) customKeyInputSection.style.display = 'none';
+    } else {
+      if (choiceCustomKey) choiceCustomKey.classList.add('active');
+      if (choiceWebKey) choiceWebKey.classList.remove('active');
+      if (customKeyInputSection) customKeyInputSection.style.display = 'block';
+      setTimeout(() => { if (modalApiKeyInput) modalApiKeyInput.focus(); }, 100);
+    }
+  }
+
+  if (choiceWebKey) {
+    choiceWebKey.addEventListener('click', () => setKeyChoice('web'));
+  }
+  if (choiceCustomKey) {
+    choiceCustomKey.addEventListener('click', () => setKeyChoice('custom'));
+  }
 
   function updateApiKeyUIState() {
     const key = localStorage.getItem('wishcraft_custom_api_key');
-    const hasKey = !!(key && key.trim());
+    const source = localStorage.getItem('wishcraft_key_source') || (key ? 'custom' : 'web');
+    const hasCustomKey = !!(key && key.trim());
+    const isUsingCustom = source === 'custom' && hasCustomKey;
     
-    // Update all API Key pill buttons across landing and workshop
+    // Update all API Key pill buttons across workshop
     document.querySelectorAll('.api-key-pill-btn').forEach(btn => {
-      if (hasKey) {
+      if (isUsingCustom) {
         btn.classList.add('has-key');
       } else {
         btn.classList.remove('has-key');
       }
       const label = btn.querySelector('.api-btn-text') || btn.querySelector('#apiKeyBtnText');
       if (label) {
-        label.textContent = hasKey ? 'Key Active' : 'API Key';
+        label.textContent = isUsingCustom ? 'Key: Custom' : 'API Key';
       }
     });
 
     if (modalApiKeyInput) {
-      modalApiKeyInput.value = hasKey ? key.trim() : '';
+      modalApiKeyInput.value = hasCustomKey ? key.trim() : '';
     }
+
+    setKeyChoice(source);
   }
 
   // Define global window helpers so inline onclick and manual triggers both work flawlessly
@@ -2096,8 +2207,10 @@ Integrate user details explicitly into the design.`;
     if (apiKeyModal) {
       apiKeyModal.classList.add('show');
       setTimeout(() => {
-        if (modalApiKeyInput) modalApiKeyInput.focus();
-      }, 100);
+        if (activeKeyChoice === 'custom' && modalApiKeyInput) {
+          modalApiKeyInput.focus();
+        }
+      }, 120);
     }
   };
 
@@ -2114,6 +2227,7 @@ Integrate user details explicitly into the design.`;
   document.querySelectorAll('.api-key-pill-btn').forEach(btn => {
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
+      e.preventDefault();
       window.openApiKeyModal();
     });
   });
@@ -2144,38 +2258,42 @@ Integrate user details explicitly into the design.`;
     });
   }
 
-  if (saveApiKeyModalBtn && modalApiKeyInput) {
+  if (saveApiKeyModalBtn) {
     saveApiKeyModalBtn.addEventListener('click', () => {
-      const key = modalApiKeyInput.value.trim();
-      if (!key) {
-        localStorage.removeItem('wishcraft_custom_api_key');
+      if (activeKeyChoice === 'web') {
+        localStorage.setItem('wishcraft_key_source', 'web');
         updateApiKeyUIState();
         window.closeApiKeyModal();
         return;
       }
+
+      // Custom key selected
+      const key = modalApiKeyInput ? modalApiKeyInput.value.trim() : '';
+      if (!key) {
+        alert("Please enter a valid Gemini API key or select 'Web Key'.");
+        if (modalApiKeyInput) modalApiKeyInput.focus();
+        return;
+      }
       localStorage.setItem('wishcraft_custom_api_key', key);
+      localStorage.setItem('wishcraft_key_source', 'custom');
       updateApiKeyUIState();
       window.closeApiKeyModal();
     });
   }
 
-  if (clearApiKeyBtn && modalApiKeyInput) {
+  if (clearApiKeyBtn) {
     clearApiKeyBtn.addEventListener('click', () => {
       localStorage.removeItem('wishcraft_custom_api_key');
-      modalApiKeyInput.value = '';
+      localStorage.setItem('wishcraft_key_source', 'web');
+      if (modalApiKeyInput) modalApiKeyInput.value = '';
       updateApiKeyUIState();
       window.closeApiKeyModal();
     });
   }
 
-  if (toggleApiKeyBoxBtn && customApiKeyBox) {
+  if (toggleApiKeyBoxBtn) {
     toggleApiKeyBoxBtn.addEventListener('click', () => {
-      const isHidden = customApiKeyBox.style.display === 'none' || !customApiKeyBox.style.display;
-      customApiKeyBox.style.display = isHidden ? 'block' : 'none';
-      if (isHidden && userCustomKeyInput) {
-        userCustomKeyInput.value = localStorage.getItem('wishcraft_custom_api_key') || '';
-        userCustomKeyInput.focus();
-      }
+      window.openApiKeyModal();
     });
   }
 
@@ -2837,8 +2955,10 @@ Integrate user details explicitly into the design.`;
                 else updateTierUI("Hobbyist");
             } catch(e) { updateTierUI("Hobbyist"); }
         }
+        if (document.getElementById('apiKeyModalBtn')) document.getElementById('apiKeyModalBtn').style.display = 'inline-flex';
       } else {
         userProfile.style.display = 'none';
+        if (document.getElementById('apiKeyModalBtn')) document.getElementById('apiKeyModalBtn').style.display = 'none';
         if (window.isGuest) topbarLoginBtn.style.display = 'inline-flex';
         else { landingPage.classList.remove('hidden'); mainApp.classList.add('app-hidden'); document.body.style.overflow = "hidden"; }
       }
@@ -3373,28 +3493,58 @@ Integrate user details explicitly into the design.`;
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/>
             </svg>
-            Gemini API Key
+            AI Generation Key
           </h3>
           <button class="api-modal-close" id="closeApiKeyModalBtn" aria-label="Close modal">&times;</button>
         </div>
         
         <p class="api-modal-desc">
-          Craft cinematic pages with your own key. Directly bypasses all server queues and rate limits. 
-          <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener">Get a free key at Google AI Studio ↗</a>
+          Choose whether to craft pages using WishCraft's cloud engine or connect your own free Gemini API key to bypass all limits.
         </p>
 
-        <div class="api-input-wrap">
-          <input type="password" class="api-key-input-field" id="modalApiKeyInput" placeholder="Paste your API key (AIzaSy...)" autocomplete="off" spellcheck="false">
-          <button class="api-input-visibility-toggle" id="toggleApiKeyVisibility" type="button" title="Toggle visibility">👁️</button>
+        <!-- Key Source Choice Selector -->
+        <div class="api-choice-container">
+          <div class="api-choice-card active" id="choiceWebKey">
+            <div class="api-choice-header">
+              <span class="api-choice-title">
+                <span>🌐</span> Web Key
+              </span>
+              <span class="api-choice-radio"></span>
+            </div>
+            <span class="api-choice-desc">Use WishCraft's default server quota. Zero setup needed.</span>
+          </div>
+
+          <div class="api-choice-card" id="choiceCustomKey">
+            <div class="api-choice-header">
+              <span class="api-choice-title">
+                <span>⚡</span> My Own Key
+              </span>
+              <span class="api-choice-radio"></span>
+            </div>
+            <span class="api-choice-desc">Direct browser AI connection. Ultra-fast, zero timeouts.</span>
+          </div>
         </div>
 
-        <div class="api-key-badge-note">
-          <span style="color:var(--gold);">✦</span>
-          <span>Keys are stored locally in your browser and never shared.</span>
+        <!-- Custom Key Input Section (shown when My Own Key is selected) -->
+        <div id="customKeyInputSection" style="display: none;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+            <label style="font-size: 12px; font-weight: 600; color: var(--gold); font-family: var(--sans);">Your Gemini API Key</label>
+            <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener" style="font-size: 11px; color: var(--gold); text-decoration: none; border-bottom: 1px dashed var(--gold-dim);">Get Free Key ↗</a>
+          </div>
+
+          <div class="api-input-wrap">
+            <input type="password" class="api-key-input-field" id="modalApiKeyInput" placeholder="Paste key (AIzaSy...)" autocomplete="off" spellcheck="false">
+            <button class="api-input-visibility-toggle" id="toggleApiKeyVisibility" type="button" title="Toggle visibility">👁️</button>
+          </div>
+
+          <div class="api-key-badge-note">
+            <span style="color:var(--gold);">✦</span>
+            <span>Your key is saved locally in this browser and never stored on our servers.</span>
+          </div>
         </div>
 
         <div class="api-modal-footer">
-          <button class="api-clear-btn" id="clearApiKeyBtn">Clear Key</button>
+          <button class="api-clear-btn" id="clearApiKeyBtn">Reset to Default</button>
           <button class="api-save-btn" id="saveApiKeyModalBtn">Save & Apply</button>
         </div>
       </div>
