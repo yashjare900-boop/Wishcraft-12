@@ -265,7 +265,8 @@
 
   #stateMsg{
     position:fixed; inset:0; display:none; align-items:center; justify-content:center;
-    color:var(--cream-dim); font-size:13px; text-align:center; padding:20px; z-index:50;
+    color:var(--cream); font-size:15px; text-align:center; padding:30px; z-index:50;
+    line-height: 1.6; letter-spacing: 0.02em; background: rgba(11, 12, 16, 0.85); backdrop-filter: blur(12px);
   }
 
   @media (max-width:480px){
@@ -517,15 +518,30 @@
     }, 3300);
   }
 
-  const params = new URLSearchParams(window.location.search);
-  const docId = params.get('id');
+  function extractDocId() {
+    let id = null;
+    try {
+      const searchParams = new URLSearchParams(window.location.search);
+      id = searchParams.get('id');
+      if (!id && window.location.hash) {
+        const rawHash = window.location.hash.replace(/^#\??/, '');
+        const hashParams = new URLSearchParams(rawHash);
+        id = hashParams.get('id') || rawHash.split('&')[0];
+      }
+    } catch(e) {
+      console.warn("Could not parse gift ID params:", e);
+    }
+    return (typeof id === 'string') ? id.trim() : null;
+  }
+
+  const docId = extractDocId();
 
   if (!docId) {
-    showState("No gift ID was provided in the link.");
+    showState("No gift ID was provided in the link. Please verify the URL.");
   } else {
     getDoc(doc(db, "published_pages", docId)).then(async (snap) => {
       if (!snap.exists()) {
-        showState("This gift link doesn't exist or may have been removed.");
+        showState("This gift link doesn't exist or may have expired.");
         return;
       }
       const data = snap.data();
@@ -572,6 +588,9 @@
 
       gateSubmit.addEventListener('click', attemptUnlock);
       gatePassword.addEventListener('keypress', (e) => { if (e.key === 'Enter') attemptUnlock(); });
+    }).catch(err => {
+      console.error("Firestore getDoc error:", err);
+      showState("Unable to load gift. Please check your internet connection or try again.");
     });
   }
 </script>
