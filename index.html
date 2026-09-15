@@ -1894,7 +1894,7 @@
                   <span>📷 Upload Custom Photos</span>
                 </label>
                 <input type="file" id="tmplPhotoUpload" multiple accept="image/*" style="display: none;">
-                <span id="tmplPhotoCount" style="font-size: 11.5px; color: var(--cream-dim);">0 custom photos added (default elegant photography will fill remaining spots)</span>
+                <span id="tmplPhotoCount" style="font-size: 11.5px; color: var(--cream-dim);">0 photos added (auto-compressed; add up to 10–12 photos)</span>
               </div>
               <div id="tmplPhotoPreviews" style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px;"></div>
             </div>
@@ -2327,9 +2327,10 @@
     voiceDrop.classList.remove('has-file'); voiceDrop.textContent = 'Click to add a short audio clip'; voiceInput.value = '';
   });
 
-  // Client-side image compression helper to keep Firestore document size within limits (< 1 MB)
-  function compressImageFile(file, maxWidth = 900, maxHeight = 900, quality = 0.75) {
-    return new Promise((resolve, reject) => {
+  // Client-side high-efficiency image compression helper
+  // Keeps each image between 30 KB - 60 KB so even 10-15 photos total only ~500 KB, safely under Firestore's 1 MB limit!
+  function compressImageFile(file, maxWidth = 700, maxHeight = 700, targetMaxBytes = 65000) {
+    return new Promise((resolve) => {
       const reader = new FileReader();
       reader.onload = (e) => {
         const img = new Image();
@@ -2345,18 +2346,40 @@
               height = maxHeight;
             }
           }
+
           const canvas = document.createElement('canvas');
           canvas.width = width;
           canvas.height = height;
           const ctx = canvas.getContext('2d');
+          // Smooth image downsampling
+          ctx.imageSmoothingEnabled = true;
+          ctx.imageSmoothingQuality = 'high';
           ctx.drawImage(img, 0, 0, width, height);
-          const compressedDataUrl = canvas.toDataURL('image/jpeg', quality);
-          resolve(compressedDataUrl);
+
+          // Progressive quality reduction if needed to stay below targetMaxBytes
+          let quality = 0.72;
+          let dataUrl = canvas.toDataURL('image/jpeg', quality);
+
+          // If still larger than target (approx byte length of base64), step down quality & size
+          let attempts = 0;
+          while (dataUrl.length * 0.75 > targetMaxBytes && attempts < 4) {
+            quality -= 0.12;
+            if (quality < 0.35) {
+              // Also scale down dimensions slightly if quality alone is insufficient
+              canvas.width = Math.round(canvas.width * 0.85);
+              canvas.height = Math.round(canvas.height * 0.85);
+              ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+              quality = 0.55;
+            }
+            dataUrl = canvas.toDataURL('image/jpeg', Math.max(quality, 0.35));
+            attempts++;
+          }
+          resolve(dataUrl);
         };
-        img.onerror = () => resolve(e.target.result); // Fallback to raw if decoding fails
+        img.onerror = () => resolve(e.target.result);
         img.src = e.target.result;
       };
-      reader.onerror = reject;
+      reader.onerror = () => resolve(null);
       reader.readAsDataURL(file);
     });
   }
@@ -3286,22 +3309,21 @@ Integrate user details explicitly into the design.`;
     tmplPhotoUpload.addEventListener('change', async (e) => {
       const files = Array.from(e.target.files || []);
       if (!files.length) return;
+      if (tmplPhotoCount) tmplPhotoCount.textContent = "Optimizing & compressing images...";
       for (const file of files) {
         if (!file.type.startsWith('image/')) continue;
         try {
-          const compressed = await compressImageFile(file, 900, 900, 0.75);
-          window.customTmplPhotos.push(compressed);
-          updateTmplPhotoDisplay();
-        } catch (err) {
-          console.warn("Failed to compress image, using original:", err);
-          const reader = new FileReader();
-          reader.onload = (evt) => {
-            window.customTmplPhotos.push(evt.target.result);
+          // Compress strictly to ~50KB (640x640 max, targetMaxBytes 55000)
+          const compressed = await compressImageFile(file, 640, 640, 55000);
+          if (compressed) {
+            window.customTmplPhotos.push(compressed);
             updateTmplPhotoDisplay();
-          };
-          reader.readAsDataURL(file);
+          }
+        } catch (err) {
+          console.warn("Failed to compress image:", err);
         }
       }
+      updateTmplPhotoDisplay();
       tmplPhotoUpload.value = '';
     });
   }
@@ -3346,7 +3368,10 @@ Integrate user details explicitly into the design.`;
 
     const userPhotos = Array.isArray(c.photos) && c.photos.length > 0 ? c.photos : [];
     const primaryPhoto = userPhotos.length > 0 ? userPhotos[0] : defaultFallbacks[0];
-    const carouselPhotos = userPhotos.length > 0 ? userPhotos.concat(defaultFallbacks).slice(0, 6) : defaultFallbacks;
+    // If user uploaded photos, use all their uploaded photos (up to 12). If fewer than 6, append fallbacks so carousel is full.
+    const carouselPhotos = userPhotos.length >= 6 
+      ? userPhotos.slice(0, 12) 
+      : (userPhotos.length > 0 ? userPhotos.concat(defaultFallbacks).slice(0, 6) : defaultFallbacks);
 
     return `<!DOCTYPE html>
 <html lang="en">
@@ -4102,7 +4127,10 @@ Integrate user details explicitly into the design.`;
       const car = document.getElementById('carousel3D');
       if(!car || car.__ok) return; car.__ok = true;
       const imgs = ` + JSON.stringify(carouselPhotos) + `;
-      const count = imgs.length; const radius = 180;
+      const count = imgs.length; 
+      // Compute optimal radius dynamically so 6, 8, 10, or 12 cards orbit comfortably
+      const cellWidth = 180;
+      const radius = Math.max(190, Math.round((cellWidth / 2) / Math.tan(Math.PI / count)));
       imgs.forEach((src, idx) => {
         const d = document.createElement('div');
         d.className = 'carousel-cell' + (idx===0 ? ' active':'');
