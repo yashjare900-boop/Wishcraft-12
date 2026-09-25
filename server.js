@@ -20,6 +20,10 @@ app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 // Serve static frontend files
 app.use(express.static(__dirname));
 
+// Clean routes for About / Creator
+app.get('/about', (req, res) => res.sendFile(path.join(__dirname, 'about.html')));
+app.get('/creator', (req, res) => res.redirect(301, '/about'));
+
 // Favicon handler
 app.get('/favicon.ico', (req, res) => res.status(204).end());
 

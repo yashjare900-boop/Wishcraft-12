@@ -3,14 +3,39 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="author" content="Yash Jare">
+<meta name="creator" content="Yash Jare">
+<meta name="publisher" content="WishCraft by Yash Jare">
 <!-- Open Graph / Rich Social Cards -->
 <meta property="og:type" content="website">
+<meta property="og:site_name" content="WishCraft">
 <meta property="og:title" content="A Gift For You ✨">
-<meta property="og:description" content="Someone special crafted an interactive digital experience for you.">
+<meta property="og:description" content="An interactive, cinematic digital experience created with WishCraft by Yash Jare.">
 <meta property="og:image" content="https://wishcraft-12.netlify.app/og-preview.png">
 <meta property="og:url" content="https://wishcraft-12.netlify.app/">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:creator" content="Yash Jare">
 <title>A Gift For You</title>
+
+<!-- Structured Data (Schema.org JSON-LD) -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CreativeWork",
+  "name": "A Gift For You",
+  "creator": {
+    "@type": "Person",
+    "name": "Yash Jare",
+    "jobTitle": "Creator & Lead Architect of WishCraft",
+    "email": "mailto:yashjare900@gmail.com"
+  },
+  "publisher": {
+    "@type": "WebApplication",
+    "name": "WishCraft",
+    "url": "https://wishcraft-12.netlify.app/"
+  }
+}
+</script>
 <style>
   :root{
     --bg:#0B0C10; --gold:#D4AF6A; --gold-dim:#8a7346; --cream:#F5F0E6; --cream-dim:#A8A296;
@@ -53,7 +78,7 @@
     100%{ transform:translateY(-110vh) translateX(var(--drift)); opacity:0; }
   }
 
-  /* ================= BIRDS (subtle, optional flourish) ================= */
+  /* ================= BIRDS (subtle flourish) ================= */
   #birds{ position:fixed; inset:0; z-index:1; pointer-events:none; overflow:hidden; }
   .bird{
     position:absolute; width:34px; height:14px; opacity:0;
@@ -74,9 +99,9 @@
     position:fixed; inset:0; display:flex; align-items:center; justify-content:center;
     flex-direction:column; gap:30px; z-index:900;
     background: var(--bg);
-    transition: opacity 1s ease, filter 1s ease, transform 1s ease;
+    transition: opacity 0.4s ease, filter 0.4s ease;
   }
-  #loadScreen.fade-out{ opacity:0; filter:blur(16px); transform:scale(1.08); pointer-events:none; }
+  #loadScreen.fade-out{ opacity:0; filter:blur(12px); pointer-events:none; }
 
   .orb-wrap{ position:relative; width:150px; height:150px; display:flex; align-items:center; justify-content:center; }
   .orb-ring{
@@ -125,17 +150,17 @@
     width:0%; height:100%; border-radius:99px;
     background:linear-gradient(90deg, var(--gold-dim), var(--gold));
     box-shadow:0 0 8px rgba(212,175,106,0.6);
-    transition: width 0.6s ease;
+    transition: width 0.35s ease;
   }
 
   /* ================= GATE SCREEN ================= */
   #gateScreen{
     position:fixed; inset:0; align-items:center; justify-content:center;
-    padding:20px; opacity:0; visibility:hidden; z-index:20;
-    display:none;
-    transition: opacity 0.8s ease;
+    padding:20px; opacity:0; visibility:hidden; z-index:999;
+    display:flex; pointer-events:none;
+    transition: opacity 0.4s cubic-bezier(0.16,1,0.3,1), visibility 0.4s ease;
   }
-  #gateScreen.visible{ opacity:1; visibility:visible; display:flex; }
+  #gateScreen.visible{ opacity:1; visibility:visible; pointer-events:auto; }
 
   #gateBox{
     width:min(380px, 100%); background:var(--glass); border:1px solid var(--line);
@@ -143,7 +168,7 @@
     backdrop-filter:blur(30px) saturate(150%); -webkit-backdrop-filter:blur(30px) saturate(150%);
     box-shadow: 0 20px 60px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.08);
     transform-style: preserve-3d;
-    animation: floatIn 1.1s cubic-bezier(0.16,1,0.3,1) both;
+    animation: floatIn 0.8s cubic-bezier(0.16,1,0.3,1) both;
     position:relative;
   }
   @keyframes floatIn{
@@ -194,7 +219,7 @@
   #gateError{ color:#e88; font-size:12px; margin-top:12px; min-height:14px; }
   #gateHint{ color:#666; font-size:11px; margin-top:16px; }
 
-  /* ================= UNLOCK TRANSITION (slowed, layered, cinematic) ================= */
+  /* ================= UNLOCK TRANSITION ================= */
   #unlockOverlay{
     position:fixed; inset:0; z-index:600; pointer-events:none;
     display:flex; align-items:center; justify-content:center;
@@ -234,17 +259,17 @@
   }
   #viewerFrame.reveal{
     display:block;
-    animation: frameReveal 2.2s cubic-bezier(0.16,1,0.3,1) both;
+    animation: frameReveal 1.8s cubic-bezier(0.16,1,0.3,1) both;
   }
   @keyframes frameReveal{
     0%{
       opacity:0;
-      transform: scale(0.78) rotateX(-16deg) translateY(50px);
-      filter: blur(18px) brightness(1.7);
+      transform: scale(0.85) rotateX(-10deg) translateY(30px);
+      filter: blur(14px) brightness(1.5);
     }
     45%{
       opacity:1;
-      filter: blur(4px) brightness(1.2);
+      filter: blur(3px) brightness(1.1);
     }
     100%{
       opacity:1;
@@ -265,8 +290,8 @@
 
   #stateMsg{
     position:fixed; inset:0; display:none; align-items:center; justify-content:center;
-    color:var(--cream); font-size:15px; text-align:center; padding:30px; z-index:50;
-    line-height: 1.6; letter-spacing: 0.02em; background: rgba(11, 12, 16, 0.85); backdrop-filter: blur(12px);
+    color:var(--cream); font-size:15px; text-align:center; padding:30px; z-index:1000;
+    line-height: 1.6; letter-spacing: 0.02em; background: rgba(11, 12, 16, 0.88); backdrop-filter: blur(14px);
   }
 
   @media (max-width:480px){
@@ -318,7 +343,7 @@
   </div>
 
   <div id="frameStage">
-    <iframe id="viewerFrame" title="Your gift" sandbox="allow-scripts allow-same-origin"></iframe>
+    <iframe id="viewerFrame" title="Your gift" sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals"></iframe>
   </div>
 
 <script type="module">
@@ -368,6 +393,8 @@
   const birdsWrap = document.getElementById('birds');
 
   const isMobile = window.innerWidth < 640;
+  let activeTargetId = null;
+  let activeGiftData = null;
 
   // ---- orbiting sparkles around the loading orb ----
   const orbWrap = document.querySelector('.orb-wrap');
@@ -382,28 +409,30 @@
     orbWrap.appendChild(sp);
   }
 
-  // ---- staged loader copy + progress bar (slower, more deliberate) ----
+  // ---- staged loader copy + progress bar ----
   const loadLabel = document.getElementById('loadLabel');
   const loadSub = document.getElementById('loadSub');
   const loadBarFill = document.getElementById('loadBarFill');
   const loadStages = [
-    { pct: 15, label: "Preparing your gift", sub: "A little something is being wrapped for you" },
-    { pct: 42, label: "Tying the ribbon", sub: "Almost every detail is in place" },
-    { pct: 68, label: "Adding the finishing touch", sub: "This one was made just for you" },
-    { pct: 90, label: "Ready to open", sub: "Just a moment more" }
+    { pct: 20, label: "Preparing your gift", sub: "A little something is being wrapped for you" },
+    { pct: 50, label: "Tying the ribbon", sub: "Almost every detail is in place" },
+    { pct: 75, label: "Adding the finishing touch", sub: "This one was made just for you" },
+    { pct: 92, label: "Ready to open", sub: "Just a moment more" }
   ];
   let stageTimers = [];
   function runLoaderStages(){
     loadStages.forEach((s, i) => {
       const t = setTimeout(() => {
-        loadBarFill.style.width = s.pct + '%';
-        loadSub.style.opacity = '0';
+        if (loadBarFill) loadBarFill.style.width = s.pct + '%';
+        if (loadSub) loadSub.style.opacity = '0';
         setTimeout(() => {
-          loadLabel.textContent = s.label;
-          loadSub.textContent = s.sub;
-          loadSub.style.opacity = '1';
-        }, 260);
-      }, i * 900);
+          if (loadLabel) loadLabel.textContent = s.label;
+          if (loadSub) {
+            loadSub.textContent = s.sub;
+            loadSub.style.opacity = '1';
+          }
+        }, 200);
+      }, i * 600);
       stageTimers.push(t);
     });
   }
@@ -425,7 +454,7 @@
     ambient.appendChild(m);
   }
 
-  // ---- optional subtle birds flourish ----
+  // ---- subtle birds flourish ----
   const birdSvg = '<svg viewBox="0 0 34 14" xmlns="http://www.w3.org/2000/svg"><path d="M0 8 Q8 -2 17 8 Q26 -2 34 8" fill="none" stroke="rgba(212,175,106,0.55)" stroke-width="1.6" stroke-linecap="round"/></svg>';
   const birdCount = isMobile ? 2 : 4;
   for (let i = 0; i < birdCount; i++) {
@@ -438,7 +467,7 @@
     birdsWrap.appendChild(b);
   }
 
-  // build radial shards once
+  // build radial shards
   const shardCount = isMobile ? 14 : 22;
   for (let i = 0; i < shardCount; i++) {
     const s = document.createElement('div');
@@ -450,29 +479,65 @@
   }
 
   const loaderStart = Date.now();
-  const MIN_LOADER_MS = 4200;
+  const MIN_LOADER_MS = 600;
 
   function hideLoader(){
+    stageTimers.forEach(t => clearTimeout(t));
+    stageTimers = [];
     const elapsed = Date.now() - loaderStart;
     const wait = Math.max(0, MIN_LOADER_MS - elapsed);
     setTimeout(() => {
-      loadBarFill.style.width = '100%';
-      loadSub.style.opacity = '0';
+      if (loadBarFill) loadBarFill.style.width = '100%';
+      if (loadSub) loadSub.style.opacity = '0';
+      if (loadLabel) loadLabel.textContent = "Ready";
       setTimeout(() => {
-        loadLabel.textContent = "Ready";
-        loadSub.textContent = "Enjoy your gift";
-        loadSub.style.opacity = '1';
-      }, 260);
-      setTimeout(() => {
-        loadScreen.classList.add('fade-out');
-        setTimeout(() => { loadScreen.style.display = 'none'; }, 1050);
-      }, 650);
+        if (loadScreen) {
+          loadScreen.classList.add('fade-out');
+          setTimeout(() => {
+            loadScreen.style.display = 'none';
+          }, 350);
+        }
+      }, 120);
     }, wait);
   }
 
   function showState(msg){
     hideLoader();
     stateMsg.textContent = msg;
+    stateMsg.style.display = 'flex';
+  }
+
+  function showErrorState(msg, attemptedId) {
+    hideLoader();
+    stateMsg.innerHTML = `
+      <div style="background:var(--glass); border:1px solid var(--line); border-radius:24px; padding:36px 28px; max-width:440px; width:92%; text-align:center; backdrop-filter:blur(30px); -webkit-backdrop-filter:blur(30px); box-shadow:0 24px 70px rgba(0,0,0,0.6); position:relative; z-index:100;">
+        <div style="width:58px; height:58px; margin:0 auto 16px; border-radius:50%; background:rgba(238,136,136,0.15); border:1px solid rgba(238,136,136,0.4); display:flex; align-items:center; justify-content:center; font-size:24px; color:#e88;">⚠️</div>
+        <h2 style="color:var(--cream); font-family:var(--serif); font-size:20px; margin:0 0 10px; font-weight:600;">Connection Issue</h2>
+        <p style="color:var(--cream-dim); font-size:13.5px; line-height:1.55; margin:0 0 20px;">${msg}</p>
+        <button id="retryLoadBtn" style="padding:12px 26px; border-radius:99px; border:none; background:linear-gradient(135deg, var(--gold), #a9854c); color:#0B0C10; font-weight:700; font-size:13.5px; cursor:pointer;">Retry</button>
+      </div>
+    `;
+    stateMsg.style.display = 'flex';
+    document.getElementById('retryLoadBtn')?.addEventListener('click', () => {
+      stateMsg.style.display = 'none';
+      loadScreen.style.display = 'flex';
+      loadScreen.classList.remove('fade-out');
+      loadGift(attemptedId);
+    });
+  }
+
+  function showNotFoundState(attemptedId) {
+    hideLoader();
+    stateMsg.innerHTML = `
+      <div style="background:var(--glass); border:1px solid var(--line); border-radius:24px; padding:36px 28px; max-width:440px; width:92%; text-align:center; backdrop-filter:blur(30px); -webkit-backdrop-filter:blur(30px); box-shadow:0 24px 70px rgba(0,0,0,0.6); position:relative; z-index:100;">
+        <div style="width:58px; height:58px; margin:0 auto 16px; border-radius:50%; background:rgba(238,136,136,0.15); border:1px solid rgba(238,136,136,0.4); display:flex; align-items:center; justify-content:center; font-size:24px; color:#e88;">🔍</div>
+        <h2 style="color:var(--cream); font-family:var(--serif); font-size:20px; margin:0 0 10px; font-weight:600;">Gift Not Found</h2>
+        <p style="color:var(--cream-dim); font-size:13.5px; line-height:1.55; margin:0 0 20px;">
+          This gift link doesn't exist or may have expired.<br/>
+          <span style="font-family:monospace; font-size:12px; color:var(--gold-dim); word-break:break-all;">ID: ${attemptedId || ''}</span>
+        </p>
+      </div>
+    `;
     stateMsg.style.display = 'flex';
   }
 
@@ -483,7 +548,7 @@
   }
 
   function playUnlockTransition(html){
-    // Stage 1: icon glow + button success (slow, deliberate)
+    // Stage 1: icon glow + button success
     gateIcon.classList.add('unlocked');
     gateSubmit.classList.add('success');
     gateSubmit.textContent = "Unlocked";
@@ -504,7 +569,7 @@
       viewerFrame.classList.add('reveal');
     }, 1300);
 
-    // Stage 4: cleanup particle layer + stop ambient birds/fireflies for good
+    // Stage 4: cleanup particle layer + stop ambient birds/fireflies
     setTimeout(() => {
       unlockOverlay.classList.remove('playing');
       ambient.style.transition = 'opacity 0.6s ease';
@@ -512,10 +577,161 @@
       ambient.style.opacity = '0';
       birdsWrap.style.opacity = '0';
       setTimeout(() => {
-        ambient.remove();
-        birdsWrap.remove();
+        try { ambient.remove(); birdsWrap.remove(); } catch(e){}
       }, 650);
     }, 3300);
+  }
+
+  function unwrapFirestoreValue(val) {
+    if (!val) return null;
+    if ('stringValue' in val) return val.stringValue;
+    if ('booleanValue' in val) return val.booleanValue;
+    if ('integerValue' in val) return parseInt(val.integerValue, 10);
+    if ('doubleValue' in val) return parseFloat(val.doubleValue);
+    if ('timestampValue' in val) return val.timestampValue;
+    if ('nullValue' in val) return null;
+    if ('mapValue' in val) {
+      const res = {};
+      const fields = val.mapValue.fields || {};
+      for (const k in fields) res[k] = unwrapFirestoreValue(fields[k]);
+      return res;
+    }
+    if ('arrayValue' in val) {
+      return (val.arrayValue.values || []).map(unwrapFirestoreValue);
+    }
+    return val;
+  }
+
+  function unwrapFirestoreDoc(docObj) {
+    if (!docObj || !docObj.fields) return null;
+    const res = {};
+    for (const k in docObj.fields) {
+      res[k] = unwrapFirestoreValue(docObj.fields[k]);
+    }
+    return res;
+  }
+
+  async function fetchDocRest(targetId) {
+    const url = `https://firestore.googleapis.com/v1/projects/${firebaseConfig.projectId}/databases/(default)/documents/published_pages/${encodeURIComponent(targetId)}?key=${firebaseConfig.apiKey}`;
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 6000);
+    try {
+      const res = await fetch(url, { signal: controller.signal });
+      clearTimeout(timer);
+      if (res.status === 404) return { exists: false, data: null };
+      if (!res.ok) throw new Error(`HTTP ${res.status} ${res.statusText}`);
+      const json = await res.json();
+      return { exists: true, data: unwrapFirestoreDoc(json) };
+    } catch(err) {
+      clearTimeout(timer);
+      throw err;
+    }
+  }
+
+  async function loadGift(targetId) {
+    if (!targetId) {
+      showState("No gift ID was provided in the link. Please verify the URL.");
+      return;
+    }
+
+    try { localStorage.setItem('wishcraft_last_doc_id', targetId); } catch(e){}
+
+    let data = null;
+    let exists = false;
+    let loadFailed = false;
+
+    try {
+      // Direct REST API (fastest, guaranteed not blocked by WebSocket/gRPC restrictions)
+      const restPromise = fetchDocRest(targetId);
+      const sdkPromise = new Promise((resolve, reject) => {
+        const timer = setTimeout(() => reject(new Error("SDK Timeout")), 4000);
+        getDoc(doc(db, "published_pages", targetId)).then(snap => {
+          clearTimeout(timer);
+          if (!snap.exists()) resolve({ exists: false, data: null });
+          else resolve({ exists: true, data: snap.data() });
+        }).catch(err => {
+          clearTimeout(timer);
+          reject(err);
+        });
+      });
+
+      // Race REST and SDK - Promise.any takes whichever fulfills first
+      const res = await Promise.any([restPromise, sdkPromise]);
+      exists = res.exists;
+      data = res.data;
+    } catch (err) {
+      console.warn("Primary fetch failed, attempting direct REST fallback:", err);
+      try {
+        const fallback = await fetchDocRest(targetId);
+        exists = fallback.exists;
+        data = fallback.data;
+      } catch (finalErr) {
+        console.error("All fetch attempts failed:", finalErr);
+        loadFailed = true;
+      }
+    }
+
+    if (loadFailed) {
+      showErrorState("Unable to load gift. Please check your internet connection or try again.", targetId);
+      return;
+    }
+
+    if (!exists || !data) {
+      showNotFoundState(targetId);
+      return;
+    }
+
+    // Custom wish title
+    if (data && data.title) {
+      document.title = `${data.title} | WishCraft ✨`;
+      const gateH1 = gateBox.querySelector('h1');
+      if (gateH1) gateH1.textContent = data.title;
+    }
+
+    activeTargetId = targetId;
+    activeGiftData = data;
+
+    hideLoader();
+
+    if (!data.isEncrypted && !data.passwordHash) {
+      viewerFrame.srcdoc = data.html;
+      viewerFrame.classList.add('reveal');
+      setTimeout(() => {
+        try { ambient.remove(); birdsWrap.remove(); } catch(e){}
+      }, 2600);
+      return;
+    }
+
+    gateScreen.classList.add('visible');
+
+    async function attemptUnlock(){
+      const val = gatePassword.value;
+      if (!val) { gateError.textContent = "Please enter a password."; return; }
+      gateSubmit.disabled = true; gateSubmit.textContent = "Decrypting...";
+      
+      try {
+        if (data.isEncrypted) {
+           const decryptedHtml = await WishCrypto.decrypt(data.encryptedData, val);
+           gateError.textContent = "";
+           playUnlockTransition(decryptedHtml);
+        } else if (data.passwordHash) {
+           const hash = await sha256Hex(val);
+           if (hash === data.passwordHash) {
+             gateError.textContent = "";
+             playUnlockTransition(data.html);
+           } else throw new Error("Wrong password");
+        }
+      } catch (err) {
+        gateError.textContent = "Incorrect password. Try again.";
+        gateBox.classList.remove('shake'); void gateBox.offsetWidth; gateBox.classList.add('shake');
+        gateSubmit.disabled = false; gateSubmit.textContent = "Unlock Gift";
+        gatePassword.value = '';
+        gatePassword.focus();
+      }
+    }
+
+    gateSubmit.onclick = attemptUnlock;
+    gatePassword.onkeypress = (e) => { if (e.key === 'Enter') attemptUnlock(); };
   }
 
   function extractDocId() {
@@ -535,64 +751,11 @@
   }
 
   const docId = extractDocId();
-
   if (!docId) {
     showState("No gift ID was provided in the link. Please verify the URL.");
   } else {
-    getDoc(doc(db, "published_pages", docId)).then(async (snap) => {
-      if (!snap.exists()) {
-        showState("This gift link doesn't exist or may have expired.");
-        return;
-      }
-      const data = snap.data();
-
-      if (!data.isEncrypted && !data.passwordHash) {
-        hideLoader();
-        viewerFrame.srcdoc = data.html;
-        viewerFrame.classList.add('reveal');
-        setTimeout(() => { ambient.remove(); birdsWrap.remove(); }, 2600);
-        return;
-      }
-
-      hideLoader();
-      gateScreen.classList.add('visible');
-
-      async function attemptUnlock(){
-        const val = gatePassword.value;
-        if (!val) { gateError.textContent = "Please enter a password."; return; }
-        gateSubmit.disabled = true; gateSubmit.textContent = "Decrypting...";
-        
-        try {
-          // If using new AES encryption
-          if (data.isEncrypted) {
-             const decryptedHtml = await WishCrypto.decrypt(data.encryptedData, val);
-             gateError.textContent = "";
-             playUnlockTransition(decryptedHtml);
-          } 
-          // Backwards compatibility for old sha-256 hashes
-          else if (data.passwordHash) {
-             const hash = await sha256Hex(val);
-             if (hash === data.passwordHash) {
-               gateError.textContent = "";
-               playUnlockTransition(data.html);
-             } else throw new Error("Wrong password");
-          }
-        } catch (err) {
-          gateError.textContent = "Incorrect password. Try again.";
-          gateBox.classList.remove('shake'); void gateBox.offsetWidth; gateBox.classList.add('shake');
-          gateSubmit.disabled = false; gateSubmit.textContent = "Unlock Gift";
-          gatePassword.value = '';
-          gatePassword.focus();
-        }
-      }
-
-      gateSubmit.addEventListener('click', attemptUnlock);
-      gatePassword.addEventListener('keypress', (e) => { if (e.key === 'Enter') attemptUnlock(); });
-    }).catch(err => {
-      console.error("Firestore getDoc error:", err);
-      showState("Unable to load gift. Please check your internet connection or try again.");
-    });
+    loadGift(docId);
   }
 </script>
 </body>
-</html> 
+</html>

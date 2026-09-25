@@ -1,0 +1,11 @@
+﻿/* TEAM */
+Creator & Founder: Yash Jare
+Role: Creator, Lead Architect & Developer
+Age: 16
+Email: yashjare900@gmail.com
+Project: WishCraft
+
+/* ABOUT WISHCRAFT */
+Product: WishCraft (https://wishcraft-12.netlify.app/)
+Description: Digital gift builder and cinematic keepsake creator.
+Author: Yash Jare

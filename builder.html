@@ -4,6 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>WishCraft Studio Pro</title>
+<meta name="description" content="WishCraft Studio Pro - Visual interactive keepsake builder crafted by Yash Jare.">
+<meta name="author" content="Yash Jare">
+<meta name="creator" content="Yash Jare">
+<link rel="author" href="/humans.txt">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Poppins:wght@300;400;500;600;700;800&family=Montserrat:wght@300;400;500;600;700;800&family=Space+Mono:wght@400;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
@@ -24,8 +28,13 @@ body{
 }
 button{font-family:inherit; cursor:pointer;}
 input,select,textarea{font-family:inherit;}
-::-webkit-scrollbar{width:8px;height:8px;}
-::-webkit-scrollbar-thumb{background:#2a2d38;border-radius:8px;}
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(212,175,106,0.45) transparent;
+}
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-thumb{background:linear-gradient(180deg, rgba(212,175,106,0.45), rgba(169,133,76,0.55));border-radius:99px;}
+::-webkit-scrollbar-thumb:hover{background:linear-gradient(180deg, rgba(212,175,106,0.85), rgba(230,195,125,0.95));}
 ::-webkit-scrollbar-track{background:transparent;}
 
 /* ============ APP SHELL ============ */
@@ -402,8 +411,10 @@ input,select,textarea{font-family:inherit;}
 </head>
 <body>
 <div id="app">
-
-  <!-- TOPBAR -->
+  <div style="background: rgba(212,175,106,0.14); border-bottom: 1px solid rgba(212,175,106,0.3); padding: 8px 16px; font-size: 12px; color: #D4AF6A; text-align: center; display: flex; align-items: center; justify-content: center; gap: 14px; z-index: 9999;">
+    <span>🚧 <b>Pro Canvas Editor is currently under active development.</b> Coming soon!</span>
+    <a href="index.html" style="color: #fff; text-decoration: none; font-weight: 600; background: rgba(212,175,106,0.25); padding: 3px 10px; border-radius: 6px; border: 1px solid rgba(212,175,106,0.4);">← Return to WishCraft Home</a>
+  </div>
   <div id="topbar">
     <div class="brand"><span class="dot"></span><span class="full">WishCraft Studio <span style="color:var(--accent)">Pro</span></span></div>
     <div class="topbar-group">
