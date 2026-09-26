@@ -8,6 +8,21 @@
   status = 200
 
 [[redirects]]
+  from = "/og-preview.png"
+  to = "/.netlify/functions/og-image"
+  status = 200
+
+[[redirects]]
+  from = "/view"
+  to = "/.netlify/functions/view"
+  status = 200
+
+[[redirects]]
+  from = "/view.html"
+  to = "/.netlify/functions/view"
+  status = 200
+
+[[redirects]]
   from = "/creator"
   to = "/about"
   status = 301
