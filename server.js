@@ -76,7 +76,11 @@ app.post('/api/generate', async (req, res) => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           system_instruction: systemPrompt ? { parts: [{ text: systemPrompt }] } : undefined,
-          contents: [{ role: 'user', parts: [{ text: userContent }] }]
+          contents: [{ role: 'user', parts: [{ text: userContent }] }],
+          generationConfig: {
+            responseMimeType: 'application/json',
+            temperature: 0.7
+          }
         })
       });
 
@@ -84,16 +88,22 @@ app.post('/api/generate', async (req, res) => {
 
       if (response.ok && data.candidates?.[0]?.content?.parts?.[0]?.text) {
         const rawText = data.candidates[0].content.parts[0].text;
-        const cleanedHtml = rawText
-          .replace(/^```html\s*/i, '')
+        const cleaned = rawText
+          .replace(/^```json\s*/i, '')
           .replace(/^```\s*/i, '')
           .replace(/```\s*$/i, '')
           .trim();
 
+        let parsedData = null;
+        try {
+          parsedData = JSON.parse(cleaned);
+        } catch (_) {}
+
         return res.json({
           success: true,
           model: selectedModel,
-          html: cleanedHtml
+          data: parsedData,
+          raw: cleaned
         });
       }
 

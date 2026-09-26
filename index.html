@@ -92,6 +92,8 @@
 <script src="royal-velvet-template.js"></script>
 <script src="obsidian-vault-template.js"></script>
 <script src="sapphire-vault-template.js"></script>
+<!-- WishCraft Template Injection Engine -->
+<script src="templates/registry.js"></script>
 
 
 <style>
@@ -3275,68 +3277,22 @@
     });
   }
 
-  // ---------- Dynamic System Prompt Generator ----------
-  function getSystemPrompt(complexity) {
-    let modeRules = "";
-    if (complexity === "fast-glass") {
-      modeRules = `
-- CRAFT MODE: Fast Glass.
-- Keep the page lightweight and fast. Pure CSS, HTML, and vanilla JS.
-- Use frosted glass cards (backdrop-filter: blur(25px)), liquid background gradient blobs with float animations, and smooth section reveals.
-- Structure as a 3 to 4 section Single Page Application (SPA). The sections MUST have the class "wc-scene".`;
-    } else if (complexity === "interactive-vault") {
-      modeRules = `
-- CRAFT MODE: Interactive Vault (Multi-Chapter SPA).
-- MUST be a Single Page Application (SPA) with smooth screen-to-screen transitions using JavaScript (show/hide sections, opacity, scale). DO NOT link to external HTML files like href="page2.html".
-- Every chapter or page MUST be contained within a div with the class "wc-scene". The first should be display:block, others display:none.
-- Include a sequence of distinct interactive chapters:
-  1. Hero Premiere Screen (Title, subtitle, and "Start Journey" button).
-  2. Polaroid Glass Memory Card (Image with glass frost that clears, date label, title).
-  3. Biometric Thumb Scanner or Matrix Passcode Terminal (if passcode provided: matrix scramble decryption with green success state; if not: hold-to-scan liquid fill ring). IMPORTANT: render the scanner as simple concentric circles / a pulsing ring only — do NOT draw an actual fingerprint pattern, ridges, or whorls of any kind.
-  4. Scratch-off / Wipe Promise Cards (Canvas wiping layer revealing gift like "Shopping Spree" or "Dinner Date").
-  5. Photo Archive Carousel (Horizontal snap-scrolling cards with memory numbers).
-  6. Make a Wish Candle Blow-out (Swipe down or click to extinguish flame, brief pause, confetti burst reveal).
-  7. The Core Letter Reveal (Falling glass petals animation, IntersectionObserver for fading/translating text blocks as user scrolls).`;
-    } else if (complexity === "cinematic-3d") {
-      modeRules = `
-- CRAFT MODE: Cinematic 3D WebGL (Multi-Chapter SPA).
-- MUST be a Single Page Application (SPA) with smooth screen transitions via JS. Chapters MUST have the class "wc-scene".
-- Import Three.js via CDN (https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js) and OrbitControls.
-- Build 3D interactive WebGL scenes.`;
-    }
+  // ---------- Structured Copywriting & Sentiment System Prompt ----------
+  function getSystemPrompt() {
+    return `You are an elite poetic copywriter and sentiment analyst for WishCraft, a luxury digital keepsake experience.
+Your goal is to write a deeply moving, personalized wish based on the user's intake details.
 
-    let featureRules = "";
-    if (selectedFeatures.size) {
-      let lines = [];
-      if (selectedFeatures.has('Countdown Timer')) lines.push(`- COUNTDOWN TIMER: Live, glass-styled countdown targeting "countdownTarget".`);
-      if (selectedFeatures.has('Background Music')) lines.push(`- BACKGROUND MUSIC: Audio loop with src set to "songDataUrl". Provide tap-to-play button.`);
-      if (selectedFeatures.has('Confetti Finale')) lines.push(`- CONFETTI FINALE: At the climax, trigger plain JS canvas confetti burst.`);
-      if (selectedFeatures.has('Guestbook Wall')) lines.push(`- GUESTBOOK WALL: Sticky notes where user can type and save to localStorage.`);
-      if (selectedFeatures.has('Star Map')) lines.push(`- STAR MAP: HTML canvas starfield of memories.`);
-      if (selectedFeatures.has('Memory Timeline')) lines.push(`- MEMORY TIMELINE: Vertical scroll-triggered timeline.`);
-      if (selectedFeatures.has('Love Meter')) lines.push(`- LOVE METER: Playful animated gauge filling up on tap.`);
-      if (selectedFeatures.has('Quiz Game')) lines.push(`- QUIZ GAME: Multiple-choice quiz from details.`);
-      if (selectedFeatures.has('Reaction Buttons')) lines.push(`- REACTION BUTTONS: Emoji reactions triggering pop animation.`);
-      if (selectedFeatures.has('Voice Note')) lines.push(`- VOICE NOTE: Audio player styled like a voice memo using "voiceDataUrl".`);
-      if (selectedFeatures.has('Map Pin Memory')) lines.push(`- MAP PIN MEMORY: Stylized pin-drop of "placeName".`);
-      if (selectedFeatures.has('Printable Card')) lines.push(`- PRINTABLE CARD: Download view formatted for A5 paper via print CSS.`);
-      featureRules = `\n\nOptional Add-ons Requested:\n${lines.join("\n")}`;
-    }
+Return ONLY a strict, valid JSON object with the following schema:
+{
+  "category": "birthday" | "anniversary" | "farewell" | "funny" | "romantic" | "celebration",
+  "title": "A short, captivating headline (max 7 words)",
+  "subtitle": "An elegant, evocative one-line subtitle",
+  "body_text": "The main personalized wish message (2 to 4 emotional, poetic paragraphs separated by double newlines). Weave in the user's memories, tone, and personal aspirations.",
+  "quote": "A memorable 1-sentence keepsake quote",
+  "theme_color": "Hex color code matching the emotional mood (e.g. #D4AF6A, #E056FD, #0984E3, #00D2D3, #FF4757, #F9CA24)"
+}
 
-   return `You are an elite creative developer generating a single self-contained HTML file for a personalized, luxury occasion page.
-Hard Technical Rules:
-- Output ONLY raw HTML starting with <!DOCTYPE html> — no markdown fences, no explanations before or after.
-- Everything MUST be inline: styles in the head, and scripts right before the closing body tag.
-- External CDNs allowed ONLY for Fonts (Google Fonts) and Three.js / OrbitControls.
-- Structure pages clearly using elements with class="wc-scene".
-- Mobile responsive, touch-friendly, and smooth animations.
-
-Aesthetic & Design Language:
-- "Liquid Glass" UI: Frosted glass containers (backdrop-filter: blur(25px)), subtle 1px border highlights, dynamic animated background blobs, specular light sheens.
-- Colors: Rich luxury dark base (${themeDescriptions[selectedTheme]}).
-- Typography: Playfair Display for italicized serif headlines, Poppins or Montserrat for clean subtext, Space Mono for terminal/tech elements.
-${modeRules}${featureRules}
-Integrate user details explicitly into the design.`;
+Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.`;
   }
 
   function buildIntakeMessage() {
@@ -3354,7 +3310,7 @@ Integrate user details explicitly into the design.`;
       countdownTarget = `${cd}T${ct}:00`;
     }
 
-    return `Create the page with this intake payload:
+    return `Compose a personalized keepsake wish payload in JSON with these details:
 {
   "recipientName": "${name}",
   "senderName": ${sender ? JSON.stringify(sender) : "null"},
@@ -3362,31 +3318,22 @@ Integrate user details explicitly into the design.`;
   "occasion": "${selectedOccasion}",
   "tone": "${selectedTone}",
   "themeName": "${selectedTheme}",
-  "themeDirection": "${themeDescriptions[selectedTheme]}",
-  "passcode": ${passcode ? JSON.stringify(passcode) : "null"},
-  "personalDetailsAndAspirations": ${aspirations ? JSON.stringify(aspirations) : "null"},
-  "userMessage": ${message ? JSON.stringify(message) : "null"},
+  "personalMemoriesAndAspirations": ${aspirations ? JSON.stringify(aspirations) : "null"},
+  "userPersonalNote": ${message ? JSON.stringify(message) : "null"},
   "features": ${JSON.stringify(Array.from(selectedFeatures))},
   "countdownTarget": ${countdownTarget ? JSON.stringify(countdownTarget) : "null"},
-  "songDataUrl": ${songDataUrl ? JSON.stringify(songDataUrl) : "null"},
-  "voiceDataUrl": ${voiceDataUrl ? JSON.stringify(voiceDataUrl) : "null"},
-  "placeName": ${document.getElementById('placeName').value.trim() ? JSON.stringify(document.getElementById('placeName').value.trim()) : "null"},
-  "photoCount": ${photos.length},
-  "photoDataUrls": ${JSON.stringify(photos)}
+  "photoCount": ${photos.length}
 }`;
   }
 
-  
-
-  async function callGemini(systemPrompt, userContent) {
+  async function callGemini(systemPrompt, userContent, userData = {}) {
     const keySource = localStorage.getItem('wishcraft_key_source') || 'custom';
     const customKey = localStorage.getItem('wishcraft_custom_api_key');
+    let aiData = null;
 
     // If user provided their own key and selected custom key mode, call Gemini directly from browser
     if (keySource !== 'web' && customKey && customKey.trim()) {
       const models = ['gemini-3.5-flash-lite', 'gemini-3.6-flash', 'gemini-3.5-flash', 'gemini-3.7-flash'];
-      let lastErr = null;
-
       for (const m of models) {
         try {
           const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${m}:generateContent?key=${encodeURIComponent(customKey.trim())}`, {
@@ -3394,67 +3341,65 @@ Integrate user details explicitly into the design.`;
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               system_instruction: systemPrompt ? { parts: [{ text: systemPrompt }] } : undefined,
-              contents: [{ role: 'user', parts: [{ text: userContent }] }]
+              contents: [{ role: 'user', parts: [{ text: userContent }] }],
+              generationConfig: {
+                responseMimeType: 'application/json',
+                temperature: 0.7
+              }
             })
           });
 
           const resText = await res.text();
-          if (!res.ok) {
-            let detail = `Error (${res.status})`;
-            try {
-              const errObj = JSON.parse(resText);
-              if (errObj.error?.message) detail = errObj.error.message;
-            } catch (_) {}
-            throw new Error(detail);
+          if (res.ok) {
+            const data = JSON.parse(resText);
+            const rawText = data.candidates?.[0]?.content?.parts?.[0]?.text;
+            if (rawText) {
+              const cleaned = rawText.replace(/^```json\s*/i, "").replace(/^```\s*/i, "").replace(/```\s*$/i, "").trim();
+              aiData = JSON.parse(cleaned);
+              break;
+            }
           }
-
-          const data = JSON.parse(resText);
-          const generatedHtml = data.candidates?.[0]?.content?.parts?.[0]?.text;
-          if (!generatedHtml) throw new Error("Empty response from AI model");
-          return generatedHtml.replace(/^```html\s*/i, "").replace(/^```\s*/i, "").replace(/```\s*$/i, "").trim();
         } catch (e) {
-          lastErr = e;
           console.warn(`[Custom Key] Model ${m} failed:`, e.message);
         }
       }
-      throw lastErr || new Error("Failed to generate with custom API key");
-    }
-
-    // Default: use backend serverless function
-    const response = await fetch('/api/generate', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ systemPrompt, userContent })
-    });
-
-    const contentType = response.headers.get('content-type') || '';
-    const raw = await response.text();
-
-    if (!response.ok) {
-      let errMsg = `Generation failed (${response.status})`;
+    } else {
+      // Default: use backend serverless function / local endpoint
       try {
-        const errJson = JSON.parse(raw);
-        if (errJson.error?.message) errMsg = errJson.error.message;
-      } catch (_) {
-        if (raw.includes('Inactivity Timeout') || response.status === 504) {
-          errMsg = 'Generation timed out. Please try again or use your own API key.';
-        } else if (raw.length > 0 && raw.length < 200) {
-          errMsg = raw;
+        const response = await fetch('/api/generate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ systemPrompt, userContent })
+        });
+
+        const raw = await response.text();
+        if (response.ok) {
+          try {
+            const parsed = JSON.parse(raw);
+            if (parsed.data && typeof parsed.data === 'object') {
+              aiData = parsed.data;
+            } else if (parsed.raw) {
+              aiData = JSON.parse(parsed.raw);
+            } else if (typeof parsed === 'object' && parsed.title) {
+              aiData = parsed;
+            }
+          } catch (_) {
+            const cleaned = raw.replace(/^```json\s*/i, "").replace(/^```\s*/i, "").replace(/```\s*$/i, "").trim();
+            aiData = JSON.parse(cleaned);
+          }
         }
+      } catch (err) {
+        console.warn("[Backend Generation Error]", err);
       }
-      throw new Error(errMsg);
     }
 
-    // In case backend returned wrapped JSON
-    if (contentType.includes('application/json')) {
-      try {
-        const data = JSON.parse(raw);
-        if (data.html) return data.html;
-      } catch (_) {}
+    // Pass parsed AI copywriting object into the pre-tested Template Injection Engine
+    if (window.WishCraftTemplateEngine && typeof window.WishCraftTemplateEngine.buildWishFromTemplate === 'function') {
+      const generated = await window.WishCraftTemplateEngine.buildWishFromTemplate(aiData, userData);
+      return generated.html;
     }
 
-    // Clean any markdown fences from the returned HTML
-    return raw.replace(/^```html\s*/i, "").replace(/^```\s*/i, "").replace(/```\s*$/i, "").trim();
+    throw new Error("Template engine not loaded. Please refresh.");
   }
 
   // ---------- Generation Handling ----------
@@ -3473,7 +3418,7 @@ Integrate user details explicitly into the design.`;
 
   document.getElementById('retryBtn').addEventListener('click', () => { generateBtn.click(); });
 
-  const loadingMessages = ["tying the ribbon...", "setting the glass frost...", "initializing biometric scanner...", "crafting 3D particle bloom...", "arranging the archives...", "writing the core letter..."];
+  const loadingMessages = ["analyzing your sentiments...", "selecting the perfect luxury template...", "crafting poetic verses...", "polishing the gold highlights...", "arranging memory archives...", "perfecting the experience..."];
 
   generateBtn.addEventListener('click', async () => {
     generateBtn.disabled = true; generateBtn.textContent = "Crafting...";
@@ -3481,11 +3426,25 @@ Integrate user details explicitly into the design.`;
     loadingStage.classList.add('visible');
     
     let i = 0; const loadingText = document.getElementById('loadingText');
-    const interval = setInterval(() => { i = (i + 1) % loadingMessages.length; loadingText.textContent = loadingMessages[i]; }, 1400);
+    const interval = setInterval(() => { i = (i + 1) % loadingMessages.length; loadingText.textContent = loadingMessages[i]; }, 1000);
+
+    const userData = {
+      recipientName: document.getElementById('recipientName').value.trim() || "Someone Special",
+      senderName: document.getElementById('senderName').value.trim() || "",
+      relationship: document.getElementById('relationship').value.trim() || "",
+      occasion: selectedOccasion || "birthday",
+      tone: selectedTone || "heartfelt",
+      themeName: selectedTheme || "royal-gold",
+      passcode: document.getElementById('passcode').value.trim() || "",
+      aspirations: document.getElementById('aspirations').value.trim() || "",
+      userMessage: document.getElementById('messageText').value.trim() || "",
+      photos: photos || []
+    };
 
     try {
-      const systemPrompt = getSystemPrompt(selectedComplexity);
-      const html = await callGemini(systemPrompt, buildIntakeMessage());
+      const systemPrompt = getSystemPrompt();
+      const intakeMessage = buildIntakeMessage();
+      const html = await callGemini(systemPrompt, intakeMessage, userData);
       
       window.currentHtml = html; window.versions = [html];
       renderPreview(html);
@@ -3493,27 +3452,22 @@ Integrate user details explicitly into the design.`;
       editBlock.classList.add('visible'); stageActions.style.visibility = 'visible';
       chromeLabel.textContent = 'live preview'; step1.classList.remove('active'); step2.classList.add('active');
     } catch(err) {
-      console.error("API Error:", err);
-      if (err.message && (err.message.toLowerCase().includes('quota') || err.message.includes('429'))) {
-        errorMsg.textContent = "Server quota limit reached. You can insert your own free Gemini API key below to craft immediately!";
-      } else if (err.message && err.message.toLowerCase().includes('time')) {
-        errorMsg.textContent = "Generation took longer than expected. You can insert your own Gemini API key to craft without server timeout limits.";
-      } else {
-        errorMsg.textContent = (err.message && err.message.length < 150) ? err.message : "The connection timed out or the AI returned an invalid response. Insert your key below or retry.";
-      }
-      
-      // Auto-open custom API key box on error so users can immediately paste and craft
-      const customKeyBox = document.getElementById('customApiKeyBox');
-      if (customKeyBox) {
-        customKeyBox.style.display = 'block';
-        const savedKey = localStorage.getItem('wishcraft_custom_api_key');
-        if (savedKey) {
-          const keyInput = document.getElementById('userCustomKeyInput');
-          if (keyInput && !keyInput.value) keyInput.value = savedKey;
+      console.warn("API/Network Error, deploying instant luxury fallback:", err);
+      // Instant graceful offline fallback
+      try {
+        if (window.WishCraftTemplateEngine) {
+          const fallbackGen = await window.WishCraftTemplateEngine.buildWishFromTemplate(null, userData);
+          window.currentHtml = fallbackGen.html; window.versions = [fallbackGen.html];
+          renderPreview(fallbackGen.html);
+          editBlock.classList.add('visible'); stageActions.style.visibility = 'visible';
+          chromeLabel.textContent = 'live preview'; step1.classList.remove('active'); step2.classList.add('active');
+        } else {
+          throw err;
         }
+      } catch(fallbackErr) {
+        errorMsg.textContent = "Generation encountered an issue. Please try again.";
+        errorStage.classList.add('visible'); 
       }
-      
-      errorStage.classList.add('visible'); 
     } finally {
       clearInterval(interval); loadingStage.classList.remove('visible');
       generateBtn.disabled = false; generateBtn.textContent = "✦ Craft the page";

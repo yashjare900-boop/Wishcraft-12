@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>{{WISH_TITLE}} — WishCraft</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;1,9..144,400&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+<style>
+:root {
+  --bg-primary: #070a0e;
+  --theme: {{THEME_COLOR}};
+  --theme-glow: {{THEME_COLOR}}33;
+  --gold: #f9ca24;
+  --aurora: #00cec9;
+  --cream: #f9f9f9;
+  --cream-dim: rgba(249,249,249,0.7);
+  --glass-bg: rgba(14, 22, 30, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.12);
+  --font-serif: 'Fraunces', Georgia, serif;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+body {
+  background-color: var(--bg-primary);
+  color: var(--cream);
+  font-family: var(--font-sans);
+  min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.ambient-glow {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+.glow-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(130px);
+  opacity: 0.28;
+  animation: floatOrb 20s ease-in-out infinite alternate;
+}
+.orb-1 { width: 500px; height: 500px; background: #f9ca24; top: -10%; left: -10%; }
+.orb-2 { width: 450px; height: 450px; background: #6c5ce7; bottom: -15%; right: -10%; animation-delay: -9s; }
+
+@keyframes floatOrb {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(40px, 30px) scale(1.1); }
+  100% { transform: translate(-30px, 50px) scale(0.95); }
+}
+
+.wc-viewport {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 680px;
+  min-height: 100vh;
+  padding: 40px 20px 80px 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.wc-scene {
+  width: 100%;
+  display: none;
+  opacity: 0;
+  transform: translateY(20px) scale(0.98);
+  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.wc-scene.active {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.glass-card {
+  width: 100%;
+  background: var(--glass-bg);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  border: 1px solid var(--glass-border);
+  border-radius: 28px;
+  padding: 40px 32px;
+  box-shadow: 0 30px 60px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.15);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.occasion-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(249, 202, 36, 0.12);
+  border: 1px solid rgba(249, 202, 36, 0.3);
+  padding: 6px 16px;
+  border-radius: 30px;
+  font-size: 12px;
+  font-family: var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #f9ca24;
+  margin-bottom: 24px;
+}
+
+.hero-title {
+  font-family: var(--font-serif);
+  font-size: clamp(32px, 6vw, 44px);
+  font-weight: 600;
+  line-height: 1.15;
+  color: #ffffff;
+  margin-bottom: 14px;
+  letter-spacing: -0.02em;
+}
+.hero-subtitle {
+  font-size: clamp(14px, 2.5vw, 16px);
+  color: var(--cream-dim);
+  line-height: 1.6;
+  max-width: 480px;
+  margin: 0 auto 32px auto;
+  font-weight: 300;
+}
+
+/* Trophy Victory Stage */
+.trophy-stage {
+  margin: 10px auto 30px auto;
+  position: relative;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.trophy-icon {
+  font-size: 58px;
+  filter: drop-shadow(0 0 25px rgba(249, 202, 36, 0.7));
+  animation: shineTrophy 2.5s infinite ease-in-out;
+}
+
+@keyframes shineTrophy {
+  0% { transform: scale(1) rotate(0deg); }
+  25% { transform: scale(1.08) rotate(-4deg); }
+  50% { transform: scale(1) rotate(0deg); }
+  75% { transform: scale(1.08) rotate(4deg); }
+  100% { transform: scale(1) rotate(0deg); }
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: linear-gradient(135deg, #f9ca24, #f0932b);
+  color: #070a0e;
+  font-weight: 700;
+  font-size: 14.5px;
+  padding: 14px 32px;
+  border-radius: 40px;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 10px 30px rgba(249, 202, 36, 0.4);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 36px rgba(249, 202, 36, 0.5);
+}
+
+.wc-prose-container {
+  text-align: left;
+  line-height: 1.85;
+  font-size: 15px;
+  color: var(--cream);
+  margin-bottom: 28px;
+}
+.wc-prose-p { margin-bottom: 18px; font-weight: 300; }
+.wc-quote-box {
+  background: rgba(249, 202, 36, 0.08);
+  border-left: 2px solid #f9ca24;
+  padding: 16px 20px;
+  border-radius: 0 14px 14px 0;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 15px;
+  color: #fff;
+  margin: 24px 0;
+}
+.signature-block {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  font-family: var(--font-serif);
+  font-size: 16px;
+  color: #f9ca24;
+  margin-top: 24px;
+}
+
+.photos-strip {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding: 10px 0 20px 0;
+  width: 100%;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+.photos-strip::-webkit-scrollbar { display: none; }
+.photo-thumb {
+  width: 130px;
+  height: 170px;
+  object-fit: cover;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.15);
+  flex-shrink: 0;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+}
+
+.wc-watermark {
+  margin-top: 40px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  font-size: 11px;
+  color: var(--cream-dim);
+  text-decoration: none;
+}
+.wc-watermark span { color: #f9ca24; font-weight: 600; }
+</style>
+</head>
+<body>
+
+<div class="ambient-glow">
+  <div class="glow-orb orb-1"></div>
+  <div class="glow-orb orb-2"></div>
+</div>
+
+<main class="wc-viewport">
+  <section id="sceneHero" class="wc-scene active">
+    <div class="glass-card">
+      <div class="occasion-badge">🏆 Grand Celebration Edition</div>
+      <h1 class="hero-title">{{WISH_TITLE}}</h1>
+      <p class="hero-subtitle">{{WISH_SUBTITLE}}</p>
+
+      <div class="trophy-stage" id="trophyStage" title="Tap to celebrate your victory">
+        <div class="trophy-icon">🏆</div>
+      </div>
+
+      <div style="font-size:12px; color:#f9ca24; margin-bottom:24px; font-family:var(--font-mono); letter-spacing:0.04em;">
+        ✦ TAP THE TROPHY TO CELEBRATE TRIUMPH ✦
+      </div>
+
+      <button id="btnReadWish" class="btn-primary" style="display:none;">
+        Read Celebration Tribute 📜
+      </button>
+    </div>
+  </section>
+
+  <section id="sceneLetter" class="wc-scene">
+    <div class="glass-card">
+      <div class="occasion-badge">For {{RECIPIENT_NAME}}</div>
+      <h2 style="font-family:var(--font-serif); font-size:24px; margin-bottom:20px; color:#fff;">A Tribute to Excellence</h2>
+
+      <div class="wc-prose-container">
+        {{WISH_BODY}}
+      </div>
+
+      <div class="wc-quote-box">
+        “{{WISH_QUOTE}}”
+      </div>
+
+      <div id="photosContainer" style="display:none; width:100%; margin-top:20px;">
+        <div style="font-size:12px; color:#f9ca24; font-family:var(--font-mono); margin-bottom:12px; text-transform:uppercase; letter-spacing:0.06em;">Victory Gallery</div>
+        <div class="photos-strip" id="photosStrip"></div>
+      </div>
+
+      <div class="signature-block">
+        <span>Cheering you on,</span>
+        <span style="color:#fff; font-weight:600;">{{SENDER_NAME}}</span>
+      </div>
+
+      <div style="margin-top:28px; padding-top:20px; border-top:1px solid rgba(255,255,255,0.08); display:flex; justify-content:center; gap:12px;">
+        <button id="btnReplay" class="btn-primary" style="background:rgba(255,255,255,0.06); color:#fff; border:1px solid rgba(255,255,255,0.16); box-shadow:none;">
+          ↺ Replay Moment
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <a href="https://wishcraft-12.netlify.app" target="_blank" class="wc-watermark" id="wcWatermark">
+    Crafted with <span>WishCraft</span>
+  </a>
+</main>
+
+<script>
+(function() {
+  const trophyStage = document.getElementById('trophyStage');
+  const btnReadWish = document.getElementById('btnReadWish');
+  const sceneHero = document.getElementById('sceneHero');
+  const sceneLetter = document.getElementById('sceneLetter');
+  const btnReplay = document.getElementById('btnReplay');
+  const photosContainer = document.getElementById('photosContainer');
+  const photosStrip = document.getElementById('photosStrip');
+
+  let unlocked = false;
+
+  try {
+    const rawPhotos = '{{USER_PHOTOS_JSON}}';
+    const photos = JSON.parse(rawPhotos);
+    if (Array.isArray(photos) && photos.length > 0) {
+      photosContainer.style.display = 'block';
+      photos.forEach(src => {
+        if (!src) return;
+        const img = document.createElement('img');
+        img.className = 'photo-thumb';
+        img.src = src;
+        img.alt = 'Memory';
+        photosStrip.appendChild(img);
+      });
+    }
+  } catch(e) {}
+
+  trophyStage.addEventListener('click', () => {
+    if (unlocked) return;
+    unlocked = true;
+
+    try {
+      confetti({
+        particleCount: 120,
+        spread: 80,
+        origin: { y: 0.6 },
+        colors: ['#f9ca24', '#f0932b', '#ffffff', '#6c5ce7']
+      });
+    } catch(err) {}
+
+    btnReadWish.style.display = 'inline-flex';
+    btnReadWish.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  });
+
+  btnReadWish.addEventListener('click', () => {
+    sceneHero.classList.remove('active');
+    setTimeout(() => {
+      sceneLetter.classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, 200);
+  });
+
+  btnReplay.addEventListener('click', () => {
+    sceneLetter.classList.remove('active');
+    unlocked = false;
+    btnReadWish.style.display = 'none';
+    setTimeout(() => {
+      sceneHero.classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, 200);
+  });
+})();
+</script>
+</body>
+</html>

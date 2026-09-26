@@ -87,7 +87,11 @@ export default stream(async (req, context) => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           system_instruction: systemPrompt ? { parts: [{ text: systemPrompt }] } : undefined,
-          contents: [{ role: 'user', parts: [{ text: userContent }] }]
+          contents: [{ role: 'user', parts: [{ text: userContent }] }],
+          generationConfig: {
+            responseMimeType: 'application/json',
+            temperature: 0.7
+          }
         })
       });
 
