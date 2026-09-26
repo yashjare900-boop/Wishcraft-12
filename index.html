@@ -22,16 +22,9 @@
 <meta property="og:image" content="https://wishcraft-12.netlify.app/og-preview-1.jpg">
 <meta property="og:image:secure_url" content="https://wishcraft-12.netlify.app/og-preview-1.jpg">
 <meta property="og:image:type" content="image/jpeg">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="675">
+<meta property="og:image:width" content="1024">
+<meta property="og:image:height" content="576">
 <meta property="og:image:alt" content="WishCraft - Dream + Create + Manifest">
-
-<meta property="og:image" content="https://wishcraft-12.netlify.app/og-preview-2.jpg">
-<meta property="og:image:secure_url" content="https://wishcraft-12.netlify.app/og-preview-2.jpg">
-<meta property="og:image:type" content="image/jpeg">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="675">
-<meta property="og:image:alt" content="WishCraft - Not just gifts, but moments crafted with care">
 
 <meta property="og:url" content="https://wishcraft-12.netlify.app/">
 <meta name="twitter:card" content="summary_large_image">
@@ -5784,22 +5777,22 @@ Integrate user details explicitly into the design.`;
     }
 
     const cleanDocId = docId.trim();
-    let baseUrl;
+    let baseDir;
     const origin = window.location.origin;
     if (!origin || origin === 'null' || window.location.protocol === 'file:') {
       const full = window.location.href.split('?')[0].split('#')[0];
-      baseUrl = full.substring(0, full.lastIndexOf('/') + 1) + 'view.html';
+      baseDir = full.substring(0, full.lastIndexOf('/') + 1);
     } else {
       const path = window.location.pathname.replace(/[^/]*$/, '');
-      baseUrl = `${origin}${path}view.html`;
+      baseDir = `${origin}${path}`;
     }
 
-    // Alternating Open Graph Preview Image (Image 1: Sunset Luxury, Image 2: Midnight Luxury)
+    // Alternating Open Graph Preview Image (Image 1: Sunset Luxury via view.html, Image 2: Midnight Luxury via view2.html)
     let ogIndex = parseInt(localStorage.getItem('wishcraft_og_variant') || '0', 10);
     ogIndex = (ogIndex % 2) + 1; // Alternates: 1, 2, 1, 2, ...
     localStorage.setItem('wishcraft_og_variant', ogIndex);
 
-    let viewUrl = `${baseUrl}?id=${encodeURIComponent(cleanDocId)}&v=${ogIndex}`;
+    let viewUrl = '';
 
     try {
       localStorage.setItem('wishcraft_last_doc_id', cleanDocId);
@@ -5818,13 +5811,15 @@ Integrate user details explicitly into the design.`;
     const whatsappBtn = document.getElementById('shareGiftWhatsappBtn');
 
     function updateOgDisplay(idx) {
+      const targetPage = (idx === 2) ? 'view2.html' : 'view.html';
       if (ogThumb) ogThumb.src = idx === 2 ? 'og-preview-2.jpg' : 'og-preview-1.jpg';
       if (ogLabel) ogLabel.textContent = idx === 2 ? '✨ Social Preview: Midnight Edition (2/2)' : '✨ Social Preview: Sunset Edition (1/2)';
-      viewUrl = `${baseUrl}?id=${encodeURIComponent(cleanDocId)}&v=${idx}`;
+      viewUrl = `${baseDir}${targetPage}?id=${encodeURIComponent(cleanDocId)}`;
       if (linkInput) linkInput.value = viewUrl;
       if (openBtn) openBtn.href = viewUrl;
       if (whatsappBtn) {
-        whatsappBtn.href = `https://api.whatsapp.com/send?text=${encodeURIComponent('✨ A special interactive digital gift awaits you on WishCraft:\n' + viewUrl)}`;
+        // Putting the URL on line 1 guarantees WhatsApp, iMessage, and Telegram scrapers detect and load the preview immediately
+        whatsappBtn.href = `https://api.whatsapp.com/send?text=${encodeURIComponent(viewUrl + '\n\n✨ A special interactive digital gift awaits you on WishCraft!')}`;
       }
       if (qrContainer) {
         qrContainer.innerHTML = '';
