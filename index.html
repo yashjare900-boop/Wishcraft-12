@@ -822,17 +822,114 @@
   }
 
   /* Right Stage */
-  .stage{ position:relative; display:flex; align-items:center; justify-content:center; padding:30px; overflow:hidden; width:100%; }
-  .stage-inner{ width:100%; max-width:840px; margin:0 auto; height:100%; max-height:86vh; display:flex; flex-direction:column; border-radius:20px; border:1px solid var(--line); background:var(--panel); overflow:hidden; position:relative; box-shadow: 0 40px 80px -30px rgba(0,0,0,0.6); }
-  .stage-chrome{ position:relative; display:flex; align-items:center; justify-content:space-between; padding:12px 16px; border-bottom:1px solid var(--line); font-family:var(--mono); font-size:11px; color:var(--cream-dim); }
-  #chromeLabel { position:absolute; left:50%; transform:translateX(-50%); font-weight:600; color:var(--gold-dim); letter-spacing:0.1em; text-transform:uppercase; }
+  .stage{ position:relative; display:flex; align-items:center; justify-content:center; padding:24px 30px; overflow:hidden; width:100%; height:calc(100vh - 73px); }
+  .stage-inner{ width:100%; max-width:1040px; margin:0 auto; height:100%; max-height:88vh; display:flex; flex-direction:column; border-radius:20px; border:1px solid var(--line); background:var(--panel); overflow:hidden; position:relative; box-shadow: 0 40px 80px -30px rgba(0,0,0,0.7); transition: max-width 0.35s cubic-bezier(0.16, 1, 0.3, 1); }
+  .stage-inner.mode-mobile { max-width: 480px; }
+  .stage-chrome{ position:relative; display:flex; align-items:center; justify-content:space-between; padding:10px 16px; border-bottom:1px solid var(--line); font-family:var(--mono); font-size:11px; color:var(--cream-dim); flex-shrink:0; background:rgba(18, 14, 22, 0.6); }
+  #chromeLabel { position:absolute; left:50%; transform:translateX(-50%); font-weight:600; color:var(--gold-dim); letter-spacing:0.1em; text-transform:uppercase; pointer-events:none; }
   .stage-chrome .dots{ display:flex; gap:6px; }
   .stage-chrome .dots span{ width:9px; height:9px; border-radius:50%; background:var(--line); }
-  .stage-actions{ display:flex; gap:10px; }
+  .stage-actions{ display:flex; gap:10px; align-items:center; }
   .stage-actions button{ background:none; border:1px solid var(--line); color:var(--cream-dim); border-radius:7px; padding:5px 11px; font-size:11.5px; cursor:pointer; font-family:var(--sans); }
   .stage-actions button:hover{ border-color:var(--gold-dim); color:var(--gold); }
 
-  iframe#preview{ flex:1; width:100%; border:none; background:#000; }
+  /* Device Ratio Toggle Pills */
+  .device-toggle-pills {
+    display: inline-flex;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 2px;
+    gap: 2px;
+    margin-left: 12px;
+  }
+  .dev-btn {
+    border: none;
+    background: transparent;
+    color: var(--cream-dim);
+    font-size: 11px;
+    font-family: var(--sans);
+    padding: 4px 10px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    user-select: none;
+  }
+  .dev-btn:hover { color: #fff; }
+  .dev-btn.active {
+    background: var(--panel-2);
+    color: var(--gold);
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  }
+
+  /* Viewport Wrapper & Phone Mockup Frame */
+  .stage-viewport-wrap {
+    flex: 1;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    background: #020408;
+    transition: padding 0.3s ease;
+  }
+  .preview-device-holder {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .stage-inner.mode-mobile .stage-viewport-wrap {
+    padding: 16px 10px;
+  }
+  .stage-inner.mode-mobile .preview-device-holder {
+    width: 390px;
+    max-width: 100%;
+    height: 100%;
+    max-height: 800px;
+    border-radius: 46px;
+    background: #000;
+    box-shadow: 0 25px 70px rgba(0, 0, 0, 0.95), 0 0 0 10px #181820, 0 0 0 12px rgba(212, 175, 106, 0.4);
+    overflow: hidden;
+  }
+  .phone-dynamic-island {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 95px;
+    height: 24px;
+    background: #000;
+    border-radius: 999px;
+    z-index: 100;
+    pointer-events: none;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+  }
+  .phone-bottom-bar {
+    position: absolute;
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 120px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 999px;
+    z-index: 100;
+    pointer-events: none;
+  }
+
+  iframe#preview{ flex:1; width:100%; height:100%; border:none; background:#000; display:none; }
+  iframe#preview.visible{ display:block; }
+  .stage-inner.mode-mobile iframe#preview { border-radius: 44px; }
 
   .empty-stage{ flex:1; width:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:16px; padding:40px; text-align:center; margin:0 auto; }
   .ribbon-mark{ width:64px; height:64px; position:relative; }
@@ -2635,78 +2732,93 @@
           <button type="button" class="ghost-btn" id="manDownloadBtn" onclick="window.openExportModal()">⇩ Download .html</button>
           <button type="button" class="ghost-btn" id="manBackToAiBtn">✦ AI Kickstart</button>
         </div>
-      </div>
+      </div> <!-- /manualStudioView -->
+    </div> <!-- /rail -->
 
     <!-- RIGHT STAGE -->
     <div class="stage">
-      <div class="stage-inner">
+      <div class="stage-inner mode-desktop" id="stageInner">
         <div class="stage-chrome">
           <div class="dots"><span></span><span></span><span></span></div>
-          <div id="chromeLabel">preview</div>
-          <div class="stage-actions" id="stageActions" style="visibility:hidden;">
-            <button id="openTabBtn">Open in tab ↗</button>
-          </div>
-        </div>
-
-        <div class="empty-stage visible" id="emptyStage">
-          <svg class="ribbon-mark" viewBox="0 0 64 64" fill="none">
-            <circle cx="32" cy="32" r="30" stroke="#D4AF6A" stroke-width="1" opacity="0.4"/>
-            <path d="M20 24 L32 36 L44 24" stroke="#D4AF6A" stroke-width="1.5" opacity="0.8"/>
-            <path d="M20 40 L32 28 L44 40" stroke="#D4AF6A" stroke-width="1.5" opacity="0.8"/>
-          </svg>
-          <h2>The cinematic experience opens here</h2>
-          <p>Fill in the details on the left. WishCraft creates a multi-chapter experience with glassmorphism, interactive gates, and liquid motion.</p>
-        </div>
-
-        <div class="loading-stage" id="loadingStage">
-          <svg class="tie-svg" width="90" height="90" viewBox="0 0 90 90" fill="none">
-            <path d="M45 10 C20 10 20 45 45 45 C70 45 70 80 45 80" stroke="#D4AF6A" stroke-width="2" stroke-linecap="round"/>
-          </svg>
-          <p id="loadingText">tying the ribbon...</p>
-        </div>
-
-        <div class="error-stage" id="errorStage">
-          <svg class="error-mark" viewBox="0 0 64 64" fill="none">
-            <circle cx="32" cy="32" r="30" stroke="#C97B84" stroke-width="1.5" stroke-dasharray="4 4" opacity="0.6"/>
-            <path d="M24 24 L40 40 M40 24 L24 40" stroke="#C97B84" stroke-width="2" stroke-linecap="round"/>
-          </svg>
-          <h2 id="errorTitle">The spell fizzled.</h2>
-          <p id="errorMsg">The AI couldn't complete the generation. Check your API credits or network connection.</p>
-          
-          <div style="display: flex; gap: 10px; justify-content: center; align-items: center; margin-top: 10px; flex-wrap: wrap;">
-            <button class="ghost-btn" id="retryBtn" style="padding: 10px 24px;">Try Again</button>
-            <button class="api-key-pill-btn" id="toggleApiKeyBoxBtn" onclick="openApiKeyModal()" style="display:inline-flex; padding: 9px 18px; font-size: 12.5px;">
-              <span class="api-key-icon">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-                  <path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/>
-                </svg>
-              </span>
-              <span>API Key Settings</span>
+          <div class="device-toggle-pills" id="deviceTogglePills">
+            <button type="button" class="dev-btn active" id="devBtnDesktop" title="Full Desktop Ratio (100% width)">
+              🖥️ Desktop
+            </button>
+            <button type="button" class="dev-btn" id="devBtnMobile" title="Mobile Phone Ratio (390×844)">
+              📱 Phone (390×844)
             </button>
           </div>
-
-          <!-- Custom API Key Input Box -->
-          <div id="customApiKeyBox" style="display: none; margin-top: 20px; padding: 22px 20px; border: 1px solid rgba(212,175,106,0.32); border-radius: 16px; background: rgba(14,16,21,0.88); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); max-width: 440px; width: 100%; text-align: left; box-shadow: 0 18px 45px rgba(0,0,0,0.65), inset 0 0 25px rgba(212,175,106,0.04);">
-            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
-              <span style="font-size: 13.5px; font-weight: 600; color: #fff; display: flex; align-items: center; gap: 7px; font-family: var(--serif);">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
-                Gemini API Key
-              </span>
-              <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener" style="font-size: 11.5px; color: var(--gold); text-decoration: none; border-bottom: 1px dashed var(--gold-dim);">Get free key ↗</a>
-            </div>
-            <p style="font-size: 12.5px; color: var(--cream-dim); margin-bottom: 14px; line-height: 1.5;">
-              Server busy or free quota reached? Insert your free Gemini API key to craft your page directly without server limits.
-            </p>
-            <div class="api-input-wrap" style="margin-bottom: 10px;">
-              <input type="password" id="userCustomKeyInput" class="api-key-input-field" placeholder="Paste key (AIzaSy...)" autocomplete="off" spellcheck="false" />
-            </div>
-            <div style="display: flex; justify-content: flex-end; margin-top: 12px;">
-              <button class="api-save-btn" id="saveAndCraftBtn" style="width: 100%; justify-content: center; display: flex; align-items: center; gap: 6px;">✦ Save & Craft Page</button>
-            </div>
+          <div id="chromeLabel">live preview</div>
+          <div class="stage-actions" id="stageActions" style="visibility:visible;">
+            <button id="openTabBtn" title="Open in new browser tab">Open in tab ↗</button>
           </div>
         </div>
 
-        <iframe id="preview" title="Generated page preview" sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals"></iframe>
+        <div class="stage-viewport-wrap" id="stageViewportWrap">
+          <div class="empty-stage visible" id="emptyStage">
+            <svg class="ribbon-mark" viewBox="0 0 64 64" fill="none">
+              <circle cx="32" cy="32" r="30" stroke="#D4AF6A" stroke-width="1" opacity="0.4"/>
+              <path d="M20 24 L32 36 L44 24" stroke="#D4AF6A" stroke-width="1.5" opacity="0.8"/>
+              <path d="M20 40 L32 28 L44 40" stroke="#D4AF6A" stroke-width="1.5" opacity="0.8"/>
+            </svg>
+            <h2>The cinematic experience opens here</h2>
+            <p>Fill in the details on the left or customize directly in the Manual Editor. WishCraft creates an interactive multi-chapter keepsake.</p>
+          </div>
+
+          <div class="loading-stage" id="loadingStage">
+            <svg class="tie-svg" width="90" height="90" viewBox="0 0 90 90" fill="none">
+              <path d="M45 10 C20 10 20 45 45 45 C70 45 70 80 45 80" stroke="#D4AF6A" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            <p id="loadingText">tying the ribbon...</p>
+          </div>
+
+          <div class="error-stage" id="errorStage">
+            <svg class="error-mark" viewBox="0 0 64 64" fill="none">
+              <circle cx="32" cy="32" r="30" stroke="#C97B84" stroke-width="1.5" stroke-dasharray="4 4" opacity="0.6"/>
+              <path d="M24 24 L40 40 M40 24 L24 40" stroke="#C97B84" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            <h2 id="errorTitle">The spell fizzled.</h2>
+            <p id="errorMsg">The AI couldn't complete the generation. Check your API credits or network connection.</p>
+            
+            <div style="display: flex; gap: 10px; justify-content: center; align-items: center; margin-top: 10px; flex-wrap: wrap;">
+              <button class="ghost-btn" id="retryBtn" style="padding: 10px 24px;">Try Again</button>
+              <button class="api-key-pill-btn" id="toggleApiKeyBoxBtn" onclick="openApiKeyModal()" style="display:inline-flex; padding: 9px 18px; font-size: 12.5px;">
+                <span class="api-key-icon">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                    <path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/>
+                  </svg>
+                </span>
+                <span>API Key Settings</span>
+              </button>
+            </div>
+
+            <!-- Custom API Key Input Box -->
+            <div id="customApiKeyBox" style="display: none; margin-top: 20px; padding: 22px 20px; border: 1px solid rgba(212,175,106,0.32); border-radius: 16px; background: rgba(14,16,21,0.88); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); max-width: 440px; width: 100%; text-align: left; box-shadow: 0 18px 45px rgba(0,0,0,0.65), inset 0 0 25px rgba(212,175,106,0.04);">
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+                <span style="font-size: 13.5px; font-weight: 600; color: #fff; display: flex; align-items: center; gap: 7px; font-family: var(--serif);">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+                  Gemini API Key
+                </span>
+                <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener" style="font-size: 11.5px; color: var(--gold); text-decoration: none; border-bottom: 1px dashed var(--gold-dim);">Get free key ↗</a>
+              </div>
+              <p style="font-size: 12.5px; color: var(--cream-dim); margin-bottom: 14px; line-height: 1.5;">
+                Server busy or free quota reached? Insert your free Gemini API key to craft your page directly without server limits.
+              </p>
+              <div class="api-input-wrap" style="margin-bottom: 10px;">
+                <input type="password" id="userCustomKeyInput" class="api-key-input-field" placeholder="Paste key (AIzaSy...)" autocomplete="off" spellcheck="false" />
+              </div>
+              <div style="display: flex; justify-content: flex-end; margin-top: 12px;">
+                <button class="api-save-btn" id="saveAndCraftBtn" style="width: 100%; justify-content: center; display: flex; align-items: center; gap: 6px;">✦ Save & Craft Page</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="preview-device-holder" id="previewDeviceHolder">
+            <div class="phone-dynamic-island" id="phoneDynamicIsland" style="display:none;"></div>
+            <iframe id="preview" title="Generated page preview" sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals"></iframe>
+            <div class="phone-bottom-bar" id="phoneBottomBar" style="display:none;"></div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -4260,7 +4372,43 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
     window.rebuildManualExperience();
   });
 
-  // ---------- Custom API Key Controls & Modal ----------
+  // ---------- Device Ratio Switcher (Desktop Full vs Mobile Phone 390x844) ----------
+  const devBtnDesktop = document.getElementById('devBtnDesktop');
+  const devBtnMobile = document.getElementById('devBtnMobile');
+  const stageInner = document.getElementById('stageInner');
+  const phoneDynamicIsland = document.getElementById('phoneDynamicIsland');
+  const phoneBottomBar = document.getElementById('phoneBottomBar');
+
+  function setPreviewDevice(mode) {
+    if (mode === 'mobile') {
+      devBtnMobile?.classList.add('active');
+      devBtnDesktop?.classList.remove('active');
+      stageInner?.classList.add('mode-mobile');
+      stageInner?.classList.remove('mode-desktop');
+      if (phoneDynamicIsland) phoneDynamicIsland.style.display = 'block';
+      if (phoneBottomBar) phoneBottomBar.style.display = 'block';
+    } else {
+      devBtnDesktop?.classList.add('active');
+      devBtnMobile?.classList.remove('active');
+      stageInner?.classList.add('mode-desktop');
+      stageInner?.classList.remove('mode-mobile');
+      if (phoneDynamicIsland) phoneDynamicIsland.style.display = 'none';
+      if (phoneBottomBar) phoneBottomBar.style.display = 'none';
+    }
+  }
+
+  devBtnDesktop?.addEventListener('click', () => setPreviewDevice('desktop'));
+  devBtnMobile?.addEventListener('click', () => setPreviewDevice('mobile'));
+
+  // Auto-init live preview so the aesthetic stage is never empty
+  window.addEventListener('DOMContentLoaded', () => {
+    setTimeout(() => {
+      if (typeof window.syncInputsToManualEditor === 'function' && typeof window.rebuildManualExperience === 'function') {
+        window.syncInputsToManualEditor();
+        window.rebuildManualExperience();
+      }
+    }, 150);
+  });
   const toggleApiKeyBoxBtn = document.getElementById('toggleApiKeyBoxBtn');
   const customApiKeyBox = document.getElementById('customApiKeyBox');
   const userCustomKeyInput = document.getElementById('userCustomKeyInput');
