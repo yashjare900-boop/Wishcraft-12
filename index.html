@@ -825,12 +825,12 @@
   .stage{ position:relative; display:flex; align-items:center; justify-content:center; padding:18px 24px; overflow:hidden; width:100%; height:calc(100vh - 73px); }
   .stage-inner{ width:100%; max-width:1160px; margin:0 auto; height:100%; max-height:88vh; display:flex; flex-direction:column; border-radius:20px; border:1px solid var(--line); background:var(--panel); overflow:hidden; position:relative; box-shadow: 0 40px 80px -30px rgba(0,0,0,0.7); }
   
-  .stage-chrome{ position:relative; display:flex; align-items:center; justify-content:space-between; padding:10px 16px; border-bottom:1px solid var(--line); font-family:var(--mono); font-size:11px; color:var(--cream-dim); flex-shrink:0; background:rgba(18, 14, 22, 0.75); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); z-index:10; }
-  .chrome-col-left{ display:flex; align-items:center; gap:12px; min-width:170px; }
-  .chrome-col-center{ display:flex; align-items:center; justify-content:center; flex:1; }
-  .chrome-col-right{ display:flex; align-items:center; justify-content:flex-end; min-width:170px; }
+  .stage-chrome{ position:relative; display:flex; align-items:center; justify-content:space-between; padding:10px 14px; border-bottom:1px solid var(--line); font-family:var(--mono); font-size:11px; color:var(--cream-dim); flex-shrink:0; background:rgba(18, 14, 22, 0.75); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); z-index:10; gap:8px; }
+  .chrome-col-left{ display:flex; align-items:center; gap:10px; flex-shrink:0; }
+  .chrome-col-center{ display:flex; align-items:center; justify-content:center; flex:1; min-width:0; }
+  .chrome-col-right{ display:flex; align-items:center; justify-content:flex-end; flex-shrink:0; }
 
-  .stage-chrome .dots{ display:flex; gap:6px; }
+  .stage-chrome .dots{ display:flex; gap:6px; flex-shrink:0; }
   .stage-chrome .dots span{ width:9px; height:9px; border-radius:50%; background:var(--line); }
   .chrome-status-badge{ display:inline-flex; align-items:center; gap:6px; padding:3px 9px; border-radius:999px; background:rgba(212,175,106,0.08); border:1px solid rgba(212,175,106,0.22); font-size:10px; font-weight:600; letter-spacing:0.08em; color:var(--gold); }
   #chromeLabel{ font-weight:600; letter-spacing:0.08em; color:var(--gold); text-transform:uppercase; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:180px; }
@@ -843,6 +843,7 @@
     border-radius: 999px;
     padding: 3px;
     gap: 3px;
+    flex-shrink: 0;
   }
   .dev-btn {
     border: none;
@@ -850,16 +851,17 @@
     color: var(--cream-dim);
     font-size: 11.5px;
     font-family: var(--sans);
-    padding: 5px 13px;
+    padding: 5px 12px;
     border-radius: 999px;
     cursor: pointer;
     transition: all 0.18s ease;
     display: inline-flex;
     align-items: center;
-    gap: 6px;
+    gap: 5px;
     user-select: none;
+    white-space: nowrap;
   }
-  .dev-btn svg { opacity: 0.75; transition: opacity 0.18s ease; }
+  .dev-btn svg { opacity: 0.75; transition: opacity 0.18s ease; flex-shrink: 0; }
   .dev-btn:hover { color: #fff; }
   .dev-btn:hover svg { opacity: 1; }
   .dev-btn.active {
@@ -871,9 +873,23 @@
   }
   .dev-btn.active svg { opacity: 1; stroke: var(--gold); }
 
-  .stage-actions{ display:flex; gap:10px; align-items:center; }
-  .stage-actions button{ display:inline-flex; align-items:center; gap:5px; background:none; border:1px solid var(--line); color:var(--cream-dim); border-radius:7px; padding:5px 12px; font-size:11.5px; cursor:pointer; font-family:var(--sans); transition: all 0.15s ease; }
+  .stage-actions{ display:flex; gap:8px; align-items:center; flex-shrink:0; }
+  .stage-actions button{ display:inline-flex; align-items:center; gap:5px; background:none; border:1px solid var(--line); color:var(--cream-dim); border-radius:7px; padding:5px 11px; font-size:11.5px; cursor:pointer; font-family:var(--sans); transition: all 0.15s ease; white-space:nowrap; }
   .stage-actions button:hover{ border-color:var(--gold-dim); color:var(--gold); background:rgba(212,175,106,0.06); }
+  .btn-label-short { display: none; }
+  .btn-label-long { display: inline; }
+
+  /* Mobile responsiveness for stage chrome so toggle and open in tab never clip */
+  @media (max-width: 768px) {
+    .stage-chrome { padding: 8px 10px; gap: 6px; }
+    .chrome-col-left { gap: 6px; }
+    .chrome-status-badge { display: none; }
+    .pill-res { display: none; }
+    .dev-btn { padding: 5px 9px; font-size: 11px; gap: 4px; }
+    .stage-actions button { padding: 5px 8px; font-size: 11px; }
+    .btn-label-long { display: none; }
+    .btn-label-short { display: inline; }
+  }
 
   /* Viewport Wrapper & Scaled Preview Container */
   .stage-viewport-wrap {
@@ -2777,18 +2793,19 @@
             <div class="device-toggle-pills" id="deviceTogglePills">
               <button type="button" class="dev-btn active" id="devBtnDesktop" title="Full Desktop Ratio (1280×800 Native)">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-                <span>Desktop (1280×800)</span>
+                <span>Desktop</span><span class="pill-res"> (1280×800)</span>
               </button>
               <button type="button" class="dev-btn" id="devBtnMobile" title="Mobile Phone Ratio (390×844 Smartphone Ratio)">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="3"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
-                <span>Phone (390×844)</span>
+                <span>Phone</span><span class="pill-res"> (390×844)</span>
               </button>
             </div>
           </div>
           <div class="chrome-col-right">
             <div class="stage-actions" id="stageActions" style="visibility:visible;">
               <button id="openTabBtn" title="Open full experience in new browser tab">
-                <span>Open in tab</span>
+                <span class="btn-label-long">Open in tab</span>
+                <span class="btn-label-short">Open</span>
                 <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
               </button>
             </div>
@@ -4499,12 +4516,11 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
     }
   }
 
-  // Auto-init live preview so the aesthetic stage is never empty
+  // Initial state on startup: sync form inputs but keep the stage in its clean initial state
   window.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => {
-      if (typeof window.syncInputsToManualEditor === 'function' && typeof window.rebuildManualExperience === 'function') {
+      if (typeof window.syncInputsToManualEditor === 'function') {
         window.syncInputsToManualEditor();
-        window.rebuildManualExperience();
       }
     }, 150);
   });
