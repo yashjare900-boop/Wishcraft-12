@@ -170,17 +170,26 @@
       user-select: none;
     }
 
+    html {
+      height: 100%;
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
+
     body {
-      min-height: 100dvh;
+      min-height: 100%;
       background-color: var(--sapphire-dark);
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
       font-family: 'Montserrat', sans-serif;
-      overflow: hidden;
+      overflow-x: hidden;
+      overflow-y: auto;
       position: relative;
-      padding: 16px;
+      padding: 20px 16px;
       color: #ffffff;
+      box-sizing: border-box;
     }
 
     /* ---------------------------------
@@ -246,6 +255,7 @@
       z-index: 10;
       width: 100%;
       max-width: 440px;
+      margin: auto 0;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -877,18 +887,30 @@
       100% { left: 200%; }
     }
 
-    @media (max-width: 480px) {
-      body { padding: 12px; }
-      .glass-card { padding: 36px 20px 30px; border-radius: 28px; }
-      .glare { border-radius: 28px; }
-      h1.hero-title { font-size: 2.2rem; margin-bottom: 18px; }
-      .message { font-size: 0.88rem; line-height: 1.65; margin-bottom: 28px; }
-      .btn { padding: 14px 34px; font-size: 0.82rem; }
-      .scratch-card-box { height: 320px; }
-      .key { font-size: 1.2rem; }
+    @media (max-height: 780px), (max-width: 480px) {
+      body { padding: 12px 10px; }
+      .glass-card { padding: 24px 18px 20px; border-radius: 26px; }
+      .glare { border-radius: 26px; }
+      .subtitle { font-size: 0.72rem; letter-spacing: 2px; margin-bottom: 8px; }
+      h1.hero-title { font-size: 1.85rem; margin-bottom: 12px; }
+      .message { font-size: 0.85rem; line-height: 1.55; margin-bottom: 20px; }
+      .btn { padding: 12px 30px; font-size: 0.8rem; }
+      .scanner-container { width: 120px; height: 120px; }
+      .circle-outer { width: 80px; height: 80px; }
+      .circle-inner-mask { width: 60px; height: 60px; }
+      .scratch-card-box { height: 260px; margin: 6px auto 16px; border-radius: 20px; }
+      .secret-message { padding: 18px 14px; }
+      .secret-message h2 { font-size: 1.35rem; margin-bottom: 8px; }
+      .countdown-grid { gap: 6px; margin: 10px 0 14px; }
       .timer-row { gap: 6px; }
-      .time-box { width: 62px; padding: 10px 4px; }
-      .time-val { font-size: 1.3rem; }
+      .time-box { width: 56px; padding: 8px 3px; border-radius: 14px; }
+      .time-val { font-size: 1.15rem; }
+      .time-label { font-size: 0.65rem; }
+      .code-display { gap: 8px; margin: 8px 0 12px; }
+      .code-dot { width: 11px; height: 11px; }
+      .keypad-grid { gap: 8px; padding: 0 4px; margin-bottom: 6px; }
+      .key { font-size: 1.15rem; max-width: 56px; max-height: 56px; margin: 0 auto; width: 100%; }
+      .key.action-key { font-size: 0.75rem; }
     }
   </style>
 </head>

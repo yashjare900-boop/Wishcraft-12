@@ -92,7 +92,7 @@
     * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
     html, body {
       background-color: var(--bg-deep); color: #fff; font-family: 'Poppins', sans-serif;
-      overflow: hidden; height: 100%; width: 100%; position: relative;
+      overflow-x: hidden; overflow-y: auto; height: 100%; width: 100%; position: relative;
     }
     .bg-container {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -129,7 +129,8 @@
     .scene-wrap {
       position: absolute; inset: 0; width: 100%; height: 100%;
       display: none; align-items: center; justify-content: center;
-      padding: 20px; z-index: 10; opacity: 0;
+      padding: 20px 14px; z-index: 10; opacity: 0;
+      overflow-x: hidden; overflow-y: auto;
       transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
       transform: translateY(20px) scale(0.97);
     }
@@ -138,6 +139,7 @@
     /* Glass Cards */
     .glass-card {
       width: 100%; max-width: 440px; background: rgba(255, 255, 255, 0.035);
+      margin: auto;
       border-radius: 35px; padding: 48px 30px 42px; text-align: center;
       position: relative; overflow: hidden;
       backdrop-filter: blur(25px) saturate(160%); -webkit-backdrop-filter: blur(25px) saturate(160%);
@@ -610,8 +612,14 @@
       transform: translate(1px, -1px);
       opacity: 1;
     }
-    @media (max-width: 480px) {
+    @media (max-height: 780px), (max-width: 480px) {
       .wc-watermark-badge { bottom: 12px; font-size: 10.5px; padding: 5px 12px; }
+      .glass-card { padding: 26px 18px 22px; border-radius: 26px; }
+      .glass-letter { padding: 28px 20px 24px; border-radius: 24px; }
+      .title { font-size: 1.8rem; margin-bottom: 12px; }
+      .desc { font-size: 0.85rem; margin-bottom: 20px; line-height: 1.55; }
+      .btn { padding: 12px 30px; font-size: 0.8rem; }
+      .promise-card { height: 110px; border-radius: 18px; padding: 14px 16px; }
     }
 
   </style>

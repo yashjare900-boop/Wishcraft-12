@@ -824,11 +824,12 @@
   /* Right Stage */
   .stage{ position:relative; display:flex; align-items:center; justify-content:center; padding:24px 30px; overflow:hidden; width:100%; height:calc(100vh - 73px); }
   .stage-inner{ width:100%; max-width:1040px; margin:0 auto; height:100%; max-height:88vh; display:flex; flex-direction:column; border-radius:20px; border:1px solid var(--line); background:var(--panel); overflow:hidden; position:relative; box-shadow: 0 40px 80px -30px rgba(0,0,0,0.7); transition: max-width 0.35s cubic-bezier(0.16, 1, 0.3, 1); }
-  .stage-inner.mode-mobile { max-width: 480px; }
-  .stage-chrome{ position:relative; display:flex; align-items:center; justify-content:space-between; padding:10px 16px; border-bottom:1px solid var(--line); font-family:var(--mono); font-size:11px; color:var(--cream-dim); flex-shrink:0; background:rgba(18, 14, 22, 0.6); }
-  #chromeLabel { position:absolute; left:50%; transform:translateX(-50%); font-weight:600; color:var(--gold-dim); letter-spacing:0.1em; text-transform:uppercase; pointer-events:none; }
+  .stage-inner.mode-mobile { max-width: 520px; }
+  .stage-chrome{ position:relative; display:flex; align-items:center; justify-content:space-between; padding:10px 16px; border-bottom:1px solid var(--line); font-family:var(--mono); font-size:11px; color:var(--cream-dim); flex-shrink:0; background:rgba(18, 14, 22, 0.6); gap:12px; }
+  .stage-chrome-left{ display:flex; align-items:center; gap:12px; }
   .stage-chrome .dots{ display:flex; gap:6px; }
   .stage-chrome .dots span{ width:9px; height:9px; border-radius:50%; background:var(--line); }
+  #chromeLabel { font-weight:600; color:var(--gold-dim); letter-spacing:0.1em; text-transform:uppercase; font-size:10px; background:rgba(212, 175, 106, 0.08); padding:3px 8px; border-radius:4px; border:1px solid rgba(212, 175, 106, 0.18); white-space:nowrap; }
   .stage-actions{ display:flex; gap:10px; align-items:center; }
   .stage-actions button{ background:none; border:1px solid var(--line); color:var(--cream-dim); border-radius:7px; padding:5px 11px; font-size:11.5px; cursor:pointer; font-family:var(--sans); }
   .stage-actions button:hover{ border-color:var(--gold-dim); color:var(--gold); }
@@ -841,7 +842,6 @@
     border-radius: 999px;
     padding: 2px;
     gap: 2px;
-    margin-left: 12px;
   }
   .dev-btn {
     border: none;
@@ -849,14 +849,15 @@
     color: var(--cream-dim);
     font-size: 11px;
     font-family: var(--sans);
-    padding: 4px 10px;
+    padding: 4px 11px;
     border-radius: 999px;
     cursor: pointer;
     transition: all 0.15s ease;
     display: inline-flex;
     align-items: center;
-    gap: 4px;
+    gap: 5px;
     user-select: none;
+    white-space: nowrap;
   }
   .dev-btn:hover { color: #fff; }
   .dev-btn.active {
@@ -880,46 +881,75 @@
     transition: padding 0.3s ease;
   }
   .preview-device-holder {
-    width: 100%;
-    height: 100%;
     position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
     transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
   }
+  .stage-inner.mode-desktop .preview-device-holder {
+    width: 100%;
+    height: 100%;
+    aspect-ratio: auto;
+    border-radius: 0;
+    box-shadow: none;
+    max-height: 100%;
+    max-width: 100%;
+  }
+  .stage-inner.mode-desktop iframe#preview {
+    border-radius: 0 0 20px 20px;
+    width: 100%;
+    height: 100%;
+  }
+  .stage-inner.mode-desktop .phone-dynamic-island,
+  .stage-inner.mode-desktop .phone-bottom-bar {
+    display: none !important;
+  }
+
   .stage-inner.mode-mobile .stage-viewport-wrap {
-    padding: 16px 10px;
+    padding: 16px 12px;
   }
   .stage-inner.mode-mobile .preview-device-holder {
-    width: 390px;
-    max-width: 100%;
     height: 100%;
-    max-height: 800px;
-    border-radius: 46px;
+    max-height: calc(100% - 8px);
+    aspect-ratio: 390 / 844;
+    width: auto;
+    max-width: min(100%, 390px);
+    border-radius: 44px;
     background: #000;
-    box-shadow: 0 25px 70px rgba(0, 0, 0, 0.95), 0 0 0 10px #181820, 0 0 0 12px rgba(212, 175, 106, 0.4);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.95), 0 0 0 8px #181922, 0 0 0 10px rgba(212, 175, 106, 0.4);
+    position: relative;
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  .stage-inner.mode-mobile iframe#preview {
+    border-radius: 40px;
+    width: 100%;
+    height: 100%;
+    border: none;
+    flex: 1;
+    display: block;
   }
   .phone-dynamic-island {
     position: absolute;
     top: 10px;
     left: 50%;
     transform: translateX(-50%);
-    width: 95px;
-    height: 24px;
+    width: 90px;
+    height: 22px;
     background: #000;
     border-radius: 999px;
     z-index: 100;
     pointer-events: none;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.6);
   }
   .phone-bottom-bar {
     position: absolute;
     bottom: 8px;
     left: 50%;
     transform: translateX(-50%);
-    width: 120px;
+    width: 110px;
     height: 4px;
     background: rgba(255, 255, 255, 0.5);
     border-radius: 999px;
@@ -929,7 +959,6 @@
 
   iframe#preview{ flex:1; width:100%; height:100%; border:none; background:#000; display:none; }
   iframe#preview.visible{ display:block; }
-  .stage-inner.mode-mobile iframe#preview { border-radius: 44px; }
 
   .empty-stage{ flex:1; width:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:16px; padding:40px; text-align:center; margin:0 auto; }
   .ribbon-mark{ width:64px; height:64px; position:relative; }
@@ -2739,7 +2768,10 @@
     <div class="stage">
       <div class="stage-inner mode-desktop" id="stageInner">
         <div class="stage-chrome">
-          <div class="dots"><span></span><span></span><span></span></div>
+          <div class="stage-chrome-left">
+            <div class="dots"><span></span><span></span><span></span></div>
+            <div id="chromeLabel">live preview</div>
+          </div>
           <div class="device-toggle-pills" id="deviceTogglePills">
             <button type="button" class="dev-btn active" id="devBtnDesktop" title="Full Desktop Ratio (100% width)">
               🖥️ Desktop
@@ -2748,7 +2780,6 @@
               📱 Phone (390×844)
             </button>
           </div>
-          <div id="chromeLabel">live preview</div>
           <div class="stage-actions" id="stageActions" style="visibility:visible;">
             <button id="openTabBtn" title="Open in new browser tab">Open in tab ↗</button>
           </div>
