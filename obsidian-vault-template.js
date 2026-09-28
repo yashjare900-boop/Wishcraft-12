@@ -173,8 +173,7 @@
       font-family: 'Montserrat', sans-serif;
       height: 100dvh;
       width: 100vw;
-      overflow-x: hidden;
-      overflow-y: auto;
+      overflow: hidden;
       position: relative;
     }
 
@@ -248,8 +247,7 @@
     .scene-wrap {
       position: absolute; inset: 0; width: 100%; height: 100%;
       display: none; align-items: center; justify-content: center;
-      padding: 20px 14px; z-index: 10; opacity: 0;
-      overflow-x: hidden; overflow-y: auto;
+      padding: 20px; z-index: 10; opacity: 0;
       transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
       transform: translateY(20px) scale(0.97);
     }
@@ -260,7 +258,6 @@
     /* Common Glass Card Styling */
     .glass-card {
       width: 100%; max-width: 420px;
-      margin: auto;
       background: linear-gradient(135deg, rgba(26, 26, 28, 0.65) 0%, rgba(11, 11, 12, 0.45) 100%);
       border-radius: 40px; padding: 48px 30px 42px; text-align: center;
       position: relative; transform-style: preserve-3d;
@@ -653,19 +650,6 @@
       100% { transform: translateY(110vh) translateX(-20px) rotate(360deg) scale(0.8); opacity: 0; }
     }
     @keyframes buttonShine { 0%, 60% { left: -100%; } 100% { left: 200%; } }
-    @media (max-height: 780px), (max-width: 480px) {
-      .glass-card { padding: 26px 18px 22px; border-radius: 26px; }
-      .glare { border-radius: 26px; }
-      .hero-title { font-size: 1.85rem; margin-bottom: 12px; }
-      .hero-message { font-size: 0.85rem; line-height: 1.55; margin-bottom: 20px; }
-      .btn-gold { padding: 12px 30px; font-size: 0.8rem; }
-      .scanner-container { width: 120px; height: 120px; }
-      .scratch-card-box { height: 260px; margin: 6px auto 16px; border-radius: 20px; }
-      .secret-message { padding: 18px 14px; }
-      .countdown-grid { gap: 6px; margin: 10px 0 14px; }
-      .time-box { padding: 10px 6px; }
-      .time-val { font-size: 1.3rem; }
-    }
   </style>
 </head>
 <body>
