@@ -3279,17 +3279,30 @@
 
   // ---------- Structured Copywriting & Sentiment System Prompt ----------
   function getSystemPrompt() {
-    return `You are an elite poetic copywriter and sentiment analyst for WishCraft, a luxury digital keepsake experience.
-Your goal is to write a deeply moving, personalized wish based on the user's intake details.
+    const occ = selectedOccasion || 'birthday';
+    const recName = document.getElementById('recipientName')?.value?.trim() || 'Someone Special';
+    return `You are an elite poetic copywriter and sentiment architect for WishCraft, an ultra-luxury digital keepsake studio.
+Your goal is to write a deeply moving, tailored wish experience based on the user's intake details.
+
+CRITICAL OCCASION GUARDRAILS:
+The user selected occasion: "${occ}".
+You MUST strictly write copy honoring this exact occasion.
+If the occasion is "birthday", write exclusively a celebratory birthday tribute for ${recName}. NEVER hallucinate romantic love or dating anniversary sentiments unless the occasion is explicitly "romantic" or "anniversary".
 
 Return ONLY a strict, valid JSON object with the following schema:
 {
-  "category": "birthday" | "anniversary" | "farewell" | "funny" | "romantic" | "celebration",
-  "title": "A short, captivating headline (max 7 words)",
+  "category": "${occ}",
+  "headline": "A grand, high-impact finale title (e.g. HAPPY BIRTHDAY ${recName.toUpperCase()}!)",
   "subtitle": "An elegant, evocative one-line subtitle",
-  "body_text": "The main personalized wish message (2 to 4 emotional, poetic paragraphs separated by double newlines). Weave in the user's memories, tone, and personal aspirations.",
-  "quote": "A memorable 1-sentence keepsake quote",
-  "theme_color": "Hex color code matching the emotional mood (e.g. #D4AF6A, #E056FD, #0984E3, #00D2D3, #FF4757, #F9CA24)"
+  "intro_note": "A stirring 1-2 sentence opening that honors the recipient and sets a luxurious, emotional tone",
+  "scratch_heading": "A short, warm greeting for the secret scratch note (e.g. Hey ${recName}, or A Timeless Bond,)",
+  "scratch_note": "The heartfelt secret note (2-3 sentences) revealed when wiping the frosted glass archive",
+  "letter_p1": "Paragraph 1 of the tribute letter (celebrating who they are and their unique spirit)",
+  "letter_p2": "Paragraph 2 of the tribute letter (weaving in personal memories, shared laughs, milestones)",
+  "letter_p3": "Paragraph 3 of the tribute letter (wishes for the future, adventures, dreams, and triumphs)",
+  "closing_note": "A resonant 1-line closing blessing (e.g. CRAFTED WITH IMMENSE LOVE // TO AN UNSTOPPABLE SOUL)",
+  "quote": "A timeless 1-sentence keepsake quote",
+  "theme_color": "Hex color code matching the occasion mood (e.g. #D4AF6A, #E056FD, #00D2D3, #F9CA24)"
 }
 
 Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.`;
@@ -3298,7 +3311,7 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
   function buildIntakeMessage() {
     const name = document.getElementById('recipientName').value.trim() || "them";
     const sender = document.getElementById('senderName').value.trim();
-    const relationship = document.getElementById('relationship').value.trim() || "someone special";
+    const relationship = document.getElementById('relationship').value.trim() || "friend";
     const message = document.getElementById('messageText').value.trim();
     const passcode = document.getElementById('passcode').value.trim();
     const aspirations = document.getElementById('aspirations').value.trim();
@@ -3310,12 +3323,12 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
       countdownTarget = `${cd}T${ct}:00`;
     }
 
-    return `Compose a personalized keepsake wish payload in JSON with these details:
+    return `Compose a personalized keepsake wish payload in JSON strictly for this occasion:
 {
   "recipientName": "${name}",
   "senderName": ${sender ? JSON.stringify(sender) : "null"},
   "relationship": "${relationship}",
-  "occasion": "${selectedOccasion}",
+  "occasion": "${selectedOccasion || 'birthday'}",
   "tone": "${selectedTone}",
   "themeName": "${selectedTheme}",
   "personalMemoriesAndAspirations": ${aspirations ? JSON.stringify(aspirations) : "null"},
@@ -3428,6 +3441,13 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
     let i = 0; const loadingText = document.getElementById('loadingText');
     const interval = setInterval(() => { i = (i + 1) % loadingMessages.length; loadingText.textContent = loadingMessages[i]; }, 1000);
 
+    let countdownTarget = null;
+    const cd = document.getElementById('countdownDate')?.value;
+    if (cd && selectedFeatures.has('Countdown Timer')) {
+      const ct = document.getElementById('countdownTime')?.value || "00:00";
+      countdownTarget = `${cd}T${ct}:00`;
+    }
+
     const userData = {
       recipientName: document.getElementById('recipientName').value.trim() || "Someone Special",
       senderName: document.getElementById('senderName').value.trim() || "",
@@ -3436,6 +3456,8 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
       tone: selectedTone || "heartfelt",
       themeName: selectedTheme || "royal-gold",
       passcode: document.getElementById('passcode').value.trim() || "",
+      passcodeHint: "6-Digit Security Decryption Key",
+      countdownTarget: countdownTarget,
       aspirations: document.getElementById('aspirations').value.trim() || "",
       userMessage: document.getElementById('messageText').value.trim() || "",
       photos: photos || []

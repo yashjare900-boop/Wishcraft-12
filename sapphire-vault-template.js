@@ -51,6 +51,7 @@
       finaleSubTitle: "The Ultimate Celebration",
       finaleMainTitle: "HAPPY BIRTHDAY!",
       closingNote: "CRAFTED WITH IMMENSE LOVE // TO AN UNSTOPPABLE SOUL",
+      photos: [],
       showWatermark: true
     }, custom || {});
 
@@ -66,6 +67,8 @@
       if (custom.wishMessage && !custom.finaleMainTitle) c.finaleMainTitle = custom.wishMessage;
       if (custom.startDate && !custom.targetDateTime) c.targetDateTime = custom.startDate;
       if (custom.hint && !custom.passcodeHint) c.passcodeHint = custom.hint;
+      if (Array.isArray(custom.photos) && custom.photos.length > 0) c.photos = custom.photos;
+      else if (Array.isArray(custom.photoDataUrls) && custom.photoDataUrls.length > 0) c.photos = custom.photoDataUrls;
     }
 
     // Ensure passcode is strictly 6 characters
@@ -966,6 +969,10 @@
 
         <div class="scratch-card-box">
           <div class="secret-message">
+            ${Array.isArray(c.photos) && c.photos.length > 0 ? `
+            <div style="margin: 0 auto 12px; width: 72px; height: 72px; border-radius: 50%; overflow: hidden; border: 2px solid var(--gold-primary); box-shadow: 0 4px 15px rgba(0,0,0,0.5);">
+              <img src="${escapeHtml(c.photos[0])}" alt="Memory" style="width: 100%; height: 100%; object-fit: cover; display: block;" onerror="this.parentElement.style.display='none'">
+            </div>` : ''}
             <h2>${escapeHtml(c.scratchNoteHeading)}</h2>
             <p>${escapeHtml(c.scratchNote)}</p>
           </div>
@@ -1085,6 +1092,15 @@
           </div>
 
           <div class="gold-divider"></div>
+          ${Array.isArray(c.photos) && c.photos.length > 0 ? `
+          <div class="finale-memory-photos" style="display:flex; justify-content:center; gap:10px; margin:16px auto 14px; flex-wrap:wrap; max-width:380px;">
+            ${c.photos.slice(0, 3).map((p, idx) => `
+              <div style="width:96px; height:116px; background:rgba(255,255,255,0.06); border:1px solid rgba(229,193,88,0.45); border-radius:12px; padding:5px; box-shadow:0 8px 20px rgba(0,0,0,0.6); transform:rotate(${idx % 2 === 0 ? '-3deg' : '3deg'}); transition:transform 0.3s ease;">
+                <img src="${escapeHtml(p)}" alt="Memory" style="width:100%; height:100%; object-fit:cover; border-radius:8px; display:block;" onerror="this.parentElement.style.display='none'">
+              </div>
+            `).join('')}
+          </div>
+          ` : ''}
           <div class="closing-text">${escapeHtml(c.closingNote)}</div>
           <div style="font-family:'Cinzel',serif; font-size:1.1rem; color:var(--gold-primary); margin-bottom:24px;">— ${escapeHtml(c.sender)}</div>
 

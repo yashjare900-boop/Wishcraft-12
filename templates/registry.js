@@ -1,14 +1,19 @@
 /**
- * WishCraft Template Registry & Injection Engine
+ * WishCraft Template Registry & Luxury Injection Engine
  * 
- * Maps AI copywriting categories to pre-tested, luxury responsive HTML templates.
- * Enforces strict XSS sanitization and provides instant fallback copy.
+ * Maps AI copywriting and user sentiment to WishCraft's signature, multi-chapter flagship engines:
+ * - Birthday: Sapphire Protocol // Luxury Birthday Vault (Edition 03)
+ * - Anniversary / Romance: Royal Velvet // Cinematic Premiere (Edition 01)
+ * - Milestone / Farewell / Celebration / Funny / Custom: Obsidian Vault // Liquid Gold Edition (Edition 02)
+ * 
+ * Enforces strict occasion locking (user's selection ALWAYS takes priority over AI guessing)
+ * and guarantees zero malformed HTML, instant offline reliability, and XSS sanitization.
  */
 
 (function(global) {
   'use strict';
 
-  // 1. Safe HTML Entity Escaping (Prevents XSS attacks)
+  // 1. Safe HTML Entity Escaper
   function escapeHtml(str) {
     if (str === null || str === undefined) return '';
     return String(str)
@@ -23,66 +28,13 @@
   function formatBodyText(text) {
     if (!text) return '';
     const clean = String(text).trim();
-    // Split on double newlines or single newlines
     const paragraphs = clean.split(/\n\s*\n/);
     return paragraphs
       .map(p => `<p class="wc-prose-p">${escapeHtml(p.trim())}</p>`)
       .join('\n');
   }
 
-  // 3. Fallback AI Copy (Instant offline reliability)
-  const FALLBACK_COPY = {
-    birthday: {
-      category: 'birthday',
-      title: 'A Constellation of Joy For You ✨',
-      subtitle: 'Celebrating the incredible milestone of your journey',
-      body_text: 'Another chapter begins today, written in starlight and infinite possibility.\n\nMay this year unfold with quiet triumphs, fearless adventures, and all the laughter your heart can hold. You bring a rare and radiant warmth into the lives around you.',
-      quote: 'Count your age by stars, not years. Count your life by smiles, not tears.',
-      theme_color: '#D4AF6A'
-    },
-    anniversary: {
-      category: 'anniversary',
-      title: 'A Love That Grows Timeless 💎',
-      subtitle: 'Honoring every step, glance, and shared memory',
-      body_text: 'Two souls walking through time together, weaving ordinary moments into an extraordinary tapestry.\n\nHappy Anniversary. Through every storm and sunrise, the bond you share continues to shine like liquid gold. Here is to all that was, all that is, and the forever still waiting.',
-      quote: 'The best thing to hold onto in life is each other.',
-      theme_color: '#C5A059'
-    },
-    romantic: {
-      category: 'romantic',
-      title: 'You Are My Favorite Story 🌹',
-      subtitle: 'In a world full of noise, you are my harmony',
-      body_text: 'Out of all the billions of stars in the cosmos, somehow I found you.\n\nEvery day with you feels like discovering a secret room filled with wonder. Thank you for being my anchor, my spark, and the warmth that turns everywhere into home.',
-      quote: 'I loved you yesterday, I love you still, I always have, I always will.',
-      theme_color: '#E056FD'
-    },
-    farewell: {
-      category: 'farewell',
-      title: 'To New Horizons & Grand Adventures 🌅',
-      subtitle: 'Not a goodbye, but the start of your next great chapter',
-      body_text: 'Few people leave a mark as indelible and inspiring as you have.\n\nAs you embark on this next path, take pride in how far you have come and have faith in how far you can go. The best is truly yet to come.',
-      quote: 'Every new beginning comes from some other beginning\'s end.',
-      theme_color: '#00D2D3'
-    },
-    funny: {
-      category: 'funny',
-      title: 'Older, Wiser, & Still Questionable 🍕',
-      subtitle: 'Certified legend, occasionally functioning adult',
-      body_text: 'Scientists confirmed it: you are officially one year closer to yelling at clouds and having a favorite stove burner.\n\nHere\'s to celebrating another year of survival, questionable decisions, and still looking suspiciously good. Keep shining!',
-      quote: 'Age is merely the number of years the world has been enjoying you.',
-      theme_color: '#FF6B6B'
-    },
-    celebration: {
-      category: 'celebration',
-      title: 'Victory In The Making 🏆',
-      subtitle: 'Hard work meets well-deserved triumph',
-      body_text: 'You dreamed it, fought for it, and conquered it.\n\nThis victory is a testament to your grit, passion, and unwavering heart. Take a moment to stand tall and savor this milestone — you earned every single ounce of it.',
-      quote: 'Success isn\'t just about what you accomplish, it\'s about what you inspire others to do.',
-      theme_color: '#F9CA24'
-    }
-  };
-
-  // 4. Category Normalizer
+  // 3. Category Normalizer & Occasion Resolver
   function normalizeCategory(cat) {
     if (!cat) return 'birthday';
     const c = String(cat).toLowerCase().trim();
@@ -91,118 +43,322 @@
     if (c.includes('roman') || c.includes('love') || c.includes('propos') || c.includes('crush')) return 'romantic';
     if (c.includes('fare') || c.includes('goodbye') || c.includes('retire') || c.includes('leave')) return 'farewell';
     if (c.includes('fun') || c.includes('humor') || c.includes('roast') || c.includes('joke')) return 'funny';
-    if (c.includes('celeb') || c.includes('congrat') || c.includes('promot') || c.includes('grad') || c.includes('fest')) return 'celebration';
+    if (c.includes('celeb') || c.includes('congrat') || c.includes('promot') || c.includes('grad') || c.includes('fest') || c.includes('milestone')) return 'celebration';
     return 'birthday';
   }
 
-  // 5. Template Registry Map
-  const TEMPLATE_REGISTRY = {
-    birthday: 'templates/birthday.html',
-    anniversary: 'templates/anniversary.html',
-    romantic: 'templates/romantic.html',
-    farewell: 'templates/farewell.html',
-    funny: 'templates/funny.html',
-    celebration: 'templates/celebration.html'
+  // 4. Curated Flagship Fallback Copywriting (Instant offline reliability)
+  const FALLBACK_COPY = {
+    birthday: {
+      category: 'birthday',
+      headline: 'HAPPY BIRTHDAY!',
+      title: 'A Constellation of Joy For You ✨',
+      subtitle: 'Celebrating the incredible milestone of your journey',
+      cover_subtitle: 'Advance Birthday Protocol For',
+      intro_note: 'Your special milestone is here, but celebrating someone as extraordinary as you simply cannot be confined to just one day.',
+      scratch_heading: 'A Moment of Gratitude,',
+      scratch_note: 'Happiest Birthday! You are one of the most incredible people in my life, and words can\'t capture how grateful I am for your presence.\n\nThank you for bringing so much laughter, warmth, and brilliance to every single day.',
+      letter_p1: 'Another chapter begins today, written in starlight and infinite possibility. You bring a rare and radiant warmth into the lives of everyone around you.',
+      letter_p2: 'From the quiet victories to the shared milestones and uncontrollable laughter, having you along for the journey is a gift beyond measure.',
+      letter_p3: 'May this year unfold with fearless adventures, deep peace, and the courage to reach every aspiration you hold close to your heart.',
+      closing_note: 'CRAFTED WITH IMMENSE LOVE // TO AN UNSTOPPABLE SOUL',
+      quote: 'Count your age by stars, not years. Count your life by smiles, not tears.',
+      theme_color: '#D4AF6A'
+    },
+    anniversary: {
+      category: 'anniversary',
+      headline: 'FOREVER & ALWAYS',
+      title: 'A Love That Grows Timeless 💎',
+      subtitle: 'Honoring every step, glance, and shared memory',
+      cover_subtitle: 'Cinematic Anniversary Premiere For',
+      intro_note: 'Two souls walking through time together, weaving ordinary moments into an extraordinary tapestry of devotion.',
+      scratch_heading: 'To My Timeless Partner,',
+      scratch_note: 'Every second with you is a moment held close to my heart. Side by side or miles apart, our hearts beat in unison.\n\nForever and always.',
+      letter_p1: 'From the very first day our paths crossed, my world shifted into warmer, brighter colors. Your laughter brings peace to the loudest days, and your kindness is my steady anchor.',
+      letter_p2: 'Every storm we weathered and every sunrise we shared has only deepened the bond between us. With you, love is not just a promise—it is home.',
+      letter_p3: 'Here is to all that was, all that is, and the countless beautiful tomorrows still waiting to be written in our shared constellation.',
+      closing_note: 'WITH ALL MY DEVOTION // THROUGH EVERY SUNRISE AND STORM',
+      quote: 'The best thing to hold onto in life is each other.',
+      theme_color: '#C5A059'
+    },
+    romantic: {
+      category: 'romantic',
+      headline: 'YOU ARE MY FAVORITE STORY 🌹',
+      title: 'You Are My Favorite Story 🌹',
+      subtitle: 'In a world full of noise, you are my harmony',
+      cover_subtitle: 'A Reserved Chamber of Affection For',
+      intro_note: 'Out of all the billions of stars in the cosmos, somehow I found you. Every day with you feels like discovering a secret room filled with wonder.',
+      scratch_heading: 'My Dearest Heart,',
+      scratch_note: 'You are the gentle spark that lights up my darkest hours. Knowing you, loving you, and laughing with you is my life\'s greatest privilege.',
+      letter_p1: 'I wanted to create something truly magical and unforgettable for you today. A simple message could never capture the depth of what you mean to me.',
+      letter_p2: 'Your smile is my morning sunrise, and your voice is the calm in every storm. Thank you for being my anchor, my muse, and my favorite adventure.',
+      letter_p3: 'No matter where life leads us, know that my heart walks beside yours—steadfast, passionate, and unconditionally yours.',
+      closing_note: 'HELD FOREVER IN ORBIT // FOREVER YOURS',
+      quote: 'I loved you yesterday, I love you still, I always have, I always will.',
+      theme_color: '#E056FD'
+    },
+    farewell: {
+      category: 'farewell',
+      headline: 'TO NEW HORIZONS 🌅',
+      title: 'To New Horizons & Grand Adventures 🌅',
+      subtitle: 'Not a goodbye, but the start of your next great chapter',
+      cover_subtitle: 'A Tribute to Unforgettable Impact For',
+      intro_note: 'Few people leave a mark as indelible and inspiring as you have. As you take your next bold step, know you carry our admiration with you.',
+      scratch_heading: 'Honoring Your Legacy,',
+      scratch_note: 'Your talent, warmth, and resilience have made an enduring difference. The road ahead is lucky to have you.',
+      letter_p1: 'Endings are merely beginnings in disguise. As you close this chapter, take immense pride in every boundary you pushed and every life you touched.',
+      letter_p2: 'The dedication and brilliance you brought each day set a standard that will inspire us for years to come.',
+      letter_p3: 'May your next horizon bring grand adventures, thrilling challenges, and the wild success you so richly deserve.',
+      closing_note: 'CRAFTED WITH DEEP RESPECT // TO THE NEXT FRONTIER',
+      quote: 'Every new beginning comes from some other beginning\'s end.',
+      theme_color: '#00D2D3'
+    },
+    funny: {
+      category: 'funny',
+      headline: 'CERTIFIED LEGEND 🍕',
+      title: 'Older, Wiser, & Still Questionable 🍕',
+      subtitle: 'Certified legend, occasionally functioning adult',
+      cover_subtitle: 'A Highly Classified Dossier For',
+      intro_note: 'Scientists have verified it: you are officially one year closer to complaining about the weather and having a favorite stove burner.',
+      scratch_heading: 'Top Secret Notice,',
+      scratch_note: 'Here\'s to celebrating another year of questionable decisions, magnificent survival instincts, and still looking suspiciously good.',
+      letter_p1: 'They say wisdom comes with age. In your case, it seems age showed up alone, but honestly, we wouldn\'t want you any other way.',
+      letter_p2: 'Thank you for always being the reason we laugh, the accomplice in our bad ideas, and the greatest person to blame things on.',
+      letter_p3: 'May your year be packed with free food, good coffee, zero awkward small talk, and endless moments of triumph.',
+      closing_note: 'CRAFTED WITH ENDLESS LAUGHTER // STAY LEGENDARY',
+      quote: 'Age is merely the number of years the world has been enjoying you.',
+      theme_color: '#FF6B6B'
+    },
+    celebration: {
+      category: 'celebration',
+      headline: 'VICTORY IN THE MAKING 🏆',
+      title: 'Victory In The Making 🏆',
+      subtitle: 'Hard work meets well-deserved triumph',
+      cover_subtitle: 'Honoring An Incredible Milestone For',
+      intro_note: 'You dreamed it, fought for it, and conquered it. Today we stand tall to celebrate your dedication and grit.',
+      scratch_heading: 'Milestone Unlocked,',
+      scratch_note: 'Success isn\'t an accident; it is the natural consequence of your relentless dedication and extraordinary heart.',
+      letter_p1: 'Standing at the summit of this achievement, remember every late hour, every quiet sacrifice, and every hurdle you overcame.',
+      letter_p2: 'You have shown what is possible when relentless passion meets unwavering focus. Everyone around you is filled with pride.',
+      letter_p3: 'Let this milestone be the launching pad for even greater conquests. Keep dreaming boldly—you are capable of anything.',
+      closing_note: 'CRAFTED TO HONOR TRIUMPH // SOAR HIGHER',
+      quote: 'Success isn\'t just about what you accomplish, it\'s about what you inspire others to do.',
+      theme_color: '#F9CA24'
+    }
   };
 
-  // Cache template HTML strings in memory to prevent refetching
-  const templateCache = {};
-
-  // 6. Template Fetcher
-  async function fetchTemplate(category) {
-    if (templateCache[category]) return templateCache[category];
-
-    const relPath = TEMPLATE_REGISTRY[category] || TEMPLATE_REGISTRY.birthday;
-    
-    // Resolve relative path against window.location or baseUrl
-    let fetchUrl = relPath;
-    if (typeof window !== 'undefined' && window.location) {
-      const base = window.location.href.split('?')[0].split('#')[0];
-      const dir = base.substring(0, base.lastIndexOf('/') + 1);
-      fetchUrl = dir + relPath;
-    }
-
-    try {
-      const res = await fetch(fetchUrl);
-      if (!res.ok) throw new Error(`Template fetch returned HTTP ${res.status}`);
-      const text = await res.text();
-      templateCache[category] = text;
-      return text;
-    } catch (err) {
-      console.warn(`[Template Engine] Failed to fetch ${fetchUrl}, attempting relative fallback:`, err.message);
-      const resFallback = await fetch('/' + relPath);
-      const text = await resFallback.text();
-      templateCache[category] = text;
-      return text;
-    }
-  }
-
-  // 7. Core Injection Engine
+  // 5. Core Injection Engine: Maps Copywriting to Flagship Multi-Chapter Engines
   async function buildWishFromTemplate(aiData, userData = {}) {
-    const rawCategory = aiData?.category || userData?.occasion || 'birthday';
-    const category = normalizeCategory(rawCategory);
+    // RULE 1: STRICT OCCASION LOCKING
+    // User's explicit form selection is the absolute authority! Never let AI override user's choice.
+    const userOccasion = (userData.occasion || '').toLowerCase().trim();
+    let category = 'birthday';
+
+    if (userOccasion.includes('birth') || userOccasion.includes('bday')) {
+      category = 'birthday';
+    } else if (userOccasion.includes('anniv') || userOccasion.includes('wedding')) {
+      category = 'anniversary';
+    } else if (userOccasion.includes('roman') || userOccasion.includes('love') || userOccasion.includes('propos') || userOccasion.includes('crush')) {
+      category = 'romantic';
+    } else if (userOccasion.includes('fare') || userOccasion.includes('goodbye') || userOccasion.includes('retire') || userOccasion.includes('leave')) {
+      category = 'farewell';
+    } else if (userOccasion.includes('fun') || userOccasion.includes('humor') || userOccasion.includes('roast') || userOccasion.includes('joke')) {
+      category = 'funny';
+    } else if (userOccasion.includes('celeb') || userOccasion.includes('congrat') || userOccasion.includes('promot') || userOccasion.includes('grad') || userOccasion.includes('milestone')) {
+      category = 'celebration';
+    } else if (aiData && aiData.category) {
+      category = normalizeCategory(aiData.category);
+    }
+
     const fallback = FALLBACK_COPY[category] || FALLBACK_COPY.birthday;
 
-    // Merge AI output with safe fallbacks
-    const title = aiData?.title || fallback.title;
-    const subtitle = aiData?.subtitle || fallback.subtitle;
-    const bodyText = aiData?.body_text || fallback.body_text;
-    const quote = aiData?.quote || fallback.quote;
+    // Normalizing copywriting fields
+    const recipientName = userData.recipientName || 'Someone Special';
+    const senderName = userData.senderName || '';
+    const headline = (aiData?.headline || aiData?.title || fallback.headline || fallback.title).trim();
+    const subtitle = (aiData?.subtitle || fallback.subtitle).trim();
+    const introNote = (aiData?.intro_note || aiData?.intro_message || fallback.intro_note).trim();
+    const scratchHeading = (aiData?.scratch_heading || fallback.scratch_heading).trim();
+    const scratchNote = (aiData?.scratch_note || aiData?.body_text || fallback.scratch_note).trim();
+    const quote = (aiData?.quote || fallback.quote).trim();
+    const closingNote = (aiData?.closing_note || fallback.closing_note).trim();
     const themeColor = aiData?.theme_color || fallback.theme_color;
 
-    const recipientName = userData.recipientName || 'You';
-    const senderName = userData.senderName || '';
-    const passcode = userData.passcode || '';
-    const dayOfBirth = userData.dayOfBirth || userData.countdownTarget || '';
+    // Split letter paragraphs if provided as a single body_text
+    let letter1 = aiData?.letter_p1 || aiData?.letter1;
+    let letter2 = aiData?.letter_p2 || aiData?.letter2;
+    let letter3 = aiData?.letter_p3 || aiData?.letter3;
+    let letter4 = aiData?.closing_note || fallback.closing_note;
 
-    // Fetch the pre-built template HTML
-    let templateHtml = await fetchTemplate(category);
+    if (!letter1 && aiData?.body_text) {
+      const parts = String(aiData.body_text).split(/\n\s*\n/).filter(Boolean);
+      letter1 = parts[0] || fallback.letter_p1;
+      letter2 = parts[1] || fallback.letter_p2;
+      letter3 = parts[2] || fallback.letter_p3;
+    }
+    letter1 = letter1 || fallback.letter_p1;
+    letter2 = letter2 || fallback.letter_p2;
+    letter3 = letter3 || fallback.letter_p3;
 
-    // Prepare photos JSON safely
+    // Normalize user uploaded photos
     let photosArray = [];
-    if (Array.isArray(userData.photos)) {
+    if (Array.isArray(userData.photos) && userData.photos.length > 0) {
       photosArray = userData.photos;
-    } else if (Array.isArray(userData.photoDataUrls)) {
+    } else if (Array.isArray(userData.photoDataUrls) && userData.photoDataUrls.length > 0) {
       photosArray = userData.photoDataUrls;
     }
-    const safePhotosJson = JSON.stringify(photosArray);
 
-    // Semantic Token Replacements
-    const tokenMap = {
-      '{{WISH_TITLE}}': escapeHtml(title),
-      '{{WISH_SUBTITLE}}': escapeHtml(subtitle),
-      '{{WISH_BODY}}': formatBodyText(bodyText),
-      '{{WISH_QUOTE}}': escapeHtml(quote),
-      '{{THEME_COLOR}}': escapeHtml(themeColor),
-      '{{RECIPIENT_NAME}}': escapeHtml(recipientName),
-      '{{SENDER_NAME}}': escapeHtml(senderName),
-      '{{CATEGORY}}': escapeHtml(category),
-      '{{PASSPHRASE}}': escapeHtml(passcode),
-      '{{DAY_OF_BIRTH}}': escapeHtml(dayOfBirth),
-      '{{CURRENT_YEAR}}': String(new Date().getFullYear()),
-      '{{USER_PHOTOS_JSON}}': safePhotosJson
-    };
+    // Determine watermark logic
+    const isPro = typeof window !== 'undefined' && typeof window.isUserProTier === 'function' && window.isUserProTier();
+    const showWatermark = !isPro;
 
-    for (const [token, value] of Object.entries(tokenMap)) {
-      templateHtml = templateHtml.split(token).join(value);
+    // Prepare Passcode
+    let userPasscode = userData.passcode ? String(userData.passcode).trim() : '';
+
+    // =========================================================================
+    // ROUTE TO FLAGSHIP MULTI-CHAPTER ENGINES
+    // =========================================================================
+
+    // Case 1: Birthday -> Sapphire Protocol // Luxury Birthday Vault (Edition 03)
+    if (category === 'birthday') {
+      const sapphireEngine = (typeof window !== 'undefined' && window.WishCraftTemplate_SapphireVault) ||
+                             (typeof globalThis !== 'undefined' && globalThis.WishCraftTemplate_SapphireVault) ||
+                             global.WishCraftTemplate_SapphireVault;
+
+      if (sapphireEngine && typeof sapphireEngine.build === 'function') {
+        // Sapphire Vault expects a 6-digit passcode
+        let sixDigitCode = userPasscode.replace(/\D/g, '');
+        if (sixDigitCode.length < 6) {
+          sixDigitCode = (sixDigitCode + '120711').slice(0, 6);
+        } else if (sixDigitCode.length > 6) {
+          sixDigitCode = sixDigitCode.slice(0, 6);
+        }
+
+        const sapphireHtml = sapphireEngine.build({
+          recipientName: recipientName,
+          sender: senderName || "Forever a Friend",
+          coverSubtitle: aiData?.cover_subtitle || "Advance Birthday Protocol For",
+          introMessage: introNote,
+          protocolSubtitle: "For An Incredible Soul",
+          protocolTitle: "PROTOCOL INITIATED",
+          protocolMessage: quote || "A regular card could never do justice to someone like you. Today demands an entire luxury experience. Let the celebration officially commence.",
+          scratchTitle: "Secured Birthday File",
+          scratchSubtitle: "Wipe the frosted glass to reveal",
+          scratchNoteHeading: scratchHeading || `Hey ${recipientName},`,
+          scratchNote: scratchNote,
+          passcode: sixDigitCode,
+          passcodeHint: userData.passcodeHint || "6-Digit Security Decryption Key",
+          targetDateTime: userData.countdownTarget || undefined,
+          finalePreTitle: "SPECIAL ARCHIVE",
+          finaleSubTitle: "The Ultimate Celebration",
+          finaleMainTitle: headline.includes(recipientName.toUpperCase()) ? headline : `HAPPY BIRTHDAY ${recipientName.toUpperCase()}!`,
+          closingNote: closingNote,
+          photos: photosArray,
+          showWatermark: showWatermark
+        });
+
+        return {
+          html: sapphireHtml,
+          category: 'birthday',
+          title: headline,
+          themeColor: themeColor || '#D4AF6A'
+        };
+      }
     }
 
-    return {
-      html: templateHtml,
-      category,
-      title,
-      themeColor
-    };
+    // Case 2: Romantic / Anniversary -> Royal Velvet // Cinematic Premiere (Edition 01)
+    if (category === 'anniversary' || category === 'romantic') {
+      const royalEngine = (typeof window !== 'undefined' && window.WishCraftTemplate_RoyalVelvet) ||
+                          (typeof globalThis !== 'undefined' && globalThis.WishCraftTemplate_RoyalVelvet) ||
+                          global.WishCraftTemplate_RoyalVelvet;
+
+      if (royalEngine && typeof royalEngine.build === 'function') {
+        const royalHtml = royalEngine.build({
+          recipientName: recipientName,
+          sender: senderName || "Forever Yours",
+          tagline: subtitle,
+          polaroidCaption: "Pure Grace & Wonder.",
+          quote: quote,
+          heartQuote: scratchNote,
+          heartTitle: "The Reserved Chamber",
+          treat1Title: "Starlight Dinner",
+          treat1Desc: "Your favorite restaurant, anytime.",
+          treat2Title: "Spontaneous Getaway",
+          treat2Desc: "A weekend adventure, my treat.",
+          wishMessage: headline,
+          passcode: userPasscode || "2026",
+          hint: userData.passcodeHint || "The year of timeless memories",
+          letter1: letter1,
+          letter2: letter2,
+          letter3: letter3,
+          letter4: closingNote,
+          occasion: category === 'anniversary' ? "Anniversary Premiere" : "Romantic Keepsake",
+          photos: photosArray,
+          showWatermark: showWatermark
+        });
+
+        return {
+          html: royalHtml,
+          category: category,
+          title: headline,
+          themeColor: themeColor || '#E056FD'
+        };
+      }
+    }
+
+    // Case 3: Milestone / Farewell / Funny / Celebration / Others -> Obsidian Vault // Liquid Gold Edition (Edition 02)
+    const obsidianEngine = (typeof window !== 'undefined' && window.WishCraftTemplate_ObsidianVault) ||
+                           (typeof globalThis !== 'undefined' && globalThis.WishCraftTemplate_ObsidianVault) ||
+                           global.WishCraftTemplate_ObsidianVault;
+
+    if (obsidianEngine && typeof obsidianEngine.build === 'function') {
+      let sixDigitCode = userPasscode.replace(/\D/g, '');
+      if (sixDigitCode.length < 6) {
+        sixDigitCode = (sixDigitCode + '290623').slice(0, 6);
+      } else if (sixDigitCode.length > 6) {
+        sixDigitCode = sixDigitCode.slice(0, 6);
+      }
+
+      const obsidianHtml = obsidianEngine.build({
+        recipientName: recipientName,
+        sender: senderName || "With Immense Regard",
+        tagline: subtitle,
+        introMessage: introNote,
+        scratchTitle: "Secured Archive",
+        scratchSubtitle: "Wipe the frosted glass to reveal",
+        scratchNoteHeading: scratchHeading,
+        scratchNote: scratchNote,
+        startDate: userData.countdownTarget || undefined,
+        passcode: sixDigitCode,
+        terminalName: recipientName.toUpperCase(),
+        finaleTitle: headline,
+        letter1: letter1,
+        letter2: letter2,
+        letter3: letter3,
+        letter4: letter4,
+        signature: senderName ? `With highest admiration,\n${senderName}` : fallback.closing_note,
+        photos: photosArray,
+        showWatermark: showWatermark
+      });
+
+      return {
+        html: obsidianHtml,
+        category: category,
+        title: headline,
+        themeColor: themeColor || '#C5A059'
+      };
+    }
+
+    throw new Error("Luxury template engine could not be initialized.");
   }
 
+  // Freeze public API interface
   const WishCraftTemplateEngine = Object.freeze({
     escapeHtml,
     formatBodyText,
     normalizeCategory,
     buildWishFromTemplate,
-    fetchTemplate,
-    FALLBACK_COPY,
-    TEMPLATE_REGISTRY
+    FALLBACK_COPY
   });
 
   if (typeof globalThis !== 'undefined') {
