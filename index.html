@@ -599,6 +599,228 @@
   .ghost-btn{ flex:1; background:transparent; border:1px solid var(--line); color:var(--cream-dim); border-radius:10px; padding:9px; font-size:12px; cursor:pointer; }
   .ghost-btn:hover{ border-color:var(--gold-dim); color:var(--cream); }
 
+  /* Rail Mode Tabs (AI Generator vs Manual Live Editor) */
+  .rail-tabs-container {
+    display: flex;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 4px;
+    gap: 4px;
+    margin-bottom: 6px;
+    flex-shrink: 0;
+  }
+  .rail-tab-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 14px;
+    border-radius: 9px;
+    border: none;
+    background: transparent;
+    color: var(--cream-dim);
+    font-family: var(--sans);
+    font-size: 12.5px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.18s ease;
+    user-select: none;
+  }
+  .rail-tab-btn:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.05);
+  }
+  .rail-tab-btn.active {
+    background: var(--panel-2);
+    color: var(--gold);
+    font-weight: 600;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(212, 175, 106, 0.2);
+  }
+  .tab-icon {
+    font-size: 13px;
+  }
+  .live-dot-pulse {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #2ecc71;
+    box-shadow: 0 0 8px #2ecc71;
+    animation: livePulse 1.8s infinite;
+  }
+  @keyframes livePulse {
+    0% { transform: scale(0.9); opacity: 0.7; }
+    50% { transform: scale(1.3); opacity: 1; }
+    100% { transform: scale(0.9); opacity: 0.7; }
+  }
+
+  /* Manual Studio View */
+  .manual-studio-view {
+    display: none;
+    flex-direction: column;
+    gap: 16px;
+    animation: fadeIn 0.25s ease;
+  }
+  .manual-studio-view.active {
+    display: flex;
+  }
+  .ai-generator-view {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .ai-generator-view.hidden {
+    display: none;
+  }
+
+  .manual-studio-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: linear-gradient(135deg, rgba(212, 175, 106, 0.08), rgba(255, 255, 255, 0.02));
+    border: 1px solid rgba(212, 175, 106, 0.25);
+    border-radius: 12px;
+    padding: 12px 14px;
+    gap: 10px;
+  }
+  .manual-badge {
+    display: inline-block;
+    font-size: 9.5px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gold);
+    background: rgba(212, 175, 106, 0.12);
+    border: 1px solid rgba(212, 175, 106, 0.3);
+    border-radius: 999px;
+    padding: 2px 7px;
+    margin-bottom: 4px;
+  }
+  .manual-studio-header h4 {
+    margin: 0;
+    font-family: var(--serif);
+    font-size: 14.5px;
+    color: #fff;
+  }
+  .manual-studio-header p {
+    margin: 2px 0 0;
+    font-size: 11.5px;
+    color: var(--cream-dim);
+  }
+  .live-status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 10.5px;
+    color: #2ecc71;
+    font-family: var(--mono);
+    background: rgba(46, 204, 113, 0.1);
+    border: 1px solid rgba(46, 204, 113, 0.3);
+    padding: 4px 9px;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+
+  /* Manual Engine Pills */
+  .manual-engine-pills {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+  }
+  .engine-pill {
+    padding: 9px 6px;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 9px;
+    color: var(--cream-dim);
+    font-size: 11.5px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .engine-pill:hover {
+    border-color: var(--gold-dim);
+    color: #fff;
+  }
+  .engine-pill.selected {
+    border-color: var(--gold);
+    background: rgba(212, 175, 106, 0.12);
+    color: var(--gold-light, #fce698);
+    font-weight: 600;
+  }
+
+  /* Accordion Groups in Manual Editor */
+  .manual-group {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: border-color 0.18s ease;
+  }
+  .manual-group:focus-within {
+    border-color: rgba(212, 175, 106, 0.35);
+  }
+  .manual-group-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 11px 14px;
+    cursor: pointer;
+    user-select: none;
+    background: rgba(255, 255, 255, 0.015);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  }
+  .manual-group-title {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--gold);
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+  .manual-group-toggle {
+    font-size: 12px;
+    color: var(--cream-dim);
+    transition: transform 0.2s ease;
+  }
+  .manual-group.collapsed .manual-group-toggle {
+    transform: rotate(-90deg);
+  }
+  .manual-group.collapsed .manual-group-body {
+    display: none;
+  }
+  .manual-group-body {
+    padding: 12px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .manual-group-body .field-label {
+    font-size: 10.5px;
+  }
+  .manual-group-body input, .manual-group-body textarea {
+    font-size: 13px;
+    padding: 9px 11px;
+  }
+
+  .manual-actions-bar {
+    display: flex;
+    gap: 8px;
+    margin-top: 4px;
+    flex-wrap: wrap;
+  }
+  .manual-actions-bar button {
+    flex: 1;
+    min-width: 110px;
+  }
+
   /* Right Stage */
   .stage{ position:relative; display:flex; align-items:center; justify-content:center; padding:30px; overflow:hidden; width:100%; }
   .stage-inner{ width:100%; max-width:840px; margin:0 auto; height:100%; max-height:86vh; display:flex; flex-direction:column; border-radius:20px; border:1px solid var(--line); background:var(--panel); overflow:hidden; position:relative; box-shadow: 0 40px 80px -30px rgba(0,0,0,0.6); }
@@ -1996,6 +2218,20 @@
     <!-- LEFT RAIL -->
     <div class="rail">
 
+      <!-- Rail Navigation Tabs (AI Generator vs Manual Live Editor) -->
+      <div class="rail-tabs-container">
+        <button type="button" class="rail-tab-btn active" id="tabAiModeBtn">
+          <span class="tab-icon">✦</span> AI Generator
+        </button>
+        <button type="button" class="rail-tab-btn" id="tabManualModeBtn">
+          <span class="tab-icon">✎</span> Manual Editor
+          <span class="live-dot-pulse" title="Live Preview Active"></span>
+        </button>
+      </div>
+
+      <!-- AI GENERATOR VIEW -->
+      <div class="ai-generator-view" id="aiGeneratorView">
+
       <div class="name-pair">
         <div class="field-group">
           <label class="field-label">To</label>
@@ -2201,9 +2437,205 @@
           <button class="ghost-btn" id="undoBtn">↺ Undo last edit</button>
           <button class="ghost-btn" id="downloadBtn" onclick="window.openExportModal()">⇩ Download .html</button>
         </div>
+        <div style="margin-top: 6px;">
+          <button type="button" class="ghost-btn" id="switchToManualBtn" style="width: 100%; border-color: rgba(212,175,106,0.45); color: var(--gold-light); display: flex; align-items: center; justify-content: center; gap: 7px; padding: 10px; font-weight: 500; background: rgba(212,175,106,0.06);">
+            <span>✎</span> Customize in Manual Editor Tab →
+          </button>
+        </div>
       </div>
 
-    </div>
+      </div> <!-- /aiGeneratorView -->
+
+      <!-- MANUAL STUDIO VIEW (Live Editing & Instant Preview) -->
+      <div class="manual-studio-view" id="manualStudioView">
+        <div class="manual-studio-header">
+          <div>
+            <span class="manual-badge">LIVE STUDIO</span>
+            <h4>Customize Every Chapter</h4>
+            <p>Every text, note, and lock is editable below. Edits reflect instantly in the live preview.</p>
+          </div>
+          <div class="live-status-pill">
+            <span class="live-dot-pulse"></span>
+            <span>LIVE SYNC</span>
+          </div>
+        </div>
+
+        <!-- 0. Active Template Selector -->
+        <div class="field-group">
+          <label class="field-label">Active Luxury Engine</label>
+          <div class="manual-engine-pills" id="manualEnginePills">
+            <button type="button" class="engine-pill selected" data-engine="sapphire-vault" id="manPillSapphire">
+              👑 Sapphire Birthday
+            </button>
+            <button type="button" class="engine-pill" data-engine="royal-velvet" id="manPillRoyal">
+              💎 Royal Velvet
+            </button>
+            <button type="button" class="engine-pill" data-engine="obsidian-vault" id="manPillObsidian">
+              🌌 Obsidian Gold
+            </button>
+          </div>
+        </div>
+
+        <!-- 1. Names & Sign-off -->
+        <div class="manual-group">
+          <div class="manual-group-header" onclick="this.parentElement.classList.toggle('collapsed')">
+            <span class="manual-group-title"><span>✦</span> 1. Names & Identity</span>
+            <span class="manual-group-toggle">▼</span>
+          </div>
+          <div class="manual-group-body">
+            <div class="tmpl-field-row">
+              <div class="tmpl-input-group">
+                <label>To (Recipient Name)</label>
+                <input type="text" id="manRecipient" placeholder="e.g. Ansh" value="Someone Special">
+              </div>
+              <div class="tmpl-input-group">
+                <label>From (Sender Name)</label>
+                <input type="text" id="manSender" placeholder="e.g. Yash" value="Forever a Friend">
+              </div>
+            </div>
+            <div class="tmpl-input-group">
+              <label>Occasion Tag / Theme</label>
+              <input type="text" id="manOccasion" placeholder="e.g. Birthday Celebration" value="Birthday Celebration">
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. Finale Headline & Opening Subtitles -->
+        <div class="manual-group">
+          <div class="manual-group-header" onclick="this.parentElement.classList.toggle('collapsed')">
+            <span class="manual-group-title"><span>✨</span> 2. Headlines & Subtitles</span>
+            <span class="manual-group-toggle">▼</span>
+          </div>
+          <div class="manual-group-body">
+            <div class="tmpl-input-group">
+              <label>Finale Grand Title</label>
+              <input type="text" id="manHeadline" placeholder="e.g. HAPPY BIRTHDAY ANSH!" value="HAPPY BIRTHDAY!">
+            </div>
+            <div class="tmpl-field-row">
+              <div class="tmpl-input-group">
+                <label>Cover Subtitle (Scene 1)</label>
+                <input type="text" id="manCoverSubtitle" placeholder="e.g. Advance Birthday Protocol For" value="Advance Birthday Protocol For">
+              </div>
+              <div class="tmpl-input-group">
+                <label>Opening Tagline / Subtitle</label>
+                <input type="text" id="manSubtitle" placeholder="e.g. Celebrating an unstoppable legend" value="Celebrating an unstoppable milestone">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. Opening Chapter & Quote -->
+        <div class="manual-group">
+          <div class="manual-group-header" onclick="this.parentElement.classList.toggle('collapsed')">
+            <span class="manual-group-title"><span>📜</span> 3. Opening Scene & Keepsake Quote</span>
+            <span class="manual-group-toggle">▼</span>
+          </div>
+          <div class="manual-group-body">
+            <div class="tmpl-input-group">
+              <label>Opening Message (Scene 1 Card)</label>
+              <textarea id="manIntroMessage" rows="3" placeholder="Opening message shown on the first card...">Your special milestone is almost here, but celebrating someone as extraordinary as you simply cannot be confined to just one day.</textarea>
+            </div>
+            <div class="tmpl-input-group">
+              <label>Keepsake Quote (Scene 2 / 3)</label>
+              <textarea id="manQuote" rows="2" placeholder="Memorable 1-sentence keepsake quote...">Count your age by stars, not years. Count your life by smiles, not tears.</textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4. Interactive Secret Scratch Reveal -->
+        <div class="manual-group">
+          <div class="manual-group-header" onclick="this.parentElement.classList.toggle('collapsed')">
+            <span class="manual-group-title"><span>🔍</span> 4. Secret Scratch Card (Scene 4)</span>
+            <span class="manual-group-toggle">▼</span>
+          </div>
+          <div class="manual-group-body">
+            <div class="tmpl-input-group">
+              <label>Scratch Note Greeting</label>
+              <input type="text" id="manScratchHeading" placeholder="e.g. Hey Ansh," value="Hey There,">
+            </div>
+            <div class="tmpl-input-group">
+              <label>Secret Message (Hidden behind frosted scratch card)</label>
+              <textarea id="manScratchNote" rows="3" placeholder="Secret heartfelt message revealed when scratching...">Happiest Birthday! You are one of the most incredible people in my life, and words can't capture how grateful I am for your presence. Thank you for bringing so much laughter, warmth, and brilliance to every single day.</textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- 5. Heartfelt Tribute Letter (Multi-Chapter) -->
+        <div class="manual-group">
+          <div class="manual-group-header" onclick="this.parentElement.classList.toggle('collapsed')">
+            <span class="manual-group-title"><span>💌</span> 5. Letter Paragraphs & Closing Blessing</span>
+            <span class="manual-group-toggle">▼</span>
+          </div>
+          <div class="manual-group-body">
+            <div class="tmpl-input-group">
+              <label>Letter Paragraph 1 (Character & Appreciation)</label>
+              <textarea id="manLetter1" rows="3" placeholder="Paragraph celebrating who they are...">Another chapter begins today, written in starlight and infinite possibility. You bring a rare and radiant warmth into the lives of everyone around you.</textarea>
+            </div>
+            <div class="tmpl-input-group">
+              <label>Letter Paragraph 2 (Memories & Shared Moments)</label>
+              <textarea id="manLetter2" rows="3" placeholder="Paragraph with shared moments and laughter...">From the quiet victories to the shared milestones and uncontrollable laughter, having you along for the journey is a gift beyond measure.</textarea>
+            </div>
+            <div class="tmpl-input-group">
+              <label>Letter Paragraph 3 (Future Wishes & Dreams)</label>
+              <textarea id="manLetter3" rows="3" placeholder="Paragraph with future dreams and aspirations...">May this year unfold with fearless adventures, deep peace, and the courage to reach every aspiration you hold close to your heart.</textarea>
+            </div>
+            <div class="tmpl-input-group">
+              <label>Closing Sign-off Blessing</label>
+              <input type="text" id="manClosingNote" placeholder="e.g. CRAFTED WITH IMMENSE LOVE // TO AN UNSTOPPABLE SOUL" value="CRAFTED WITH IMMENSE LOVE // TO AN UNSTOPPABLE SOUL">
+            </div>
+          </div>
+        </div>
+
+        <!-- 6. Security Override Keypad & Clock -->
+        <div class="manual-group">
+          <div class="manual-group-header" onclick="this.parentElement.classList.toggle('collapsed')">
+            <span class="manual-group-title"><span>🔒</span> 6. Security Keypad & Timeline Clock</span>
+            <span class="manual-group-toggle">▼</span>
+          </div>
+          <div class="manual-group-body">
+            <div class="tmpl-field-row">
+              <div class="tmpl-input-group">
+                <label>Security Passcode</label>
+                <input type="text" id="manPasscode" placeholder="e.g. 120711" value="120711">
+              </div>
+              <div class="tmpl-input-group">
+                <label>Passcode Hint</label>
+                <input type="text" id="manPasscodeHint" placeholder="e.g. Day of Birth (DDMMYY)" value="Day of Birth (DDMMYY)">
+              </div>
+            </div>
+            <div class="tmpl-field-row">
+              <div class="tmpl-input-group">
+                <label>Day of Birth / Target Date</label>
+                <input type="date" id="manDate" value="2005-07-12">
+              </div>
+              <div class="tmpl-input-group">
+                <label>Time (Optional)</label>
+                <input type="time" id="manTime" value="00:00">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 7. Memory Photos -->
+        <div class="manual-group">
+          <div class="manual-group-header" onclick="this.parentElement.classList.toggle('collapsed')">
+            <span class="manual-group-title"><span>📷</span> 7. Memory Photos</span>
+            <span class="manual-group-toggle">▼</span>
+          </div>
+          <div class="manual-group-body">
+            <div class="photo-drop" id="manPhotoDrop">Click to add photos or drop them here</div>
+            <input type="file" id="manPhotoInput" accept="image/*" multiple style="display:none;">
+            <div class="photo-strip" id="manPhotoStrip"></div>
+          </div>
+        </div>
+
+        <!-- Quick Actions Bar -->
+        <div class="manual-actions-bar">
+          <button type="button" class="ghost-btn" id="manOpenTabBtn" style="color:var(--gold); border-color:var(--gold-dim);">Open in Tab ↗</button>
+          <button type="button" class="ghost-btn" id="manDownloadBtn" onclick="window.openExportModal()">⇩ Download .html</button>
+          <button type="button" class="ghost-btn" id="manBackToAiBtn">✦ AI Kickstart</button>
+        </div>
+      </div>
 
     <!-- RIGHT STAGE -->
     <div class="stage">
@@ -3275,6 +3707,9 @@
     photos.forEach(p => {
       const img = document.createElement('img'); img.src = p; img.className = 'photo-thumb'; photoStrip.appendChild(img);
     });
+    if (typeof window.renderManualPhotoStrip === 'function') {
+      window.renderManualPhotoStrip();
+    }
   }
 
   // ---------- Structured Copywriting & Sentiment System Prompt ----------
@@ -3409,6 +3844,9 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
     // Pass parsed AI copywriting object into the pre-tested Template Injection Engine
     if (window.WishCraftTemplateEngine && typeof window.WishCraftTemplateEngine.buildWishFromTemplate === 'function') {
       const generated = await window.WishCraftTemplateEngine.buildWishFromTemplate(aiData, userData);
+      if (typeof window.syncAiToManualEditor === 'function') {
+        window.syncAiToManualEditor(aiData, userData);
+      }
       return generated.html;
     }
 
@@ -3479,6 +3917,9 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
       try {
         if (window.WishCraftTemplateEngine) {
           const fallbackGen = await window.WishCraftTemplateEngine.buildWishFromTemplate(null, userData);
+          if (typeof window.syncAiToManualEditor === 'function') {
+            window.syncAiToManualEditor(fallbackGen, userData);
+          }
           window.currentHtml = fallbackGen.html; window.versions = [fallbackGen.html];
           renderPreview(fallbackGen.html);
           editBlock.classList.add('visible'); stageActions.style.visibility = 'visible';
@@ -3494,6 +3935,329 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
       clearInterval(interval); loadingStage.classList.remove('visible');
       generateBtn.disabled = false; generateBtn.textContent = "✦ Craft the page";
     }
+  });
+
+  // =========================================================================
+  // ---------- MANUAL STUDIO CONTROLLER & LIVE TWO-WAY SYNC ----------
+  // =========================================================================
+  window.manualActiveEngine = 'sapphire-vault';
+  window._manDebounceTimer = null;
+
+  const tabAiModeBtn = document.getElementById('tabAiModeBtn');
+  const tabManualModeBtn = document.getElementById('tabManualModeBtn');
+  const aiGeneratorView = document.getElementById('aiGeneratorView');
+  const manualStudioView = document.getElementById('manualStudioView');
+  const switchToManualBtn = document.getElementById('switchToManualBtn');
+  const manBackToAiBtn = document.getElementById('manBackToAiBtn');
+  const manOpenTabBtn = document.getElementById('manOpenTabBtn');
+
+  // Manual Editor Inputs
+  const manRecipient = document.getElementById('manRecipient');
+  const manSender = document.getElementById('manSender');
+  const manOccasion = document.getElementById('manOccasion');
+  const manHeadline = document.getElementById('manHeadline');
+  const manCoverSubtitle = document.getElementById('manCoverSubtitle');
+  const manSubtitle = document.getElementById('manSubtitle');
+  const manIntroMessage = document.getElementById('manIntroMessage');
+  const manQuote = document.getElementById('manQuote');
+  const manScratchHeading = document.getElementById('manScratchHeading');
+  const manScratchNote = document.getElementById('manScratchNote');
+  const manLetter1 = document.getElementById('manLetter1');
+  const manLetter2 = document.getElementById('manLetter2');
+  const manLetter3 = document.getElementById('manLetter3');
+  const manClosingNote = document.getElementById('manClosingNote');
+  const manPasscode = document.getElementById('manPasscode');
+  const manPasscodeHint = document.getElementById('manPasscodeHint');
+  const manDate = document.getElementById('manDate');
+  const manTime = document.getElementById('manTime');
+
+  // Engine Pill Buttons
+  const manPills = document.querySelectorAll('#manualEnginePills .engine-pill');
+
+  function setManualEngine(engineId) {
+    window.manualActiveEngine = engineId;
+    manPills.forEach(p => {
+      p.classList.toggle('selected', p.getAttribute('data-engine') === engineId);
+    });
+    window.rebuildManualExperience();
+  }
+
+  manPills.forEach(pill => {
+    pill.addEventListener('click', () => {
+      const eng = pill.getAttribute('data-engine');
+      if (eng) setManualEngine(eng);
+    });
+  });
+
+  // Switch to Manual Mode Tab
+  function activateManualTab() {
+    tabManualModeBtn?.classList.add('active');
+    tabAiModeBtn?.classList.remove('active');
+    aiGeneratorView?.classList.add('hidden');
+    manualStudioView?.classList.add('active');
+
+    window.syncInputsToManualEditor();
+    window.rebuildManualExperience();
+  }
+
+  // Switch to AI Mode Tab
+  function activateAiTab() {
+    tabAiModeBtn?.classList.add('active');
+    tabManualModeBtn?.classList.remove('active');
+    manualStudioView?.classList.remove('active');
+    aiGeneratorView?.classList.remove('hidden');
+  }
+
+  tabManualModeBtn?.addEventListener('click', activateManualTab);
+  tabAiModeBtn?.addEventListener('click', activateAiTab);
+  switchToManualBtn?.addEventListener('click', activateManualTab);
+  manBackToAiBtn?.addEventListener('click', activateAiTab);
+
+  // Sync AI Generation payload into Manual Editor inputs
+  window.syncAiToManualEditor = function(aiData, userData) {
+    if (!aiData && !userData) return;
+    const occ = (userData?.occasion || selectedOccasion || 'birthday').toLowerCase();
+    
+    // Select flagship template matching occasion
+    if (occ.includes('birth') || occ.includes('bday')) {
+      window.manualActiveEngine = 'sapphire-vault';
+    } else if (occ.includes('anniv') || occ.includes('love') || occ.includes('roman') || occ.includes('wedding')) {
+      window.manualActiveEngine = 'royal-velvet';
+    } else {
+      window.manualActiveEngine = 'obsidian-vault';
+    }
+    manPills.forEach(p => {
+      p.classList.toggle('selected', p.getAttribute('data-engine') === window.manualActiveEngine);
+    });
+
+    if (manRecipient && userData.recipientName) manRecipient.value = userData.recipientName;
+    if (manSender && userData.senderName) manSender.value = userData.senderName;
+    if (manOccasion) manOccasion.value = (userData.occasion || selectedOccasion || 'Birthday Celebration');
+    
+    if (aiData) {
+      if (manHeadline && (aiData.headline || aiData.title)) manHeadline.value = aiData.headline || aiData.title;
+      if (manSubtitle && aiData.subtitle) manSubtitle.value = aiData.subtitle;
+      if (manCoverSubtitle && aiData.cover_subtitle) manCoverSubtitle.value = aiData.cover_subtitle;
+      if (manIntroMessage && (aiData.intro_note || aiData.intro_message)) manIntroMessage.value = aiData.intro_note || aiData.intro_message;
+      if (manQuote && aiData.quote) manQuote.value = aiData.quote;
+      if (manScratchHeading && aiData.scratch_heading) manScratchHeading.value = aiData.scratch_heading;
+      if (manScratchNote && (aiData.scratch_note || aiData.body_text)) manScratchNote.value = aiData.scratch_note || aiData.body_text;
+      if (manLetter1 && aiData.letter_p1) manLetter1.value = aiData.letter_p1;
+      if (manLetter2 && aiData.letter_p2) manLetter2.value = aiData.letter_p2;
+      if (manLetter3 && aiData.letter_p3) manLetter3.value = aiData.letter_p3;
+      if (manClosingNote && aiData.closing_note) manClosingNote.value = aiData.closing_note;
+    }
+
+    if (manPasscode && userData.passcode) manPasscode.value = userData.passcode;
+    if (manDate && userData.countdownTarget) {
+      manDate.value = userData.countdownTarget.split('T')[0];
+    }
+  };
+
+  // Sync basic inputs before AI run
+  window.syncInputsToManualEditor = function() {
+    const rName = document.getElementById('recipientName')?.value?.trim();
+    const sName = document.getElementById('senderName')?.value?.trim();
+    const pCode = document.getElementById('passcode')?.value?.trim();
+    const cDate = document.getElementById('countdownDate')?.value;
+
+    if (rName && manRecipient) {
+      manRecipient.value = rName;
+      if (manHeadline && (!manHeadline.value || manHeadline.value === 'HAPPY BIRTHDAY!')) {
+        manHeadline.value = `HAPPY BIRTHDAY ${rName.toUpperCase()}!`;
+      }
+    }
+    if (sName && manSender) manSender.value = sName;
+    if (pCode && manPasscode) manPasscode.value = pCode;
+    if (cDate && manDate) manDate.value = cDate;
+
+    // Set engine if not chosen yet
+    const occ = (selectedOccasion || 'birthday').toLowerCase();
+    if (occ.includes('birth') || occ.includes('bday')) {
+      window.manualActiveEngine = 'sapphire-vault';
+    } else if (occ.includes('anniv') || occ.includes('love') || occ.includes('roman') || occ.includes('wedding')) {
+      window.manualActiveEngine = 'royal-velvet';
+    } else {
+      window.manualActiveEngine = 'obsidian-vault';
+    }
+    manPills.forEach(p => {
+      p.classList.toggle('selected', p.getAttribute('data-engine') === window.manualActiveEngine);
+    });
+  };
+
+  // Live Real-Time Builder for Manual Editor
+  window.rebuildManualExperience = function() {
+    const engine = window.manualActiveEngine || 'sapphire-vault';
+    const recName = manRecipient?.value?.trim() || "Someone Special";
+    const sndName = manSender?.value?.trim() || "Forever a Friend";
+    const headLine = manHeadline?.value?.trim() || `HAPPY CELEBRATION ${recName.toUpperCase()}!`;
+    const subTitle = manSubtitle?.value?.trim() || "A celebration of timeless moments";
+    const covSubtitle = manCoverSubtitle?.value?.trim() || "Advance Celebration Protocol For";
+    const introMsg = manIntroMessage?.value?.trim() || "Your special milestone is almost here, but celebrating someone as extraordinary as you simply cannot be confined to just one day.";
+    const quot = manQuote?.value?.trim() || "Count your age by stars, not years. Count your life by smiles, not tears.";
+    const scrHeading = manScratchHeading?.value?.trim() || `Hey ${recName},`;
+    const scrNote = manScratchNote?.value?.trim() || "Happiest celebration! You are one of the most incredible people in my life, and words can't capture how grateful I am for your presence.";
+    const let1 = manLetter1?.value?.trim() || "Another chapter begins today, written in starlight and infinite possibility. You bring a rare and radiant warmth into the lives of everyone around you.";
+    const let2 = manLetter2?.value?.trim() || "From the quiet victories to the shared milestones and uncontrollable laughter, having you along for the journey is a gift beyond measure.";
+    const let3 = manLetter3?.value?.trim() || "May this year unfold with fearless adventures, deep peace, and the courage to reach every aspiration you hold close to your heart.";
+    const clsNote = manClosingNote?.value?.trim() || "CRAFTED WITH IMMENSE LOVE // TO AN UNSTOPPABLE SOUL";
+    
+    let rawCode = (manPasscode?.value?.trim() || "120711").replace(/\D/g, '');
+    let sixDigit = (rawCode + "120711").slice(0, 6);
+    let dtString = manDate?.value ? `${manDate.value}T${manTime?.value || '00:00'}:00` : undefined;
+
+    const isPro = typeof window.isUserProTier === 'function' && window.isUserProTier();
+    const showWatermark = !isPro;
+
+    let html = '';
+
+    if (engine === 'sapphire-vault' && window.WishCraftTemplate_SapphireVault) {
+      html = window.WishCraftTemplate_SapphireVault.build({
+        recipientName: recName,
+        sender: sndName,
+        coverSubtitle: covSubtitle,
+        introMessage: introMsg,
+        protocolSubtitle: "For An Incredible Soul",
+        protocolTitle: "PROTOCOL INITIATED",
+        protocolMessage: quot,
+        scratchTitle: "Secured Birthday File",
+        scratchSubtitle: "Wipe the frosted glass to reveal",
+        scratchNoteHeading: scrHeading,
+        scratchNote: scrNote,
+        passcode: sixDigit,
+        passcodeHint: manPasscodeHint?.value?.trim() || "6-Digit Security Decryption Key",
+        targetDateTime: dtString,
+        finalePreTitle: "SPECIAL ARCHIVE",
+        finaleSubTitle: "The Ultimate Celebration",
+        finaleMainTitle: headLine,
+        closingNote: clsNote,
+        photos: photos || [],
+        showWatermark: showWatermark
+      });
+    } else if (engine === 'royal-velvet' && window.WishCraftTemplate_RoyalVelvet) {
+      html = window.WishCraftTemplate_RoyalVelvet.build({
+        recipientName: recName,
+        sender: sndName,
+        tagline: subTitle,
+        polaroidCaption: "Pure Grace & Wonder.",
+        quote: quot,
+        heartQuote: scrNote,
+        heartTitle: "The Reserved Chamber",
+        treat1Title: "Starlight Dinner",
+        treat1Desc: "Your favorite restaurant, anytime.",
+        treat2Title: "Spontaneous Getaway",
+        treat2Desc: "A weekend adventure, my treat.",
+        wishMessage: headLine,
+        passcode: manPasscode?.value?.trim() || "2026",
+        hint: manPasscodeHint?.value?.trim() || "The year of magic",
+        letter1: let1,
+        letter2: let2,
+        letter3: let3,
+        letter4: clsNote,
+        occasion: manOccasion?.value?.trim() || "Romantic Keepsake",
+        photos: photos || [],
+        showWatermark: showWatermark
+      });
+    } else if (window.WishCraftTemplate_ObsidianVault) {
+      html = window.WishCraftTemplate_ObsidianVault.build({
+        recipientName: recName,
+        sender: sndName,
+        tagline: subTitle,
+        introMessage: introMsg,
+        scratchTitle: "Secured Archive",
+        scratchSubtitle: "Wipe the frosted glass to reveal",
+        scratchNoteHeading: scrHeading,
+        scratchNote: scrNote,
+        startDate: dtString,
+        passcode: sixDigit,
+        terminalName: recName.toUpperCase(),
+        finaleTitle: headLine,
+        letter1: let1,
+        letter2: let2,
+        letter3: let3,
+        letter4: clsNote,
+        signature: `With highest admiration,\n${sndName}`,
+        photos: photos || [],
+        showWatermark: showWatermark
+      });
+    }
+
+    if (html) {
+      window.currentHtml = html;
+      window.versions = [html];
+      renderPreview(html);
+      editBlock.classList.add('visible');
+      stageActions.style.visibility = 'visible';
+      chromeLabel.textContent = 'live preview';
+      step1.classList.remove('active');
+      step2.classList.add('active');
+    }
+  };
+
+  // Debounced listener on all manual inputs
+  window.renderManualLivePreview = function() {
+    clearTimeout(window._manDebounceTimer);
+    window._manDebounceTimer = setTimeout(() => {
+      window.rebuildManualExperience();
+    }, 80);
+  };
+
+  // Attach live input listener to the manual container
+  manualStudioView?.addEventListener('input', window.renderManualLivePreview);
+  manualStudioView?.addEventListener('change', window.renderManualLivePreview);
+
+  // Open in New Tab handler for manual action button
+  manOpenTabBtn?.addEventListener('click', () => {
+    if (!window.currentHtml) window.rebuildManualExperience();
+    if (!window.currentHtml) return;
+    const clean = typeof stripEditorArtifacts === 'function' ? stripEditorArtifacts(window.currentHtml) : window.currentHtml;
+    const blob = new Blob([clean], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    window.open(url, '_blank');
+  });
+
+  // Manual Photo Dropzone setup
+  const manPhotoDrop = document.getElementById('manPhotoDrop');
+  const manPhotoInput = document.getElementById('manPhotoInput');
+  const manPhotoStrip = document.getElementById('manPhotoStrip');
+
+  window.renderManualPhotoStrip = function() {
+    if (!manPhotoStrip) return;
+    manPhotoStrip.innerHTML = '';
+    photos.forEach((src, idx) => {
+      const wrap = document.createElement('div');
+      wrap.style.cssText = 'position:relative; width:44px; height:44px; display:inline-block;';
+      const img = document.createElement('img');
+      img.src = src;
+      img.className = 'photo-thumb';
+      img.style.cssText = 'width:100%; height:100%; border-radius:6px; object-fit:cover;';
+      const del = document.createElement('button');
+      del.type = 'button';
+      del.textContent = '×';
+      del.style.cssText = 'position:absolute; top:-4px; right:-4px; width:16px; height:16px; border-radius:50%; background:#ff4757; color:#fff; border:none; font-size:11px; cursor:pointer; line-height:1; display:flex; align-items:center; justify-content:center;';
+      del.onclick = (e) => {
+        e.stopPropagation();
+        photos.splice(idx, 1);
+        if (typeof window.renderManualPhotoStrip === 'function') window.renderManualPhotoStrip();
+        renderPhotoStrip();
+        window.rebuildManualExperience();
+      };
+      wrap.appendChild(img);
+      wrap.appendChild(del);
+      manPhotoStrip.appendChild(wrap);
+    });
+  };
+
+  manPhotoDrop?.addEventListener('click', () => manPhotoInput?.click());
+  manPhotoInput?.addEventListener('change', async (e) => {
+    for (const f of e.target.files) {
+      if (!f.type.startsWith('image/')) continue;
+      const data = await readImageFile(f);
+      if (data) photos.push(data);
+    }
+    if (typeof window.renderManualPhotoStrip === 'function') window.renderManualPhotoStrip();
+    renderPhotoStrip();
+    window.rebuildManualExperience();
   });
 
   // ---------- Custom API Key Controls & Modal ----------
