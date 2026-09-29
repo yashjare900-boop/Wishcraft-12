@@ -98,7 +98,21 @@
       name: 'Celebratory Birthday Gala',
       icon: '👑',
       tagline: 'Festive Milestones, Crown Badge & Confetti Celebration',
+      defaultTheme: 'obsidian-gold',
+      bg: '#0C0A06',
+      cardBg: 'linear-gradient(145deg, rgba(28, 22, 12, 0.92), rgba(12, 10, 8, 0.96))',
+      primary: '#FFD32A',
+      secondary: '#FFA801',
+      accent: '#FF5722',
+      border: 'rgba(255, 211, 42, 0.38)',
+      glow: 'rgba(255, 211, 42, 0.22)',
+      fontSerif: "'Cinzel', 'Playfair Display', Georgia, serif",
+      fontSans: "'Montserrat', -apple-system, sans-serif",
+      cardBorder: '1.5px solid rgba(255, 211, 42, 0.45)',
+      cardRadius: '26px',
       particleType: 'birthday_sparkles',
+      cardAccentIcon: '🎂',
+      finaleEmoji: '🎂 🥂 ✨ 🎁 👑',
       finaleBtnText: '🎂 Make a Birthday Wish & Blow Candles!',
       finaleSuccessText: '✨ Wish Manifested! Happy Birthday! ✨'
     },
@@ -107,25 +121,67 @@
       name: 'Golden Truce Peace Treaty',
       icon: '🕊️',
       tagline: 'Diplomatic Treaty, Sincere Clauses & Reconciliation Seal',
+      defaultTheme: 'golden-truce',
+      bg: '#060E0A',
+      cardBg: 'linear-gradient(145deg, rgba(10, 24, 16, 0.92), rgba(5, 14, 10, 0.96))',
+      primary: '#E6C280',
+      secondary: '#A3B899',
+      accent: '#70A37F',
+      border: 'rgba(230, 194, 128, 0.38)',
+      glow: 'rgba(112, 163, 127, 0.2)',
+      fontSerif: "'Playfair Display', Georgia, serif",
+      fontSans: "'Montserrat', sans-serif",
+      cardBorder: '1px solid rgba(230, 194, 128, 0.4)',
+      cardRadius: '20px',
       particleType: 'golden_leaves',
+      cardAccentIcon: '🕊️',
+      finaleEmoji: '🕊️ 🌿 🤝 🤍 📜',
       finaleBtnText: '🕊️ Accept Sincere Truce & Forgive',
       finaleSuccessText: '❤️ Truce Accepted. Thank You For Your Kindness.'
     },
     'romance': {
       id: 'romance',
       name: 'Velvet Romantic Sanctuary',
-      icon: '💎',
+      icon: '💖',
       tagline: 'Floating Rose Hearts, Love Letters & Forever Lock',
+      defaultTheme: 'sunset-peach',
+      bg: '#14050D',
+      cardBg: 'linear-gradient(145deg, rgba(34, 10, 22, 0.92), rgba(16, 4, 10, 0.96))',
+      primary: '#FF6B81',
+      secondary: '#FFA8BA',
+      accent: '#FF7EB3',
+      border: 'rgba(255, 107, 129, 0.42)',
+      glow: 'rgba(255, 107, 129, 0.28)',
+      fontSerif: "'Playfair Display', Georgia, serif",
+      fontSans: "'Montserrat', sans-serif",
+      cardBorder: '1.5px solid rgba(255, 107, 129, 0.45)',
+      cardRadius: '28px',
       particleType: 'rose_hearts',
+      cardAccentIcon: '💖',
+      finaleEmoji: '💖 🌹 💍 ✨ ❤️',
       finaleBtnText: '💖 Seal Our Forever Lock ❤️',
       finaleSuccessText: '🔒 Forever Locked in My Heart.'
     },
     'obsidian': {
       id: 'obsidian',
       name: 'Cyberpunk Obsidian Vault',
-      icon: '🌌',
+      icon: '⚡',
       tagline: 'High-Tech Terminal HUD, AES-256 Protocol & Cipher Keypad',
+      defaultTheme: 'obsidian-gold',
+      bg: '#020508',
+      cardBg: 'linear-gradient(180deg, rgba(4, 16, 22, 0.95), rgba(2, 7, 12, 0.98))',
+      primary: '#00F5D4',
+      secondary: '#70A1FF',
+      accent: '#0BE881',
+      border: 'rgba(0, 245, 212, 0.45)',
+      glow: 'rgba(0, 245, 212, 0.22)',
+      fontSerif: "'Space Grotesk', monospace",
+      fontSans: "'Space Grotesk', monospace",
+      cardBorder: '1.5px solid #00F5D4',
+      cardRadius: '10px',
       particleType: 'cyber_grid',
+      cardAccentIcon: '⚡',
+      finaleEmoji: '⚡ 🛰️ 🔒 🌐 💻',
       finaleBtnText: '⚡ Authenticate Master Key',
       finaleSuccessText: '🔓 ACCESS GRANTED // ARCHIVE DECRYPTED'
     },
@@ -134,7 +190,21 @@
       name: 'Royal Velvet Classical Luxury',
       icon: '✨',
       tagline: 'Museum-Grade Serif Typography, Gold Foil & Star Stardust',
+      defaultTheme: 'royal-velvet',
+      bg: '#090814',
+      cardBg: 'linear-gradient(145deg, rgba(18, 14, 28, 0.92), rgba(8, 7, 16, 0.96))',
+      primary: '#D4AF37',
+      secondary: '#F5E6C8',
+      accent: '#A29BFE',
+      border: 'rgba(212, 175, 106, 0.38)',
+      glow: 'rgba(212, 175, 106, 0.2)',
+      fontSerif: "'Cinzel', Georgia, serif",
+      fontSans: "'Montserrat', sans-serif",
+      cardBorder: '1.5px solid rgba(212, 175, 106, 0.4)',
+      cardRadius: '22px',
       particleType: 'stardust',
+      cardAccentIcon: '👑',
+      finaleEmoji: '👑 🥂 ✨ 🌟 🏛️',
       finaleBtnText: '🥂 Raise a Toast to the Journey',
       finaleSuccessText: '🌟 Cheers to an Unstoppable Future! 🌟'
     }
@@ -175,8 +245,10 @@
     const pass = (userData.passcode || "2026").trim();
     // Default hint NEVER leaks the passcode
     const hint = (userData.passcodeHint || "A memorable number or secret key known to us").trim();
-    const themeKey = userData.themeName && THEME_PALETTES[userData.themeName] ? userData.themeName : 'royal-velvet';
     const archetypeKey = determineArchetype(userData);
+    const archetypeObj = ARCHETYPES[archetypeKey] || ARCHETYPES['classic'];
+    const themeKey = userData.themeName && THEME_PALETTES[userData.themeName] ? userData.themeName : (archetypeObj.defaultTheme || 'royal-velvet');
+    const themeColor = userData.themeColor || archetypeObj.primary;
 
     let chapters = [];
 
@@ -348,8 +420,64 @@
           signature: `With endless admiration & love,\n${sender}`
         }
       ];
+    } else if (archetypeKey === 'obsidian') {
+      chapters = [
+        {
+          id: "chap_1",
+          type: "cover",
+          navTitle: "01. Terminal",
+          badge: "// TERMINAL 01 // BIO-LINK",
+          title: `CIPHER // ${recName.toUpperCase()}`,
+          subtitle: "Encrypted Quantum Kept Data Protocol v4.2",
+          intro: "Direct point-to-point transmission established. All data blocks compiled with permanent loyalty and unyielding respect.",
+          ctaText: "ACCESS CIPHER STREAM [ENTER] →"
+        },
+        {
+          id: "chap_2",
+          type: "memories",
+          navTitle: "02. Matrix",
+          badge: "// TELEMETRY // CORE MATRIX",
+          title: "NEURAL MEMORY ARCHIVE",
+          subtitle: "Historical milestones decrypted",
+          body: `Through high-bandwidth triumphs and unscripted missions conquered, your frequency remains unmatched. A permanent constant in an ever-shifting simulation.`,
+          quote: "In a universe of transient noise, authentic loyalty is hard-coded into the bedrock."
+        },
+        {
+          id: "chap_3",
+          type: "interactive_reveal",
+          navTitle: "03. Vault Node",
+          badge: "// SECURITY // RESTRICTED DOSSIER",
+          title: "ENCRYPTED VAULT NODE",
+          subtitle: "Enter security passcode to decrypt classified payload",
+          secretHeading: `SECURE TRANSMISSION // FOR ${recName.toUpperCase()}:`,
+          secretMessage: "You operate on an entirely different echelon of brilliance and integrity. Never compromise your core values. The future belongs to those who build it with conviction.",
+          passcode: pass,
+          passcodeHint: hint
+        },
+        {
+          id: "chap_4",
+          type: "letter",
+          navTitle: "04. Source Code",
+          badge: "// UNCOMPRESSED // RAW COMM",
+          title: "TRANSMISSION ARCHIVE",
+          subtitle: "Unfiltered sovereign tribute",
+          p1: "No standard algorithm could ever quantify the sheer impact of your presence. Real trust cannot be simulated; it is forged through shared battles and conviction.",
+          p2: "You navigate complex challenges with effortless clarity and sharp instincts. Watching you execute your vision is a masterclass in relentless execution.",
+          p3: "May your momentum never stall, your firewalls remain impenetrable, and your next chapter exceed every historical precedent."
+        },
+        {
+          id: "chap_5",
+          type: "finale",
+          navTitle: "05. Uplink",
+          badge: "// PROTOCOL 05 // MISSION SUCCESS",
+          title: `MISSION SUCCESS: ${recName.toUpperCase()}`,
+          subtitle: "All operational milestones cleared with honors.",
+          wishMessage: "System operational. Uplink permanent. Stand tall and conquer every horizon ahead.",
+          signature: `// SENDER VERIFIED //\n${sender}`
+        }
+      ];
     } else {
-      // Classic Royal / Obsidian
+      // Classic Royal
       chapters = [
         {
           id: "chap_1",
@@ -410,7 +538,7 @@
     return {
       archetype: archetypeKey,
       theme: themeKey,
-      themeColor: THEME_PALETTES[themeKey]?.primary || "#D4AF6A",
+      themeColor: themeColor || THEME_PALETTES[themeKey]?.primary || "#D4AF6A",
       occasion: occ,
       recipientName: recName,
       senderName: sender,
@@ -536,17 +664,33 @@ Do NOT wrap the output in markdown fences like \`\`\`json. Output ONLY the raw J
    */
   function compileMultiPageWish(wishData, options = {}) {
     const data = wishData || getDefaultWishData();
-    const themeKey = data.theme && THEME_PALETTES[data.theme] ? data.theme : 'royal-velvet';
-    const theme = THEME_PALETTES[themeKey] || THEME_PALETTES['royal-velvet'];
-    const primaryColor = data.themeColor || theme.primary;
-    const recName = data.recipientName || "Someone Special";
-    const sender = data.senderName || "Forever a Friend";
-    const showWatermark = typeof options.showWatermark === 'boolean' ? options.showWatermark : true;
-    const userPhotos = Array.isArray(options.photos) && options.photos.length > 0 ? options.photos : [];
     
     // Determine Archetype
     const archetypeKey = (data.archetype && ARCHETYPES[data.archetype]) ? data.archetype : determineArchetype(data);
     const archetype = ARCHETYPES[archetypeKey] || ARCHETYPES['classic'];
+
+    // Theme resolution: prioritize user-picked theme if non-default; otherwise archetype's custom aesthetic
+    const basePalette = (data.theme && THEME_PALETTES[data.theme]) ? THEME_PALETTES[data.theme] : null;
+    const isCustomPalette = Boolean(basePalette && data.theme !== 'royal-velvet');
+
+    const theme = {
+      bg: isCustomPalette ? basePalette.bg : archetype.bg,
+      cardBg: isCustomPalette ? basePalette.cardBg : archetype.cardBg,
+      primary: data.themeColor || (isCustomPalette ? basePalette.primary : archetype.primary),
+      secondary: isCustomPalette ? basePalette.secondary : archetype.secondary,
+      accent: isCustomPalette ? basePalette.accent : archetype.accent,
+      border: isCustomPalette ? basePalette.border : archetype.border,
+      glow: isCustomPalette ? basePalette.glow : archetype.glow,
+      fontSerif: isCustomPalette ? basePalette.fontSerif : archetype.fontSerif,
+      fontSans: isCustomPalette ? basePalette.fontSans : archetype.fontSans,
+      cardBorder: archetype.cardBorder,
+      cardRadius: archetype.cardRadius
+    };
+    const primaryColor = theme.primary;
+    const recName = data.recipientName || "Someone Special";
+    const sender = data.senderName || "Forever a Friend";
+    const showWatermark = typeof options.showWatermark === 'boolean' ? options.showWatermark : true;
+    const userPhotos = Array.isArray(options.photos) && options.photos.length > 0 ? options.photos : [];
 
     const defaultFallbacks = [
       "https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=600&q=80",
@@ -619,11 +763,10 @@ Do NOT wrap the output in markdown fences like \`\`\`json. Output ONLY the raw J
           
           <!-- REAL INTERACTIVE SECURITY VAULT KEYPAD -->
           <div class="wc-vault-lock-box" id="wcVaultBox_${idx}">
-            <div class="wc-vault-dial-ring">
-              <div class="wc-vault-icon" id="wcVaultIcon_${idx}">🔒</div>
+            <div class="wc-vault-header-compact">
+              <span class="wc-vault-icon-badge" id="wcVaultIcon_${idx}">🔒</span>
+              <span class="wc-vault-lock-title">Passcode Protected Vault</span>
             </div>
-            <div class="wc-vault-lock-title">Security Passcode Required</div>
-            <p class="wc-vault-lock-sub">This private chapter is restricted. Enter the passcode set by ${escapeHtml(sender)} to decrypt.</p>
 
             <!-- PIN Dots Display -->
             <div class="wc-pin-input-container">
@@ -636,6 +779,12 @@ Do NOT wrap the output in markdown fences like \`\`\`json. Output ONLY the raw J
               <input type="text" id="wcPinInput_${idx}" class="wc-pin-hidden-input" maxlength="12" autocomplete="off" spellcheck="false" onkeydown="wcHandleKeydown(event, ${idx})" placeholder="Click to type code...">
             </div>
 
+            <!-- Clue: Protected from leaking code -->
+            <div class="wc-pass-hint-pill" id="wcPassHint_${idx}">
+              <span>🔑 Clue:</span> <em>${escapeHtml(displayHint)}</em>
+            </div>
+            <div class="wc-vault-error-msg" id="wcVaultError_${idx}" style="display:none;"></div>
+
             <!-- On-Screen Numeric Keypad -->
             <div class="wc-keypad-grid" id="wcKeypad_${idx}">
               <button type="button" class="wc-key-btn" onclick="wcKeypadPress(${idx}, '1')">1</button>
@@ -647,22 +796,10 @@ Do NOT wrap the output in markdown fences like \`\`\`json. Output ONLY the raw J
               <button type="button" class="wc-key-btn" onclick="wcKeypadPress(${idx}, '7')">7</button>
               <button type="button" class="wc-key-btn" onclick="wcKeypadPress(${idx}, '8')">8</button>
               <button type="button" class="wc-key-btn" onclick="wcKeypadPress(${idx}, '9')">9</button>
-              <button type="button" class="wc-key-btn clear" onclick="wcKeypadClear(${idx})">C</button>
+              <button type="button" class="wc-key-btn clear" onclick="wcKeypadClear(${idx})" title="Clear">C</button>
               <button type="button" class="wc-key-btn" onclick="wcKeypadPress(${idx}, '0')">0</button>
-              <button type="button" class="wc-key-btn enter" onclick="wcAttemptUnlock(${idx})">⏎</button>
+              <button type="button" class="wc-key-btn enter" onclick="wcAttemptUnlock(${idx})" title="Unlock">⏎</button>
             </div>
-
-            <div class="wc-vault-actions">
-              <button type="button" class="wc-btn-primary wc-unlock-cta" onclick="wcAttemptUnlock(${idx})">
-                <span>🔓 Decrypt Archive</span>
-              </button>
-            </div>
-
-            <!-- Hint: Protected from leaking code -->
-            <div class="wc-pass-hint-pill" id="wcPassHint_${idx}">
-              <span>🔑 Clue:</span> <em>${escapeHtml(displayHint)}</em>
-            </div>
-            <div class="wc-vault-error-msg" id="wcVaultError_${idx}" style="display:none;"></div>
           </div>
 
           <!-- Secret Note Revealed Area (Hidden until unlocked) -->
@@ -801,29 +938,42 @@ Do NOT wrap the output in markdown fences like \`\`\`json. Output ONLY the raw J
       backdrop-filter: blur(24px);
       -webkit-backdrop-filter: blur(24px);
       border: 1px solid var(--border);
-      border-radius: 24px;
-      padding: clamp(24px, 5vw, 42px) clamp(18px, 4vw, 32px);
-      box-shadow: 0 25px 70px rgba(0,0,0,0.85), inset 0 1px 0 rgba(255,255,255,0.1);
+      border-radius: var(--card-radius, 24px);
+      padding: clamp(20px, 4.5vw, 36px) clamp(16px, 3.5vw, 28px);
+      box-shadow: 0 25px 70px rgba(0,0,0,0.85), inset 0 1px 0 rgba(255,255,255,0.08);
       text-align: center;
       position: relative;
       overflow: hidden;
+      transition: all 0.3s ease;
     }
     /* Archetype specific flair */
     .wc-glass-card.birthday {
-      border-color: rgba(255, 215, 0, 0.35);
-      box-shadow: 0 25px 70px rgba(0,0,0,0.85), 0 0 40px rgba(255, 215, 0, 0.1);
+      border: 1.5px solid rgba(255, 211, 42, 0.45);
+      border-radius: 26px;
+      box-shadow: 0 25px 70px rgba(0,0,0,0.9), 0 0 45px rgba(255, 211, 42, 0.18), inset 0 0 20px rgba(255, 211, 42, 0.05);
     }
     .wc-glass-card.truce {
-      border-color: rgba(230, 194, 128, 0.4);
-      background: radial-gradient(circle at 50% 0%, rgba(230, 194, 128, 0.08) 0%, var(--card-bg) 70%);
+      border: 1px solid rgba(230, 194, 128, 0.4);
+      border-radius: 20px;
+      box-shadow: 0 25px 70px rgba(0,0,0,0.9), inset 0 0 35px rgba(112, 163, 127, 0.08);
+      background: radial-gradient(circle at 50% 0%, rgba(112, 163, 127, 0.12) 0%, var(--card-bg) 70%);
     }
     .wc-glass-card.romance {
-      border-color: rgba(255, 158, 157, 0.35);
-      background: radial-gradient(circle at 50% 0%, rgba(255, 158, 157, 0.08) 0%, var(--card-bg) 70%);
+      border: 1.5px solid rgba(255, 107, 129, 0.45);
+      border-radius: 28px;
+      box-shadow: 0 25px 70px rgba(0,0,0,0.9), 0 0 50px rgba(255, 107, 129, 0.22), inset 0 0 25px rgba(255, 107, 129, 0.06);
+      background: radial-gradient(circle at 50% 0%, rgba(255, 107, 129, 0.12) 0%, var(--card-bg) 70%);
     }
     .wc-glass-card.obsidian {
-      border-color: rgba(0, 245, 212, 0.35);
-      box-shadow: 0 25px 70px rgba(0,0,0,0.9), inset 0 0 30px rgba(0, 245, 212, 0.04);
+      border: 1.5px solid #00F5D4;
+      border-radius: 10px;
+      box-shadow: 0 25px 80px rgba(0,0,0,0.95), 0 0 35px rgba(0, 245, 212, 0.2), inset 0 0 20px rgba(0, 245, 212, 0.06);
+      background: linear-gradient(180deg, rgba(4, 16, 22, 0.95), rgba(2, 7, 12, 0.98));
+    }
+    .wc-glass-card.classic {
+      border: 1.5px solid rgba(212, 175, 106, 0.4);
+      border-radius: 22px;
+      box-shadow: 0 25px 70px rgba(0,0,0,0.9), 0 0 35px rgba(212, 175, 106, 0.12);
     }
     .wc-badge {
       display: inline-block;
@@ -916,91 +1066,69 @@ Do NOT wrap the output in markdown fences like \`\`\`json. Output ONLY the raw J
 
     /* DIGITAL VAULT KEYPAD INTERFACE */
     .wc-vault-lock-box {
-      width: 100%; max-width: 420px; margin: 12px auto;
-      background: rgba(0, 0, 0, 0.45); border: 1px solid var(--border);
-      border-radius: 20px; padding: 22px 18px;
-      display: flex; flex-direction: column; align-items: center; gap: 12px;
-      box-shadow: 0 15px 40px rgba(0,0,0,0.6), inset 0 0 20px rgba(212,175,106,0.05);
+      width: 100%; max-width: 360px; margin: 10px auto;
+      background: rgba(0, 0, 0, 0.5); border: 1px solid var(--border);
+      border-radius: 16px; padding: 14px 12px;
+      display: flex; flex-direction: column; align-items: center; gap: 8px;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.6);
       transition: all 0.3s ease;
     }
-    .wc-vault-dial-ring {
-      width: 68px; height: 68px; border-radius: 50%;
-      border: 2px dashed var(--primary);
-      display: flex; align-items: center; justify-content: center;
-      animation: wcRotateDial 25s linear infinite;
+    .wc-vault-header-compact {
+      display: flex; align-items: center; gap: 8px;
     }
-    @keyframes wcRotateDial {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-    .wc-vault-icon {
-      font-size: 26px; animation: wcCounterRotate 25s linear infinite;
-    }
-    @keyframes wcCounterRotate {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(-360deg); }
+    .wc-vault-icon-badge {
+      font-size: 18px; line-height: 1;
     }
     .wc-vault-lock-title {
-      font-family: var(--font-serif); font-size: 1.15rem; color: #fff; font-weight: 600;
-    }
-    .wc-vault-lock-sub {
-      font-size: 12px; color: rgba(255,255,255,0.7); line-height: 1.45; text-align: center; max-width: 320px;
+      font-family: var(--font-serif); font-size: 13px; color: #fff; font-weight: 600; letter-spacing: 0.5px;
     }
     .wc-pin-input-container {
-      display: flex; flex-direction: column; align-items: center; gap: 8px; position: relative; width: 100%;
+      display: flex; flex-direction: column; align-items: center; gap: 6px; position: relative; width: 100%;
     }
     .wc-pin-dots {
-      display: flex; gap: 12px; padding: 10px 18px;
-      background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 12px;
+      display: flex; gap: 10px; padding: 7px 14px;
+      background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 10px;
     }
     .wc-pin-dot {
-      width: 14px; height: 14px; border-radius: 50%;
+      width: 10px; height: 10px; border-radius: 50%;
       border: 1.5px solid var(--border); background: transparent;
       transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
     .wc-pin-dot.filled {
       background: var(--primary); border-color: var(--primary);
-      box-shadow: 0 0 10px var(--primary); transform: scale(1.1);
+      box-shadow: 0 0 10px var(--primary); transform: scale(1.15);
     }
     .wc-pin-hidden-input {
       position: absolute; opacity: 0; width: 100%; height: 100%; top: 0; left: 0; cursor: pointer;
     }
     .wc-keypad-grid {
-      display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
-      width: 100%; max-width: 250px; margin-top: 4px;
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px;
+      width: 100%; max-width: 210px; margin-top: 2px;
     }
     .wc-key-btn {
-      background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.12);
       color: #fff; font-family: 'Space Grotesk', var(--font-sans);
-      font-size: 16px; font-weight: 600; height: 44px; border-radius: 10px;
+      font-size: 15px; font-weight: 600; height: 38px; border-radius: 8px;
       cursor: pointer; display: flex; align-items: center; justify-content: center;
-      transition: all 0.15s ease; user-select: none;
+      transition: all 0.15s ease; user-select: none; -webkit-tap-highlight-color: transparent;
     }
     .wc-key-btn:hover {
-      background: rgba(255, 255, 255, 0.12); border-color: var(--primary); transform: translateY(-1px);
+      background: rgba(255, 255, 255, 0.14); border-color: var(--primary); transform: translateY(-1px);
     }
     .wc-key-btn:active {
-      transform: scale(0.95); background: var(--primary); color: #000;
+      transform: scale(0.94); background: var(--primary); color: #000;
     }
     .wc-key-btn.clear { color: #ff7675; font-size: 13px; }
     .wc-key-btn.enter { color: var(--primary); font-size: 15px; }
-    .wc-unlock-cta {
-      margin-top: 6px; padding: 10px 24px; font-size: 12.5px;
-    }
     .wc-vault-error-msg {
-      font-size: 11.5px; color: #ff6b6b; font-weight: 500;
+      font-size: 11px; color: #ff6b6b; font-weight: 500;
       background: rgba(255, 107, 107, 0.1); border: 1px solid rgba(255, 107, 107, 0.3);
-      padding: 5px 12px; border-radius: 6px; animation: wcShake 0.4s ease;
-    }
-    @keyframes wcShake {
-      0%, 100% { transform: translateX(0); }
-      20%, 60% { transform: translateX(-6px); }
-      40%, 80% { transform: translateX(6px); }
+      padding: 4px 10px; border-radius: 6px; animation: wcShake 0.4s ease;
     }
     .wc-pass-hint-pill {
       font-size: 11px; font-family: var(--font-sans); color: var(--secondary);
       background: rgba(255,255,255,0.04); border: 1px solid var(--border);
-      border-radius: 8px; padding: 6px 12px; max-width: 340px; text-align: center;
+      border-radius: 8px; padding: 4px 10px; max-width: 320px; text-align: center;
     }
     .wc-pass-hint-pill span { color: var(--primary); font-weight: 600; }
     .wc-secret-underneath {
@@ -1085,34 +1213,58 @@ Do NOT wrap the output in markdown fences like \`\`\`json. Output ONLY the raw J
     .wc-bottom-chapter-bar {
       position: fixed; bottom: 12px; left: 50%; transform: translateX(-50%);
       z-index: 9999; display: flex; align-items: center; gap: 6px;
-      background: rgba(11, 12, 16, 0.92); backdrop-filter: blur(20px);
+      background: rgba(11, 12, 16, 0.94); backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px); border: 1px solid var(--border);
-      border-radius: 999px; padding: 5px 12px; box-shadow: 0 10px 35px rgba(0,0,0,0.8);
+      border-radius: 999px; padding: 4px 12px; box-shadow: 0 10px 35px rgba(0,0,0,0.85);
+      max-width: 90vw; overflow-x: auto;
     }
     .wc-pill-indicator {
       border: none; background: transparent; color: rgba(255,255,255,0.5);
       font-family: monospace; font-size: 11px; padding: 4px 10px; border-radius: 999px;
-      cursor: pointer; transition: all 0.2s;
+      cursor: pointer; transition: all 0.2s; white-space: nowrap;
     }
     .wc-pill-indicator:hover { color: #fff; }
     .wc-pill-indicator.active {
       background: var(--primary); color: #000; font-weight: 700;
       box-shadow: 0 0 12px var(--primary);
     }
-    /* Watermark */
+    /* Watermark - Moved to Top Right to NEVER overlap bottom timeline */
     .wc-wm-badge {
-      position: fixed; bottom: 12px; right: 14px; z-index: 9999;
+      position: fixed; top: 12px; right: 14px; z-index: 9999;
       display: inline-flex; align-items: center; gap: 5px;
       background: rgba(8, 10, 14, 0.85); backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
       border: 1px solid var(--border); border-radius: 999px;
-      padding: 4px 10px; font-size: 10px; color: rgba(255,255,255,0.7);
-      text-decoration: none; font-family: sans-serif;
+      padding: 4px 11px; font-size: 10px; color: rgba(255,255,255,0.75);
+      text-decoration: none; font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+      transition: all 0.2s ease;
     }
     .wc-wm-badge:hover { color: #fff; border-color: var(--primary); }
     @media (max-width: 600px) {
-      .wc-glass-card { padding: 24px 18px; border-radius: 20px; }
-      .wc-bottom-chapter-bar { bottom: 8px; padding: 4px 8px; }
-      .wc-pill-indicator { padding: 4px 7px; font-size: 10px; }
+      body { padding: 10px 8px 65px; justify-content: flex-start; }
+      .wc-container { margin: 0 auto; width: 100%; }
+      .wc-glass-card {
+        padding: 16px 14px;
+        border-radius: 18px;
+        max-height: calc(100vh - 80px);
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+      .wc-hero-title { font-size: 1.6rem; }
+      .wc-chapter-title { font-size: 1.25rem; margin-bottom: 4px; }
+      .wc-subtitle { font-size: 11.5px; }
+      .wc-gold-divider { margin: 8px auto; width: 36px; }
+      .wc-vault-lock-box { padding: 10px 8px; gap: 6px; margin: 4px auto; }
+      .wc-keypad-grid { max-width: 190px; gap: 5px; }
+      .wc-key-btn { height: 34px; font-size: 14px; border-radius: 8px; }
+      .wc-pin-dots { padding: 6px 12px; gap: 8px; }
+      .wc-pin-dot { width: 9px; height: 9px; }
+      .wc-nav-btns { margin-top: 10px !important; }
+      .wc-btn-primary, .wc-btn-ghost { padding: 8px 18px; font-size: 12px; }
+      .wc-bottom-chapter-bar { bottom: 8px; padding: 3px 8px; gap: 4px; }
+      .wc-pill-indicator { padding: 3px 7px; font-size: 9.5px; }
+      .wc-wm-badge { top: 8px; right: 8px; font-size: 9px; padding: 3px 8px; }
     }
   </style>
 </head>
@@ -1372,7 +1524,7 @@ Do NOT wrap the output in markdown fences like \`\`\`json. Output ONLY the raw J
       }
     };
 
-    // Stardust background particles
+    // Dynamic background particles tuned to Archetype
     (function initParticles() {
       const cvs = document.getElementById('wcBgParticles');
       if (!cvs) return;
@@ -1381,28 +1533,68 @@ Do NOT wrap the output in markdown fences like \`\`\`json. Output ONLY the raw J
       let h = cvs.height = window.innerHeight;
       window.addEventListener('resize', () => { w = cvs.width = window.innerWidth; h = cvs.height = window.innerHeight; });
 
-      const count = 45;
+      const pType = ${JSON.stringify(archetype.particleType || 'stardust')};
+      const pColor = ${JSON.stringify(primaryColor)};
+
+      const count = pType === 'cyber_grid' ? 50 : (pType === 'rose_hearts' ? 32 : 45);
       const pts = Array.from({length: count}, () => ({
         x: Math.random() * w,
         y: Math.random() * h,
-        r: Math.random() * 1.5 + 0.5,
-        vx: (Math.random() - 0.5) * 0.3,
-        vy: -Math.random() * 0.4 - 0.1,
-        alpha: Math.random() * 0.7 + 0.2
+        r: Math.random() * 2 + 1,
+        vx: (Math.random() - 0.5) * 0.4,
+        vy: -Math.random() * 0.6 - 0.2,
+        alpha: Math.random() * 0.6 + 0.2,
+        rot: Math.random() * Math.PI * 2,
+        vrot: (Math.random() - 0.5) * 0.04
       }));
+
+      function drawHeart(x, y, size, alpha) {
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.scale(size / 6, size / 6);
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.bezierCurveTo(-5, -5, -10, 2, 0, 10);
+        ctx.bezierCurveTo(10, 2, 5, -5, 0, 0);
+        ctx.fillStyle = 'rgba(255, 107, 129, ' + (alpha * 0.7) + ')';
+        ctx.fill();
+        ctx.restore();
+      }
 
       function loop() {
         ctx.clearRect(0, 0, w, h);
         pts.forEach(p => {
           p.x += p.vx;
           p.y += p.vy;
-          if (p.y < 0) { p.y = h; p.x = Math.random() * w; }
-          if (p.x < 0) p.x = w;
-          if (p.x > w) p.x = 0;
-          ctx.beginPath();
-          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-          ctx.fillStyle = 'rgba(212,175,106,' + p.alpha + ')';
-          ctx.fill();
+          p.rot += p.vrot;
+          if (p.y < -10) { p.y = h + 10; p.x = Math.random() * w; }
+          if (p.x < -10) p.x = w + 10;
+          if (p.x > w + 10) p.x = -10;
+
+          if (pType === 'rose_hearts') {
+            drawHeart(p.x, p.y, p.r * 3.5, p.alpha);
+          } else if (pType === 'cyber_grid') {
+            ctx.fillStyle = 'rgba(0, 245, 212, ' + p.alpha + ')';
+            ctx.fillRect(p.x, p.y, p.r * 1.5, p.r * 3.5);
+          } else if (pType === 'birthday_sparkles') {
+            ctx.save();
+            ctx.translate(p.x, p.y);
+            ctx.rotate(p.rot);
+            ctx.fillStyle = (p.x % 2 === 0) ? 'rgba(255, 211, 42, ' + p.alpha + ')' : 'rgba(255, 120, 100, ' + p.alpha + ')';
+            ctx.fillRect(-p.r, -p.r, p.r * 2, p.r * 2);
+            ctx.restore();
+          } else if (pType === 'golden_leaves') {
+            ctx.fillStyle = 'rgba(230, 194, 128, ' + p.alpha + ')';
+            ctx.beginPath();
+            ctx.ellipse(p.x, p.y, p.r * 2, p.r, p.rot, 0, Math.PI * 2);
+            ctx.fill();
+          } else {
+            // stardust
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+            ctx.fillStyle = 'rgba(212, 175, 106, ' + p.alpha + ')';
+            ctx.fill();
+          }
         });
         requestAnimationFrame(loop);
       }
@@ -1478,4 +1670,4 @@ Do NOT wrap the output in markdown fences like \`\`\`json. Output ONLY the raw J
     determineArchetype
   };
 
-})(typeof window !== 'undefined' ? window : this);
+})(typeof window !== 'undefined' ? window : (typeof globalThis !== 'undefined' ? globalThis : this));

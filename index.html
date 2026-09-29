@@ -5087,6 +5087,16 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
       card.classList.add('selected');
 
       window.currentAiWishData.archetype = archKey;
+      
+      const archObj = window.WishCraftAiEngine?.ARCHETYPES?.[archKey];
+      if (archObj) {
+        window.currentAiWishData.theme = archObj.defaultTheme || 'royal-velvet';
+        window.currentAiWishData.themeColor = archObj.primary;
+        document.querySelectorAll('#aiPaletteGrid .ai-palette-card').forEach(p => {
+          p.classList.toggle('selected', p.getAttribute('data-theme') === window.currentAiWishData.theme);
+        });
+      }
+
       window.recompileAiWishPreview();
     });
   });
