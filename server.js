@@ -76,7 +76,7 @@ app.post('/api/generate', async (req, res) => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          system_instruction: systemPrompt ? { parts: [{ text: systemPrompt }] } : undefined,
+          systemInstruction: systemPrompt ? { parts: [{ text: systemPrompt }] } : undefined,
           contents: [{ role: 'user', parts: [{ text: userContent }] }],
           generationConfig: {
             responseMimeType: 'application/json',
@@ -87,8 +87,13 @@ app.post('/api/generate', async (req, res) => {
 
       const data = await response.json();
 
-      if (response.ok && data.candidates?.[0]?.content?.parts?.[0]?.text) {
-        const rawText = data.candidates[0].content.parts[0].text;
+      if (response.ok && data.candidates?.[0]?.content?.parts) {
+        const candidateParts = data.candidates[0].content.parts;
+        const nonThoughtParts = candidateParts.filter(p => !p.thought && typeof p.text === 'string');
+        const rawText = nonThoughtParts.length > 0 
+          ? nonThoughtParts.map(p => p.text).join('') 
+          : (candidateParts[candidateParts.length - 1]?.text || '');
+
         const cleaned = rawText
           .replace(/^```json\s*/i, '')
           .replace(/^```\s*/i, '')
@@ -98,7 +103,13 @@ app.post('/api/generate', async (req, res) => {
         let parsedData = null;
         try {
           parsedData = JSON.parse(cleaned);
-        } catch (_) {}
+        } catch (_) {
+          const firstBrace = cleaned.indexOf('{');
+          const lastBrace = cleaned.lastIndexOf('}');
+          if (firstBrace !== -1 && lastBrace > firstBrace) {
+            try { parsedData = JSON.parse(cleaned.slice(firstBrace, lastBrace + 1)); } catch (e) {}
+          }
+        }
 
         return res.json({
           success: true,

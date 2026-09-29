@@ -4531,50 +4531,124 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
 }`;
   }
 
+  function extractCandidateText(candidate) {
+    if (!candidate || !candidate.content || !Array.isArray(candidate.content.parts)) return '';
+    const parts = candidate.content.parts;
+    const nonThoughtParts = parts.filter(p => !p.thought && typeof p.text === 'string');
+    if (nonThoughtParts.length > 0) {
+      return nonThoughtParts.map(p => p.text).join('');
+    }
+    const lastPart = parts[parts.length - 1];
+    return (lastPart && typeof lastPart.text === 'string') ? lastPart.text : '';
+  }
+
+  function parseAiJsonResponse(rawText) {
+    if (!rawText || typeof rawText !== 'string') return null;
+    const clean = rawText
+      .replace(/^```json\s*/i, '')
+      .replace(/^```\s*/i, '')
+      .replace(/```\s*$/i, '')
+      .trim();
+    try {
+      return JSON.parse(clean);
+    } catch (_) {
+      const firstBrace = clean.indexOf('{');
+      const lastBrace = clean.lastIndexOf('}');
+      if (firstBrace !== -1 && lastBrace > firstBrace) {
+        try {
+          return JSON.parse(clean.slice(firstBrace, lastBrace + 1));
+        } catch (err2) {
+          console.warn("[WishCraft JSON extraction fallback failed]:", err2.message);
+        }
+      }
+      return null;
+    }
+  }
+
   async function callGemini(systemPrompt, userContent, userData = {}) {
     const keySource = localStorage.getItem('wishcraft_key_source') || 'custom';
     const customKey = localStorage.getItem('wishcraft_custom_api_key');
     let aiWishData = null;
+    let lastGoogleError = null;
+
+    const isEditMode = Boolean(systemPrompt && userContent);
 
     // Use WishCraftAiEngine to generate high-precision prompt and structured intake
-    const sysPrompt = (window.WishCraftAiEngine && typeof window.WishCraftAiEngine.getSystemPrompt === 'function')
-      ? window.WishCraftAiEngine.getSystemPrompt(userData)
-      : systemPrompt;
+    const sysPrompt = isEditMode
+      ? systemPrompt
+      : ((window.WishCraftAiEngine && typeof window.WishCraftAiEngine.getSystemPrompt === 'function')
+          ? window.WishCraftAiEngine.getSystemPrompt(userData)
+          : systemPrompt);
     
-    const intakePrompt = (window.WishCraftAiEngine && typeof window.WishCraftAiEngine.buildIntakeMessage === 'function')
-      ? window.WishCraftAiEngine.buildIntakeMessage(userData)
-      : userContent;
+    const intakePrompt = isEditMode
+      ? userContent
+      : ((window.WishCraftAiEngine && typeof window.WishCraftAiEngine.buildIntakeMessage === 'function')
+          ? window.WishCraftAiEngine.buildIntakeMessage(userData)
+          : userContent);
 
-    // If user provided their own key and selected custom key mode, call Gemini directly from browser
-    if (keySource !== 'web' && customKey && customKey.trim()) {
+    // If user provided their own key, call Gemini directly from browser with highest priority
+    if (customKey && customKey.trim()) {
+      const trimmedKey = customKey.trim();
       const models = ['gemini-2.5-flash', 'gemini-2.5-flash-lite', 'gemini-2.0-flash', 'gemini-1.5-flash'];
       for (const m of models) {
         try {
-          const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${m}:generateContent?key=${encodeURIComponent(customKey.trim())}`, {
+          const reqBody = {
+            systemInstruction: sysPrompt ? { parts: [{ text: sysPrompt }] } : undefined,
+            contents: [{ role: 'user', parts: [{ text: intakePrompt }] }]
+          };
+          if (!isEditMode) {
+            reqBody.generationConfig = {
+              responseMimeType: 'application/json',
+              temperature: 0.7
+            };
+          }
+
+          const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${m}:generateContent?key=${encodeURIComponent(trimmedKey)}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              system_instruction: sysPrompt ? { parts: [{ text: sysPrompt }] } : undefined,
-              contents: [{ role: 'user', parts: [{ text: intakePrompt }] }],
-              generationConfig: {
-                responseMimeType: 'application/json',
-                temperature: 0.7
-              }
-            })
+            body: JSON.stringify(reqBody)
           });
 
           const resText = await res.text();
           if (res.ok) {
             const data = JSON.parse(resText);
-            const rawText = data.candidates?.[0]?.content?.parts?.[0]?.text;
+            const candidate = data.candidates?.[0];
+            const rawText = extractCandidateText(candidate);
             if (rawText) {
-              const cleaned = rawText.replace(/^\`\`\`json\s*/i, "").replace(/^\`\`\`\s*/i, "").replace(/\`\`\`\s*$/i, "").trim();
-              aiWishData = JSON.parse(cleaned);
-              break;
+              if (isEditMode) {
+                return rawText.replace(/^```html\s*/i, '').replace(/```\s*$/i, '').trim();
+              }
+              const parsed = parseAiJsonResponse(rawText);
+              if (parsed && Array.isArray(parsed.chapters) && parsed.chapters.length > 0) {
+                aiWishData = parsed;
+                console.info(`[WishCraft AI] Successfully synthesized bespoke wish via ${m}`);
+                break;
+              }
             }
+          } else {
+            try {
+              const errObj = JSON.parse(resText);
+              lastGoogleError = errObj.error?.message || `HTTP ${res.status}`;
+            } catch (_) {
+              lastGoogleError = `HTTP ${res.status}: ${resText.slice(0, 120)}`;
+            }
+            console.warn(`[Custom Key] Model ${m} returned error:`, lastGoogleError);
           }
         } catch (e) {
+          lastGoogleError = e.message;
           console.warn(`[Custom Key] Model ${m} failed:`, e.message);
+        }
+      }
+
+      if (!aiWishData && !isEditMode && lastGoogleError) {
+        console.error(`[WishCraft API Error] Google Gemini API error: ${lastGoogleError}`);
+        if (typeof window.appModal === 'function') {
+          setTimeout(() => {
+            window.appModal({
+              title: "Gemini API Key Notice",
+              msg: `Google API returned an error:\n\n"${lastGoogleError}"\n\nPlease verify your API key at aistudio.google.com.\nWishCraft loaded a high-fidelity template in the meantime.`
+            });
+          }, 350);
         }
       }
     } else {
@@ -4593,13 +4667,12 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
             if (parsed.data && typeof parsed.data === 'object') {
               aiWishData = parsed.data;
             } else if (parsed.raw) {
-              aiWishData = JSON.parse(parsed.raw);
+              aiWishData = parseAiJsonResponse(parsed.raw);
             } else if (typeof parsed === 'object') {
               aiWishData = parsed;
             }
           } catch (_) {
-            const cleaned = raw.replace(/^\`\`\`json\s*/i, "").replace(/^\`\`\`\s*/i, "").replace(/\`\`\`\s*$/i, "").trim();
-            aiWishData = JSON.parse(cleaned);
+            aiWishData = parseAiJsonResponse(raw);
           }
         }
       } catch (err) {
@@ -4609,7 +4682,7 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
 
     // Validate structured wish data or deploy fallback
     if (!aiWishData || !Array.isArray(aiWishData.chapters) || aiWishData.chapters.length === 0) {
-      console.info("[WishCraft] Parsing raw or incomplete, generating bespoke multi-chapter architecture.");
+      console.info("[WishCraft] Generating bespoke multi-chapter architecture.");
       if (window.WishCraftAiEngine) {
         aiWishData = window.WishCraftAiEngine.getDefaultWishData(userData);
       }
@@ -5397,6 +5470,9 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
     if (modalApiKeyInput) {
       modalApiKeyInput.value = hasCustomKey ? key.trim() : '';
     }
+    if (userCustomKeyInput) {
+      userCustomKeyInput.value = hasCustomKey ? key.trim() : '';
+    }
 
     setKeyChoice(source);
   }
@@ -5458,8 +5534,36 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
     });
   }
 
+  if (modalApiKeyInput) {
+    modalApiKeyInput.addEventListener('input', () => {
+      if (modalApiKeyInput.value.trim()) {
+        setKeyChoice('custom');
+      }
+    });
+    modalApiKeyInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        if (saveApiKeyModalBtn) saveApiKeyModalBtn.click();
+      }
+    });
+  }
+
   if (saveApiKeyModalBtn) {
     saveApiKeyModalBtn.addEventListener('click', () => {
+      const key = modalApiKeyInput ? modalApiKeyInput.value.trim() : '';
+
+      // If user provided a key, save and apply it directly
+      if (key) {
+        localStorage.setItem('wishcraft_custom_api_key', key);
+        localStorage.setItem('wishcraft_key_source', 'custom');
+        activeKeyChoice = 'custom';
+        if (userCustomKeyInput) userCustomKeyInput.value = key;
+        updateApiKeyUIState();
+        window.closeApiKeyModal();
+        if (generateBtn) generateBtn.click();
+        return;
+      }
+
       if (activeKeyChoice === 'web') {
         localStorage.setItem('wishcraft_key_source', 'web');
         updateApiKeyUIState();
@@ -5467,17 +5571,8 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
         return;
       }
 
-      // Custom key selected
-      const key = modalApiKeyInput ? modalApiKeyInput.value.trim() : '';
-      if (!key) {
-        alert("Please enter a valid Gemini API key or select 'Web Key'.");
-        if (modalApiKeyInput) modalApiKeyInput.focus();
-        return;
-      }
-      localStorage.setItem('wishcraft_custom_api_key', key);
-      localStorage.setItem('wishcraft_key_source', 'custom');
-      updateApiKeyUIState();
-      window.closeApiKeyModal();
+      alert("Please enter a valid Gemini API key or select 'WishCraft Cloud Key'.");
+      if (modalApiKeyInput) modalApiKeyInput.focus();
     });
   }
 
@@ -5486,14 +5581,26 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
       localStorage.removeItem('wishcraft_custom_api_key');
       localStorage.setItem('wishcraft_key_source', 'web');
       if (modalApiKeyInput) modalApiKeyInput.value = '';
+      if (userCustomKeyInput) userCustomKeyInput.value = '';
+      activeKeyChoice = 'web';
       updateApiKeyUIState();
       window.closeApiKeyModal();
     });
   }
 
   if (toggleApiKeyBoxBtn) {
-    toggleApiKeyBoxBtn.addEventListener('click', () => {
+    toggleApiKeyBoxBtn.addEventListener('click', (e) => {
+      e.preventDefault();
       window.openApiKeyModal();
+    });
+  }
+
+  if (userCustomKeyInput) {
+    userCustomKeyInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        if (saveAndCraftBtn) saveAndCraftBtn.click();
+      }
     });
   }
 
@@ -5502,12 +5609,18 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
       const enteredKey = userCustomKeyInput.value.trim();
       if (!enteredKey) {
         alert("Please enter a valid Gemini API key.");
+        userCustomKeyInput.focus();
         return;
       }
       localStorage.setItem('wishcraft_custom_api_key', enteredKey);
+      localStorage.setItem('wishcraft_key_source', 'custom');
+      activeKeyChoice = 'custom';
+      if (modalApiKeyInput) modalApiKeyInput.value = enteredKey;
       updateApiKeyUIState();
+      if (customApiKeyBox) customApiKeyBox.style.display = 'none';
+      if (typeof window.closeApiKeyModal === 'function') window.closeApiKeyModal();
       // Trigger generation immediately
-      generateBtn.click();
+      if (generateBtn) generateBtn.click();
     });
   }
 
