@@ -719,6 +719,51 @@
     border: 1px solid rgba(255, 255, 255, 0.2);
     flex-shrink: 0;
   }
+  /* Archetype Layout Selector */
+  .ai-archetype-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 8px;
+    margin-top: 6px;
+  }
+  .ai-archetype-card {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    cursor: pointer;
+    transition: all 0.18s ease;
+  }
+  .ai-archetype-card:hover {
+    border-color: rgba(212, 175, 106, 0.35);
+    background: rgba(255, 255, 255, 0.05);
+  }
+  .ai-archetype-card.selected {
+    border-color: var(--gold);
+    background: rgba(212, 175, 106, 0.12);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+  }
+  .ai-arch-icon {
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+  .ai-arch-name {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--cream);
+  }
+  .ai-archetype-card.selected .ai-arch-name {
+    color: var(--gold-light, #fce698);
+  }
+  .ai-arch-desc {
+    font-size: 10px;
+    color: var(--cream-dim);
+    margin-top: 2px;
+    line-height: 1.3;
+  }
   @media (max-width: 640px){
     .rail{ padding:18px 14px; gap:16px; }
     .stage{ padding:14px 10px 32px; }
@@ -3047,8 +3092,15 @@
         </div>
 
         <div class="field-group">
-          <label class="field-label">Vault Secret / Passcode (Optional)</label>
+          <label class="field-label">Vault Secret Passcode (Optional)</label>
           <input type="text" id="passcode" placeholder="e.g. 2026 or secret word">
+          <div class="field-hint">The receiver must enter this code on the interactive digital vault keypad to decrypt the confidential chapter.</div>
+        </div>
+
+        <div class="field-group">
+          <label class="field-label">Vault Mystery Clue (Optional — Never exposes the actual passcode)</label>
+          <input type="text" id="passcodeHint" placeholder="e.g. The year we first met">
+          <div class="field-hint">Shown as a clue to the receiver. The real passcode is never revealed to them!</div>
         </div>
 
         <div class="field-group">
@@ -3172,14 +3224,15 @@
               </div>
               <div class="tmpl-field-row">
                 <div class="tmpl-input-group">
-                  <label>Passcode</label>
+                  <label>Secret Passcode</label>
                   <input type="text" id="aiChapPasscode" placeholder="e.g. 2026">
                 </div>
                 <div class="tmpl-input-group">
-                  <label>Passcode Hint (Code is visible in hint)</label>
-                  <input type="text" id="aiChapPasscodeHint" placeholder="e.g. Key: 2026">
+                  <label>Vault Mystery Clue (Code is NOT revealed to receiver)</label>
+                  <input type="text" id="aiChapPasscodeHint" placeholder="e.g. A memorable milestone year">
                 </div>
               </div>
+              <div class="field-hint" style="margin-top:-4px; margin-bottom:4px; font-size:11px;">The receiver will enter this code on the interactive vault keypad to decrypt the secret note.</div>
             </div>
 
             <!-- Multi-paragraph letter fields -->
@@ -3235,6 +3288,47 @@
             </div>
 
             <div class="tmpl-input-group">
+              <label>Experience Layout & Atmosphere (Choose Template Style)</label>
+              <div class="ai-archetype-grid" id="aiArchetypeGrid">
+                <div class="ai-archetype-card selected" data-archetype="birthday">
+                  <span class="ai-arch-icon">👑</span>
+                  <div class="ai-arch-details">
+                    <div class="ai-arch-name">Celebratory Birthday Gala</div>
+                    <div class="ai-arch-desc">Festive candles, confetti cannon & birthday crown</div>
+                  </div>
+                </div>
+                <div class="ai-archetype-card" data-archetype="truce">
+                  <span class="ai-arch-icon">🕊️</span>
+                  <div class="ai-arch-details">
+                    <div class="ai-arch-name">Golden Truce Peace Treaty</div>
+                    <div class="ai-arch-desc">Diplomatic treaty, sincere clauses, peace seal</div>
+                  </div>
+                </div>
+                <div class="ai-archetype-card" data-archetype="romance">
+                  <span class="ai-arch-icon">💎</span>
+                  <div class="ai-arch-details">
+                    <div class="ai-arch-name">Velvet Romantic Sanctuary</div>
+                    <div class="ai-arch-desc">Floating hearts, love vows, forever lock</div>
+                  </div>
+                </div>
+                <div class="ai-archetype-card" data-archetype="obsidian">
+                  <span class="ai-arch-icon">🌌</span>
+                  <div class="ai-arch-details">
+                    <div class="ai-arch-name">Cyberpunk Obsidian Vault</div>
+                    <div class="ai-arch-desc">AES-256 telemetry, neon HUD, cipher keypad</div>
+                  </div>
+                </div>
+                <div class="ai-archetype-card" data-archetype="classic">
+                  <span class="ai-arch-icon">✨</span>
+                  <div class="ai-arch-details">
+                    <div class="ai-arch-name">Royal Velvet Classical Luxury</div>
+                    <div class="ai-arch-desc">Classical serif, gold dividers, starry stardust</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="tmpl-input-group" style="margin-top: 14px;">
               <label>Active Luxury Palette</label>
               <div class="ai-palette-grid" id="aiPaletteGrid">
                 <div class="ai-palette-card selected" data-theme="royal-velvet">
@@ -4590,7 +4684,7 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
       tone: selectedTone || "Romantic & Cinematic",
       themeName: selectedTheme || "royal-velvet",
       passcode: document.getElementById('passcode').value.trim() || "2026",
-      passcodeHint: "Secret Passcode: " + (document.getElementById('passcode').value.trim() || "2026"),
+      passcodeHint: document.getElementById('passcodeHint')?.value?.trim() || "A memorable number or secret key known to us",
       countdownTarget: countdownTarget,
       aspirations: document.getElementById('aspirations').value.trim() || "",
       userMessage: document.getElementById('messageText').value.trim() || "",
@@ -4973,9 +5067,29 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
       card.classList.toggle('selected', card.getAttribute('data-theme') === activeTheme);
     });
 
+    // Highlight active archetype
+    const activeArchetype = window.currentAiWishData.archetype || 'classic';
+    document.querySelectorAll('#aiArchetypeGrid .ai-archetype-card').forEach(card => {
+      card.classList.toggle('selected', card.getAttribute('data-archetype') === activeArchetype);
+    });
+
     window.renderAiChapterList();
     window.renderAiActiveChapterEditor();
   };
+
+  // Archetype Layout Selection Listener
+  document.querySelectorAll('#aiArchetypeGrid .ai-archetype-card').forEach(card => {
+    card.addEventListener('click', () => {
+      const archKey = card.getAttribute('data-archetype');
+      if (!archKey || !window.currentAiWishData) return;
+
+      document.querySelectorAll('#aiArchetypeGrid .ai-archetype-card').forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+
+      window.currentAiWishData.archetype = archKey;
+      window.recompileAiWishPreview();
+    });
+  });
 
   // Luxury Palette Selection
   document.querySelectorAll('#aiPaletteGrid .ai-palette-card').forEach(card => {
