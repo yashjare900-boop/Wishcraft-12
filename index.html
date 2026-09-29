@@ -837,7 +837,7 @@
   #chromeLabel{ font-weight:600; letter-spacing:0.08em; color:var(--gold); text-transform:uppercase; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:180px; }
 
   /* Device Ratio Toggle Pills */
-  .device-toggle-pills {
+  .device-toggle-pills, .device-toggle {
     display: inline-flex;
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid var(--line);
@@ -846,7 +846,7 @@
     gap: 3px;
     flex-shrink: 0;
   }
-  .dev-btn {
+  .dev-btn, .device-btn {
     border: none;
     background: transparent;
     color: var(--cream-dim);
@@ -862,17 +862,17 @@
     user-select: none;
     white-space: nowrap;
   }
-  .dev-btn svg { opacity: 0.75; transition: opacity 0.18s ease; flex-shrink: 0; }
-  .dev-btn:hover { color: #fff; }
-  .dev-btn:hover svg { opacity: 1; }
-  .dev-btn.active {
+  .dev-btn svg, .device-btn svg { opacity: 0.75; transition: opacity 0.18s ease; flex-shrink: 0; }
+  .dev-btn:hover, .device-btn:hover { color: #fff; }
+  .dev-btn:hover svg, .device-btn:hover svg { opacity: 1; }
+  .dev-btn.active, .device-btn.active {
     background: var(--panel-2);
     color: var(--gold);
     font-weight: 600;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
     border: 1px solid rgba(212, 175, 106, 0.25);
   }
-  .dev-btn.active svg { opacity: 1; stroke: var(--gold); }
+  .dev-btn.active svg, .device-btn.active svg { opacity: 1; stroke: var(--gold); }
 
   .stage-actions{ display:flex; gap:8px; align-items:center; flex-shrink:0; }
   .stage-actions button{ display:inline-flex; align-items:center; gap:5px; background:none; border:1px solid var(--line); color:var(--cream-dim); border-radius:7px; padding:5px 11px; font-size:11.5px; cursor:pointer; font-family:var(--sans); transition: all 0.15s ease; white-space:nowrap; }
@@ -3061,9 +3061,15 @@
       </div>
 
       <div class="tmpl-studio-center">
-        <div class="device-toggle" style="margin: 0;">
-          <button type="button" class="device-btn active" id="tmplDevBtnDesktop" title="Desktop Preview (1280x800)">🖥️ Desktop</button>
-          <button type="button" class="device-btn" id="tmplDevBtnMobile" title="Phone Preview (390x844)">📱 Phone</button>
+        <div class="device-toggle-pills" id="tmplDeviceTogglePills" style="margin: 0;">
+          <button type="button" class="dev-btn active" id="tmplDevBtnDesktop" title="Full Desktop Ratio (1280×800 Native)">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+            <span>Desktop</span><span class="pill-res"> (1280×800)</span>
+          </button>
+          <button type="button" class="dev-btn" id="tmplDevBtnMobile" title="Mobile Phone Ratio (390×844 Smartphone Ratio)">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="3"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+            <span>Phone</span><span class="pill-res"> (390×844)</span>
+          </button>
         </div>
       </div>
 
@@ -5943,6 +5949,10 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
       startDate: '2011-07-12T00:00:00',
       passcode: '120711',
       hint: 'Day of Birth (DDMMYY) — 120711',
+      letter1: 'On this momentous milestone, I wanted to craft an archive as extraordinary, resilient, and brilliant as your spirit.',
+      letter2: 'May the year ahead open doors to breathtaking achievements, unforgettable adventures, and boundless happiness.',
+      letter3: 'Stand proud of how far you have come and step fearlessly into everything that awaits you.',
+      letter4: 'To someone truly exceptional—may your radiance continue to illuminate every path you walk.',
       sender: 'Forever Yours'
     },
     'obsidian-vault': {
@@ -5958,7 +5968,12 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
       wishMessage: 'Forever & Always',
       startDate: '2023-06-29T20:25:00',
       passcode: '290623',
-      hint: 'The date it all started'
+      hint: 'The date it all started',
+      letter1: 'I wanted to create something truly magical and permanent for you today. A simple message could never capture the depth of what you mean to me.',
+      letter2: 'From the very first day our paths crossed, my world shifted into warmer, brighter colors. Your laughter brings peace to the loudest days, and your kindness is a steady anchor.',
+      letter3: 'Every milestone we reach, every adventure we embark on, and every quiet moment in between is etched into my heart. With you, time feels both boundless and too short.',
+      letter4: 'Never forget how extraordinary, how deeply cherished, and how truly irreplaceable you are. May our journey continue to unfold with boundless love and wonder.',
+      sender: 'Forever Yours'
     },
     'royal-velvet': {
       templateId: 'royal-velvet',
@@ -5970,7 +5985,12 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
       quote: 'To the world you may be one person, but to me you make everything better.',
       heartQuote: 'Side by side or miles apart,\nwe are always connected by the heart.',
       heartTitle: 'The Reserved Chamber',
-      wishMessage: 'May Every Dream Flourish'
+      wishMessage: 'May Every Dream Flourish',
+      letter1: 'I wanted to create something truly magical and unforgettable for you today. A regular card could never capture how much you mean to everyone around you.',
+      letter2: 'From every quiet conversation to every milestone along the way, your presence brings warmth and inspiration to everything you touch. You have an extraordinary spirit that lifts everyone around you.',
+      letter3: 'Whether reaching for tomorrow\'s boldest dreams or celebrating today\'s simplest joys, know that you are held in the highest regard, always admired, supported, and loved.',
+      letter4: 'Never stop exploring. Never settle for the ordinary. May this year shower you with laughter, boundless success, and unforgettable moments.',
+      sender: 'Forever Yours'
     },
     'golden-hour': {
       title: 'Golden Hour // Timeless Romance',

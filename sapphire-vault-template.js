@@ -50,6 +50,10 @@
       finalePreTitle: "SPECIAL ARCHIVE",
       finaleSubTitle: "The Ultimate Celebration",
       finaleMainTitle: "HAPPY BIRTHDAY!",
+      letter1: "On this momentous milestone, I wanted to craft an archive as extraordinary, resilient, and brilliant as your spirit.",
+      letter2: "May the year ahead open doors to breathtaking achievements, unforgettable adventures, and boundless happiness.",
+      letter3: "Stand proud of how far you have come and step fearlessly into everything that awaits you.",
+      letter4: "To someone truly exceptional—may your radiance continue to illuminate every path you walk.",
       closingNote: "CRAFTED WITH IMMENSE LOVE // TO AN UNSTOPPABLE SOUL",
       photos: [],
       showWatermark: true
@@ -67,6 +71,11 @@
       if (custom.wishMessage && !custom.finaleMainTitle) c.finaleMainTitle = custom.wishMessage;
       if (custom.startDate && !custom.targetDateTime) c.targetDateTime = custom.startDate;
       if (custom.hint && !custom.passcodeHint) c.passcodeHint = custom.hint;
+      if (custom.sender) c.sender = custom.sender;
+      if (custom.letter1) c.letter1 = custom.letter1;
+      if (custom.letter2) c.letter2 = custom.letter2;
+      if (custom.letter3) c.letter3 = custom.letter3;
+      if (custom.letter4) c.letter4 = custom.letter4;
       if (Array.isArray(custom.photos) && custom.photos.length > 0) c.photos = custom.photos;
       else if (Array.isArray(custom.photoDataUrls) && custom.photoDataUrls.length > 0) c.photos = custom.photoDataUrls;
     }
@@ -1099,6 +1108,14 @@
                 <img src="${escapeHtml(p)}" alt="Memory" style="width:100%; height:100%; object-fit:cover; border-radius:8px; display:block;" onerror="this.parentElement.style.display='none'">
               </div>
             `).join('')}
+          </div>
+          ` : ''}
+          ${c.letter1 ? `
+          <div class="sapphire-letter-container" style="max-width:440px; margin:0 auto 20px; background:rgba(2,5,11,0.65); border:1px solid rgba(229,193,88,0.35); border-radius:14px; padding:18px 20px; text-align:left; box-shadow:0 10px 30px rgba(0,0,0,0.6);">
+            <p style="font-family:'Cinzel',serif; font-size:0.95rem; color:#fff; line-height:1.7; margin:0 0 10px;">${escapeHtml(c.letter1)}</p>
+            ${c.letter2 ? `<p style="font-family:'Cinzel',serif; font-size:0.95rem; color:#fff; line-height:1.7; margin:0 0 10px;">${escapeHtml(c.letter2)}</p>` : ''}
+            ${c.letter3 ? `<p style="font-family:'Cinzel',serif; font-size:0.95rem; color:#fff; line-height:1.7; margin:0 0 10px;">${escapeHtml(c.letter3)}</p>` : ''}
+            ${c.letter4 ? `<p style="font-family:'Cinzel',serif; font-size:0.95rem; color:#fff; line-height:1.7; margin:0;">${escapeHtml(c.letter4)}</p>` : ''}
           </div>
           ` : ''}
           <div class="closing-text">${escapeHtml(c.closingNote)}</div>
