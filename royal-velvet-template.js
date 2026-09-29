@@ -622,7 +622,7 @@
     <div class="blob blob-2"></div>
   </div>
 
-  <audio id="bgAudio" loop src="Blackmagic Resolve/freesound_community-heart-beat-6797.mp3"></audio>
+  <audio id="bgAudio" loop preload="none" src="https://assets.mixkit.co/music/preview/mixkit-serene-view-443.mp3"></audio>
   <div class="music-ctrl" id="musicToggle" title="Sound">🎵</div>
 
   <div class="chapter-hud" id="chapterHud">

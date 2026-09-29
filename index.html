@@ -2201,6 +2201,39 @@
     overflow: hidden;
     padding: 10px;
   }
+  .tmpl-studio-device-holder {
+    position: relative !important;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    transform-origin: top center;
+    flex-shrink: 0;
+    width: 1280px;
+    height: 800px;
+    border-radius: 14px;
+    background: #000;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 25px 80px rgba(0, 0, 0, 0.9);
+    overflow: hidden;
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease;
+  }
+  .tmpl-studio-device-holder.mode-mobile-holder {
+    width: 390px !important;
+    height: 844px !important;
+    border-radius: 46px !important;
+    border: 10px solid #1c1d22 !important;
+    box-shadow: 0 30px 85px rgba(0, 0, 0, 0.95), 0 0 0 1px rgba(255, 255, 255, 0.1), 0 0 0 11px #111216 !important;
+  }
+  .tmpl-studio-device-holder iframe#tmplStudioFrame {
+    width: 100% !important;
+    height: 100% !important;
+    border: none !important;
+    background: #000;
+    display: block !important;
+  }
+  .tmpl-studio-device-holder.mode-mobile-holder iframe#tmplStudioFrame {
+    border-radius: 36px !important;
+  }
   @media (max-height: 850px) {
     .tmpl-studio-viewport-wrap {
       height: 480px;
@@ -3043,9 +3076,9 @@
     <!-- Live Preview Section (Strictly on Top) -->
     <div class="tmpl-studio-preview-section">
       <div class="tmpl-studio-viewport-wrap" id="tmplStudioViewportWrap">
-        <div class="preview-device-holder" id="tmplStudioDeviceHolder" style="width: 1280px; height: 800px; transform-origin: top center; transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);">
+        <div class="tmpl-studio-device-holder mode-desktop-holder" id="tmplStudioDeviceHolder">
           <div class="phone-dynamic-island" id="tmplStudioDynamicIsland" style="display:none;"></div>
-          <iframe id="tmplStudioFrame" title="Template live interactive preview" sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals"></iframe>
+          <iframe id="tmplStudioFrame" title="Template live interactive preview" sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals allow-downloads"></iframe>
           <div class="phone-bottom-bar" id="tmplStudioBottomBar" style="display:none;"></div>
         </div>
       </div>
@@ -6188,19 +6221,23 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
     const wrap = document.getElementById('tmplStudioViewportWrap');
     if (!holder || !wrap) return;
 
-    const isMobile = holder.classList.contains('mobile-view');
+    const isMobile = holder.classList.contains('mode-mobile-holder') || holder.classList.contains('mobile-view');
     const targetW = isMobile ? 390 : 1280;
     const targetH = isMobile ? 844 : 800;
 
-    holder.style.width = targetW + 'px';
-    holder.style.height = targetH + 'px';
+    const rect = wrap.getBoundingClientRect();
+    const wrapW = rect.width || wrap.clientWidth || 900;
+    const wrapH = rect.height || wrap.clientHeight || 520;
 
-    const availW = wrap.clientWidth - 16;
-    const availH = wrap.clientHeight - 16;
+    const availW = Math.max(wrapW - 16, 280);
+    const availH = Math.max(wrapH - 16, 320);
 
     const scaleW = availW / targetW;
     const scaleH = availH / targetH;
-    const scale = Math.min(scaleW, scaleH, 1);
+    let scale = Math.min(scaleW, scaleH);
+    if (!scale || isNaN(scale) || scale <= 0.05) {
+      scale = isMobile ? 0.48 : 0.62;
+    }
 
     holder.style.transform = `scale(${scale})`;
   };
@@ -6218,7 +6255,9 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
     tmplDevDesktop.addEventListener('click', () => {
       tmplDevDesktop.classList.add('active');
       tmplDevMobile.classList.remove('active');
+      tmplHolder.classList.remove('mode-mobile-holder');
       tmplHolder.classList.remove('mobile-view');
+      tmplHolder.classList.add('mode-desktop-holder');
       if (tmplIsland) tmplIsland.style.display = 'none';
       if (tmplBottomBar) tmplBottomBar.style.display = 'none';
       window.updateTmplStudioScale();
@@ -6227,6 +6266,8 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
     tmplDevMobile.addEventListener('click', () => {
       tmplDevMobile.classList.add('active');
       tmplDevDesktop.classList.remove('active');
+      tmplHolder.classList.remove('mode-desktop-holder');
+      tmplHolder.classList.add('mode-mobile-holder');
       tmplHolder.classList.add('mobile-view');
       if (tmplIsland) tmplIsland.style.display = 'block';
       if (tmplBottomBar) tmplBottomBar.style.display = 'block';
@@ -6530,6 +6571,13 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
     // Close curated templates modal
     window.closeTemplatesModal();
 
+    // Ensure main app container is fully revealed and landing page hidden
+    const landingEl = document.getElementById('landingPage');
+    const mainAppEl = document.getElementById('main-app');
+    if (landingEl) landingEl.classList.add('hidden');
+    if (mainAppEl) mainAppEl.classList.remove('app-hidden');
+    document.body.style.overflow = "auto";
+
     // Hide hub and workshop
     if (hubEl) hubEl.classList.add('hidden');
     if (workshopEl) workshopEl.classList.remove('visible');
@@ -6547,10 +6595,17 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
     // Live render preview
     window.renderTemplateStudioLive();
 
-    // Proportional scaling for preview frame
+    // Proportional scaling for preview frame with multiple passes to handle CSS transitions & layout calculation
+    window.updateTmplStudioScale();
+    requestAnimationFrame(() => {
+      window.updateTmplStudioScale();
+    });
     setTimeout(() => {
       window.updateTmplStudioScale();
-    }, 50);
+    }, 80);
+    setTimeout(() => {
+      window.updateTmplStudioScale();
+    }, 250);
 
     // Scroll positioning
     if (autoScrollDown) {
