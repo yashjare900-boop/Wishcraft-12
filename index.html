@@ -4572,13 +4572,12 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
     if (cachedModelList && cachedKey === apiKey) {
       return cachedModelList;
     }
+    // High-availability priority: gemini-3.5-flash-lite is fastest and avoids 404/503 spikes
     const defaultPriority = [
-      'gemini-2.5-flash',
-      'gemini-2.5-flash-lite',
+      'gemini-3.5-flash-lite',
       'gemini-3.8-flash',
       'gemini-3.7-flash',
-      'gemini-3.5-flash-lite',
-      'gemini-2.0-flash'
+      'gemini-2.5-flash'
     ];
 
     try {
@@ -4658,7 +4657,7 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
       }
 
       if (models.length === 0 && !lastGoogleError) {
-        models = ['gemini-2.5-flash', 'gemini-2.5-flash-lite', 'gemini-3.8-flash', 'gemini-2.0-flash'];
+        models = ['gemini-3.5-flash-lite', 'gemini-3.8-flash', 'gemini-3.7-flash', 'gemini-2.5-flash'];
       }
 
       for (const m of models) {
@@ -4692,6 +4691,8 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
               const parsed = parseAiJsonResponse(rawText);
               if (parsed && Array.isArray(parsed.chapters) && parsed.chapters.length > 0) {
                 aiWishData = parsed;
+                window.lastGeneratedWithAi = true;
+                window.lastAiModelUsed = m;
                 console.info(`[WishCraft AI] Successfully synthesized bespoke wish via ${m}`);
                 break;
               }
@@ -4757,6 +4758,17 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
       if (window.WishCraftAiEngine) {
         aiWishData = window.WishCraftAiEngine.getDefaultWishData(userData);
       }
+    } else {
+      // Merge user data to guarantee correct recipient, sender and passcode
+      aiWishData.recipientName = aiWishData.recipientName || userData.recipientName;
+      aiWishData.senderName = aiWishData.senderName || userData.senderName;
+      aiWishData.passcode = userData.passcode || aiWishData.passcode || '2026';
+      aiWishData.passcodeHint = userData.passcodeHint || aiWishData.passcodeHint;
+      aiWishData.occasion = userData.occasion || aiWishData.occasion;
+      if (userData.themeName && userData.themeName !== 'royal-velvet') {
+        aiWishData.theme = userData.themeName;
+      }
+      console.log("%c✦ [WishCraft Live AI Keepsake Output]", "color:#FFD700; font-size:13px; font-weight:bold;", aiWishData);
     }
 
     window.currentAiWishData = aiWishData;
@@ -4844,7 +4856,11 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
       
       editBlock.classList.add('visible');
       if (stageActions) stageActions.style.visibility = 'visible';
-      if (chromeLabel) chromeLabel.textContent = 'live preview';
+      if (chromeLabel) {
+        chromeLabel.textContent = window.lastGeneratedWithAi
+          ? `✦ AI-Crafted via ${window.lastAiModelUsed || 'Gemini'}`
+          : 'live preview';
+      }
       if (step1) step1.classList.remove('active');
       if (step2) step2.classList.add('active');
 
@@ -4856,6 +4872,7 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
         if (window.WishCraftAiEngine) {
           const fallbackData = window.WishCraftAiEngine.getDefaultWishData(userData);
           window.currentAiWishData = fallbackData;
+          window.lastGeneratedWithAi = false;
           const isPro = typeof window.isUserProTier === 'function' && window.isUserProTier();
           const fallbackHtml = window.WishCraftAiEngine.compileMultiPageWish(fallbackData, {
             isPro: isPro,
@@ -4872,7 +4889,7 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
 
           editBlock.classList.add('visible');
           if (stageActions) stageActions.style.visibility = 'visible';
-          if (chromeLabel) chromeLabel.textContent = 'live preview';
+          if (chromeLabel) chromeLabel.textContent = 'live preview (sample template)';
           if (step1) step1.classList.remove('active');
           if (step2) step2.classList.add('active');
 
