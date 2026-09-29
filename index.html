@@ -88,10 +88,11 @@
 <!-- QR Code Library for Native Sharing -->
 <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
 
-<!-- Royal Velvet Flagship Curated Template Engine (Protected Module) -->
+<!-- Flagship Curated Template Engines (Protected Modules) -->
 <script src="royal-velvet-template.js"></script>
 <script src="obsidian-vault-template.js"></script>
 <script src="sapphire-vault-template.js"></script>
+<script src="golden-truce-template.js"></script>
 <!-- WishCraft Template Injection Engine -->
 <script src="templates/registry.js"></script>
 
@@ -725,7 +726,7 @@
   /* Manual Engine Pills */
   .manual-engine-pills {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
     gap: 6px;
   }
   .engine-pill {
@@ -2613,6 +2614,9 @@
             <button type="button" class="engine-pill" data-engine="obsidian-vault" id="manPillObsidian">
               🌌 Obsidian Gold
             </button>
+            <button type="button" class="engine-pill" data-engine="golden-truce" id="manPillGoldenTruce">
+              🕊️ Golden Truce
+            </button>
           </div>
         </div>
 
@@ -3025,6 +3029,37 @@
                 <button class="tmpl-btn-primary tmpl-customize-action" data-tmpl="sapphire-vault">✦ Customize & Launch</button>
               </div>
             </div>
+
+            <!-- Golden Truce Masterpiece Card (Curated Masterpiece Template Edition 04) -->
+            <div class="tmpl-card" data-categories="all apology forgiveness love romance bestfriend sister just-because heartfelt reconciliation" data-tmpl-id="golden-truce" data-title="Golden Truce // The Confession Vault" data-desc="A cinematic 4-chapter Golden Obsidian & Stardust sanctuary featuring an interactive scratch confession pad, dynamic water ripple pond, golden leaves shower, and a heart-to-heart Hold to Forgive reconciliation vault.">
+              <div class="tmpl-preview-box" style="display:flex; align-items:center; justify-content:center; background: radial-gradient(circle at center, #1c180a 0%, #070604 100%);">
+                <div style="text-align:center; padding: 20px;">
+                  <div style="font-size: 10px; letter-spacing: 4px; color: #E5C158; text-transform:uppercase; margin-bottom: 8px;">EDITION 04 // GOLDEN TRUCE</div>
+                  <div style="font-family:'Playfair Display',serif; font-size: 24px; font-style:italic; font-weight:700; color: #fff; line-height: 1.15;">
+                    The<br><span style="background:linear-gradient(to right,#F5DCA8,#D4AF37); -webkit-background-clip:text; -webkit-text-fill-color:transparent;">Truce.</span>
+                  </div>
+                  <div style="width: 32px; height: 2px; background: #D4AF37; margin: 10px auto; opacity: 0.8;"></div>
+                  <div style="font-size: 10px; letter-spacing: 2px; color: rgba(255,255,255,0.7); text-transform:uppercase;">Confession & Peace</div>
+                </div>
+                <div class="tmpl-preview-badge" style="background: rgba(212,175,55,0.22); border-color: rgba(212,175,55,0.5); color: #F5DCA8;">🕊️ Apology Flagship</div>
+              </div>
+              <div class="tmpl-info">
+                <h4>Golden Truce // The Confession Vault</h4>
+                <p>A cinematic 4-chapter Golden Obsidian & Stardust sanctuary featuring an interactive scratch confession pad, dynamic water ripple pond, golden leaves shower, and a heart-to-heart Hold to Forgive reconciliation vault.</p>
+                <div class="tmpl-tags">
+                  <span class="tmpl-tag">4 Chapters</span>
+                  <span class="tmpl-tag">Scratch Confession</span>
+                  <span class="tmpl-tag">Interactive Ripple Pond</span>
+                  <span class="tmpl-tag">Hold to Forgive</span>
+                  <span class="tmpl-tag">Golden Leaves Rain</span>
+                  <span class="tmpl-tag">Web Audio FX</span>
+                </div>
+              </div>
+              <div class="tmpl-actions">
+                <button class="tmpl-btn-ghost tmpl-preview-action" data-tmpl="golden-truce">👁️ Quick Preview</button>
+                <button class="tmpl-btn-primary tmpl-customize-action" data-tmpl="golden-truce">✦ Customize & Launch</button>
+              </div>
+            </div>
           </div>
 
           <!-- Empty State (Shown when search/filter has 0 matches) -->
@@ -3117,9 +3152,9 @@
 
           <!-- GROUP 4: Ceremony & Vault Gate (Scenes 8 & 9) -->
           <div class="tmpl-sec-group">
-            <div class="tmpl-sec-title"><span>🔐</span> 4. Ceremony & Vault Gate (Scenes 8 & 9)</div>
+            <div class="tmpl-sec-title" id="tmplGroup4Title"><span>🔐</span> 4. Ceremony & Vault Gate (Scenes 8 & 9)</div>
             <div class="tmpl-input-group">
-              <label>Scene 8 Candle Wish Reveal Message</label>
+              <label id="tmplWishMessageLabel">Scene 8 Candle Wish Reveal Message</label>
               <input type="text" id="tmplWishMessage" value="May Every Dream Flourish">
             </div>
             
@@ -3148,7 +3183,7 @@
               <!-- Hidden synced input preserving full compatibility with existing code and export -->
               <input type="hidden" id="tmplStartDate" value="2011-07-12T00:00:00">
             </div>
-            <div class="tmpl-field-row">
+            <div class="tmpl-field-row" id="tmplPasscodeRow">
               <div class="tmpl-input-group">
                 <label id="tmplPasscodeLabel">Secret Vault Passcode</label>
                 <input type="text" id="tmplPasscode" value="2026" placeholder="e.g. 2026 or secret word">
@@ -3162,7 +3197,7 @@
 
           <!-- GROUP 5: The Vault Letter & Sign-off (Scene 10) -->
           <div class="tmpl-sec-group">
-            <div class="tmpl-sec-title"><span>📜</span> 5. The Vault Letter & Sign-off (Scene 10)</div>
+            <div class="tmpl-sec-title" id="tmplGroup5Title"><span>📜</span> 5. The Vault Letter & Sign-off (Scene 10)</div>
             <div class="tmpl-input-group">
               <label>Letter Paragraph 1</label>
               <textarea id="tmplLetter1" rows="2">I wanted to create something truly magical and unforgettable for you today. A regular card could never capture how much you mean to everyone around you.</textarea>
@@ -4191,7 +4226,9 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
     const occ = (userData?.occasion || selectedOccasion || 'birthday').toLowerCase();
     
     // Select flagship template matching occasion
-    if (occ.includes('birth') || occ.includes('bday')) {
+    if (occ.includes('apol') || occ.includes('sorr') || occ.includes('forgiv') || occ.includes('pardon') || occ.includes('reconcil') || occ.includes('truce')) {
+      window.manualActiveEngine = 'golden-truce';
+    } else if (occ.includes('birth') || occ.includes('bday')) {
       window.manualActiveEngine = 'sapphire-vault';
     } else if (occ.includes('anniv') || occ.includes('love') || occ.includes('roman') || occ.includes('wedding')) {
       window.manualActiveEngine = 'royal-velvet';
@@ -4283,7 +4320,34 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
 
     let html = '';
 
-    if (engine === 'sapphire-vault' && window.WishCraftTemplate_SapphireVault) {
+    if (engine === 'golden-truce' && window.WishCraftTemplate_GoldenTruce) {
+      html = window.WishCraftTemplate_GoldenTruce.build({
+        recipientName: recName,
+        senderName: sndName,
+        chapter1Subtitle: `Chapter 01 • For ${recName}`,
+        chapter1Title: headLine.includes('<br>') ? headLine : `Can We Clear The Air?<br>Here is <span>my sincere truth.</span>`,
+        chapter1Subtext: subTitle || `${recName}, would you please hear me out just for a moment? 🥺`,
+        chapter2Subtitle: "Chapter 02 • Confession",
+        chapter2Title: "My Confession",
+        confessionHeading: scrHeading || "I am so genuinely sorry.",
+        confessionMessage: scrNote,
+        clause1Title: "Clause 01: Sincere Apology",
+        clause1Text: let1 ? `No excuses, no defenses—<span>${let1.slice(0, 95)}</span>` : "No excuses, no defenses—just an honest promise to <span>always communicate with kindness.</span>",
+        clause2Title: "Clause 02: Pure Intentions",
+        clause2Text: let2 ? `<span>${let2.slice(0, 95)}</span>` : "My words may have stumbled, but my heart has only <span>respect and warmth for you.</span>",
+        clause3Title: "Clause 03: Mutual Harmony",
+        clause3Text: let3 ? `<span>${let3.slice(0, 95)}</span>` : "Clear, open conversations from here on out—<span>no more misunderstandings.</span>",
+        clause4Title: "Clause 04: True Empathy",
+        clause4Text: "I should have paused and considered how you felt, <span>before speaking.</span>",
+        clause5Title: "Clause 05: The Truce",
+        clause5Text: "From the bottom of my heart, I am truly sorry.<br>Can we <span>make things right?</span> ❤️",
+        finalPromise: clsNote || `I promise to always protect our bond and never take your trust for granted.<br><br>Can we hit reset and start fresh? 🥺`,
+        successSubtitle: "Forever Grateful ✨",
+        successTitle: "Thank You.",
+        successMessage: `You are truly extraordinary and have the kindest heart in the world. Thank you for forgiving me. ❤️`,
+        showWatermark: showWatermark
+      });
+    } else if (engine === 'sapphire-vault' && window.WishCraftTemplate_SapphireVault) {
       html = window.WishCraftTemplate_SapphireVault.build({
         recipientName: recName,
         sender: sndName,
@@ -5501,9 +5565,38 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
     });
   }
 
-    // Curated Template Engine Bridge (Supports Royal Velvet, Obsidian Vault & Sapphire Protocol)
+    // Curated Template Engine Bridge (Supports Royal Velvet, Obsidian Vault, Sapphire Protocol & Golden Truce)
   window.buildCuratedTemplateHtml = function(custom) {
     const tmplId = (custom && custom.templateId) || window.currentActiveTmplId || 'royal-velvet';
+    if (tmplId === 'golden-truce' && window.WishCraftTemplate_GoldenTruce && typeof window.WishCraftTemplate_GoldenTruce.build === "function") {
+      const rec = (custom && custom.recipientName) || "Someone Special";
+      return window.WishCraftTemplate_GoldenTruce.build({
+        recipientName: rec,
+        senderName: (custom && (custom.sender || custom.senderName)) || "",
+        chapter1Subtitle: `Chapter 01 • For ${rec}`,
+        chapter1Title: (custom && custom.tagline && custom.tagline.includes('<br>')) ? custom.tagline : `Can We Clear The Air?<br>Here is <span>my sincere truth.</span>`,
+        chapter1Subtext: (custom && custom.quote) || `${rec}, would you please hear me out just for a moment? 🥺`,
+        chapter2Subtitle: "Chapter 02 • Confession",
+        chapter2Title: "My Confession",
+        confessionHeading: (custom && custom.heartTitle) || "I am so genuinely sorry.",
+        confessionMessage: (custom && (custom.heartQuote || custom.confessionMessage || custom.scratchNote)),
+        clause1Title: "Clause 01: Sincere Apology",
+        clause1Text: (custom && custom.letter1) ? `No excuses, no defenses—<span>${custom.letter1.slice(0, 95)}</span>` : "No excuses, no defenses—just an honest promise to <span>always communicate with kindness.</span>",
+        clause2Title: "Clause 02: Pure Intentions",
+        clause2Text: (custom && custom.letter2) ? `<span>${custom.letter2.slice(0, 95)}</span>` : "My words may have stumbled, but my heart has only <span>respect and warmth for you.</span>",
+        clause3Title: "Clause 03: Mutual Harmony",
+        clause3Text: (custom && custom.letter3) ? `<span>${custom.letter3.slice(0, 95)}</span>` : "Clear, open conversations from here on out—<span>no more misunderstandings.</span>",
+        clause4Title: "Clause 04: True Empathy",
+        clause4Text: "I should have paused and considered how you felt, <span>before speaking.</span>",
+        clause5Title: "Clause 05: The Truce",
+        clause5Text: "From the bottom of my heart, I am truly sorry.<br>Can we <span>make things right?</span> ❤️",
+        finalPromise: (custom && (custom.letter4 || custom.wishMessage)) || `I promise to always protect our bond and never take your trust for granted.<br><br>Can we hit reset and start fresh? 🥺`,
+        successSubtitle: "Forever Grateful ✨",
+        successTitle: "Thank You.",
+        successMessage: `You are truly extraordinary and have the kindest heart in the world. Thank you for forgiving me. ❤️`,
+        showWatermark: (custom && typeof custom.showWatermark === 'boolean') ? custom.showWatermark : true
+      });
+    }
     if (tmplId === 'sapphire-vault' && window.WishCraftTemplate_SapphireVault && typeof window.WishCraftTemplate_SapphireVault.build === "function") {
       return window.WishCraftTemplate_SapphireVault.build(custom);
     }
@@ -5609,6 +5702,23 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
 
   // Template Configurations for Dynamic Preview & Customization
   const curatedTemplatePresets = {
+    'golden-truce': {
+      templateId: 'golden-truce',
+      title: 'Golden Truce // The Confession Vault',
+      recipientName: 'Someone Special',
+      occasion: 'Sincere Apology & Truce',
+      tagline: 'Can We Clear The Air?<br>Here is <span>my sincere truth.</span>',
+      polaroidCaption: 'From The Heart',
+      quote: 'I value our bond far too much to let misunderstandings or thoughtless words linger between us.',
+      heartQuote: 'I am truly sorry for the misunderstanding and for hurting your feelings. It was never my intention to speak thoughtlessly or make you feel undervalued.\n\nYour presence and happiness mean the world to me. I promise to be more mindful, listen better, and always treat our bond with the gentleness it deserves. 🫂❤️',
+      heartTitle: 'To Someone Truly Cherished,',
+      wishMessage: 'Can We Hit Reset? 🥺',
+      letter1: 'No excuses, no defenses—just an honest promise to always communicate with kindness.',
+      letter2: 'My words may have stumbled, but my heart has only respect and warmth for you.',
+      letter3: 'Clear, open conversations from here on out—no more misunderstandings.',
+      letter4: 'I promise to always protect our bond and never take your trust for granted.',
+      sender: 'With Deep Sincerity'
+    },
     'sapphire-vault': {
       templateId: 'sapphire-vault',
       title: 'Sapphire Protocol // Luxury Birthday Vault',
@@ -5839,10 +5949,13 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
 
       const isObsidian = (tmplId === 'obsidian-vault');
       const isSapphire = (tmplId === 'sapphire-vault');
+      const isGoldenTruce = (tmplId === 'golden-truce');
 
       const subtitleEl = document.getElementById('tmplCustomizerSubtitle');
       if (subtitleEl) {
-        if (isSapphire) {
+        if (isGoldenTruce) {
+          subtitleEl.textContent = 'Customize all 4 chapters of this heartfelt apology sanctuary with scratch confession, ripple pond, and hold-to-forgive vault.';
+        } else if (isSapphire) {
           subtitleEl.textContent = 'Customize all 6 chapters of this luxury Midnight Sapphire & Champagne Gold interactive vault.';
         } else if (isObsidian) {
           subtitleEl.textContent = 'Every text across all 6 chapters is editable below. Leave defaults or write your own heartfelt words.';
@@ -5853,25 +5966,28 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
 
       // 1. Group 3 (Treats vs Vaults)
       const treatsGroup = document.getElementById('tmplTreatsGroup');
-      if (treatsGroup) treatsGroup.style.display = (isObsidian || isSapphire) ? 'none' : 'flex';
+      if (treatsGroup) treatsGroup.style.display = (isObsidian || isSapphire || isGoldenTruce) ? 'none' : 'flex';
 
       const g2Title = document.getElementById('tmplGroup2Title');
       if (g2Title) {
-        if (isSapphire) g2Title.innerHTML = '<span>📜</span> 2. Secured File & Scratch Note (Scene 4)';
+        if (isGoldenTruce) g2Title.innerHTML = '<span>📜</span> 2. Confession Salutation & Scratch Note (Chapter 02)';
+        else if (isSapphire) g2Title.innerHTML = '<span>📜</span> 2. Secured File & Scratch Note (Scene 4)';
         else if (isObsidian) g2Title.innerHTML = '<span>📜</span> 2. Secured File & Secret Note (Scene 3)';
         else g2Title.innerHTML = '<span>💖</span> 2. Chamber of Affection (Scenes 3 & 4)';
       }
 
       const hTitleLabel = document.getElementById('tmplHeartTitleLabel');
       if (hTitleLabel) {
-        if (isSapphire) hTitleLabel.textContent = 'Secured File Scratch Title';
+        if (isGoldenTruce) hTitleLabel.textContent = 'Chapter 2 Confession Heading';
+        else if (isSapphire) hTitleLabel.textContent = 'Secured File Scratch Title';
         else if (isObsidian) hTitleLabel.textContent = 'Secured File Secret Heading';
         else hTitleLabel.textContent = 'Scene 4 Chamber Title';
       }
 
       const hQuoteLabel = document.getElementById('tmplHeartQuoteLabel');
       if (hQuoteLabel) {
-        if (isSapphire) hQuoteLabel.textContent = 'Frosted Glass Scratch-Off Note';
+        if (isGoldenTruce) hQuoteLabel.textContent = 'Scratch Confession Note';
+        else if (isSapphire) hQuoteLabel.textContent = 'Frosted Glass Scratch-Off Note';
         else if (isObsidian) hQuoteLabel.textContent = 'Frosted Glass Wipe Reveal Note';
         else hQuoteLabel.textContent = 'Scene 4 Heart Chamber Quote';
       }
@@ -5904,6 +6020,28 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
       const passLabel = document.getElementById('tmplPasscodeLabel');
       const passInp = document.getElementById('tmplPasscode');
       const hintInp = document.getElementById('tmplHint');
+      const passRow = document.getElementById('tmplPasscodeRow');
+      if (passRow) passRow.style.display = isGoldenTruce ? 'none' : 'flex';
+
+      const g4Title = document.getElementById('tmplGroup4Title');
+      if (g4Title) {
+        if (isGoldenTruce) g4Title.innerHTML = '<span>🕊️</span> 4. The Reset & Final Question (Chapter 04)';
+        else if (isSapphire) g4Title.innerHTML = '<span>🔐</span> 4. Decryption Ceremony (Scenes 5 & 6)';
+        else if (isObsidian) g4Title.innerHTML = '<span>🔐</span> 4. Decryption Ceremony (Scenes 4 & 5)';
+        else g4Title.innerHTML = '<span>🔐</span> 4. Ceremony & Vault Gate (Scenes 8 & 9)';
+      }
+
+      const wishLabel = document.getElementById('tmplWishMessageLabel');
+      if (wishLabel) {
+        wishLabel.textContent = isGoldenTruce ? 'Chapter 4 Hold-To-Forgive Question / Subtext' : 'Scene 8 Candle Wish Reveal Message';
+      }
+
+      const g5Title = document.getElementById('tmplGroup5Title');
+      if (g5Title) {
+        if (isGoldenTruce) g5Title.innerHTML = '<span>📜</span> 5. Sincere Clauses & Final Promise (Chapters 03 & 04)';
+        else g5Title.innerHTML = '<span>📜</span> 5. The Vault Letter & Sign-off (Scene 10)';
+      }
+
       if (isObsidian || isSapphire) {
         if (passLabel) passLabel.textContent = '6-Digit Secret Passcode (Exactly 6 digits)';
         if (passInp) {
@@ -5929,17 +6067,25 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
         }
       }
 
-      // 4. Photo memories (Strictly 10 for Obsidian, Strictly 6 for Royal Velvet, 0 for Sapphire)
+      // 4. Photo memories (Strictly 10 for Obsidian, Strictly 6 for Royal Velvet, 0 for Sapphire & Golden Truce)
       const g6Title = document.getElementById('tmplGroup6Title');
-      if (isSapphire) {
-        if (g6Title) g6Title.innerHTML = '<span>🔒</span> 6. Cipher Protocol Architecture (Zero Photos Required)';
+      if (isSapphire || isGoldenTruce) {
+        if (g6Title) {
+          g6Title.innerHTML = isGoldenTruce
+            ? '<span>🕊️</span> 6. Sincere Truce Architecture (Zero Photos Required)'
+            : '<span>🔒</span> 6. Cipher Protocol Architecture (Zero Photos Required)';
+        }
         if (tmplPhotoSlotsGrid) tmplPhotoSlotsGrid.style.display = 'none';
         if (tmplPhotoStatusText) tmplPhotoStatusText.style.display = 'none';
         const batchBtn = document.getElementById('tmplBatchUploadLabelText');
         if (batchBtn && batchBtn.parentElement) batchBtn.parentElement.style.display = 'none';
         if (tmplClearAllPhotosBtn) tmplClearAllPhotosBtn.style.display = 'none';
         const limitNote = document.getElementById('tmplPhotoLimitNote');
-        if (limitNote) limitNote.innerHTML = '✨ <strong>Zero photos required</strong>: Sapphire Protocol is an interactive cipher encryption vault featuring biometric verification, scratch reveal, live birthday countdown, and 6-digit keypad decryption.';
+        if (limitNote) {
+          limitNote.innerHTML = isGoldenTruce
+            ? '✨ <strong>Zero photos required</strong>: Golden Truce is a pure emotional experience featuring an interactive scratch confession pad, dynamic water ripple pond, golden leaves shower, and hold-to-forgive reconciliation vault.'
+            : '✨ <strong>Zero photos required</strong>: Sapphire Protocol is an interactive cipher encryption vault featuring biometric verification, scratch reveal, live birthday countdown, and 6-digit keypad decryption.';
+        }
       } else {
         if (tmplPhotoSlotsGrid) tmplPhotoSlotsGrid.style.display = 'grid';
         if (tmplPhotoStatusText) tmplPhotoStatusText.style.display = 'block';

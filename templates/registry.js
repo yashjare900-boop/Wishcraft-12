@@ -40,6 +40,7 @@
     const c = String(cat).toLowerCase().trim();
     if (c.includes('birth') || c.includes('bday')) return 'birthday';
     if (c.includes('anniv') || c.includes('wedding')) return 'anniversary';
+    if (c.includes('apol') || c.includes('sorr') || c.includes('forgiv') || c.includes('pardon') || c.includes('reconcil') || c.includes('truce')) return 'apology';
     if (c.includes('roman') || c.includes('love') || c.includes('propos') || c.includes('crush')) return 'romantic';
     if (c.includes('fare') || c.includes('goodbye') || c.includes('retire') || c.includes('leave')) return 'farewell';
     if (c.includes('fun') || c.includes('humor') || c.includes('roast') || c.includes('joke')) return 'funny';
@@ -49,6 +50,22 @@
 
   // 4. Curated Flagship Fallback Copywriting (Instant offline reliability)
   const FALLBACK_COPY = {
+    apology: {
+      category: 'apology',
+      headline: "CAN WE CLEAR THE AIR?",
+      title: "A Sincere Truce & Apology 🕊️",
+      subtitle: "Here is my honest, vulnerable truth",
+      cover_subtitle: "A Sincere Message For",
+      intro_note: "I value our bond far too much to let misunderstandings or thoughtless words linger between us.",
+      scratch_heading: "To Someone Truly Cherished,",
+      scratch_note: "I am truly sorry for the misunderstanding and for hurting your feelings. It was never my intention to speak thoughtlessly or make you feel undervalued.\n\nYour presence and happiness mean the world to me. I promise to be more mindful, listen better, and always treat our bond with the gentleness it deserves. 🫂❤️",
+      letter_p1: "I know pride often gets in the way of what matters most, but with you, all I care about is being honest and making things right.",
+      letter_p2: "You have one of the purest, most generous hearts I know. Hurting your feelings weighs heavily on me, and I want to apologize without excuses.",
+      letter_p3: "I promise to communicate with transparency and respect, and to always cherish the trust you have placed in me.",
+      closing_note: "WITH DEEPEST SINCERITY // CAN WE HIT RESET?",
+      quote: "Forgiveness does not change the past, but it enlarges the future.",
+      theme_color: '#D4AF37'
+    },
     birthday: {
       category: 'birthday',
       headline: 'HAPPY BIRTHDAY!',
@@ -158,6 +175,8 @@
       category = 'birthday';
     } else if (userOccasion.includes('anniv') || userOccasion.includes('wedding')) {
       category = 'anniversary';
+    } else if (userOccasion.includes('apol') || userOccasion.includes('sorr') || userOccasion.includes('forgiv') || userOccasion.includes('pardon') || userOccasion.includes('reconcil') || userOccasion.includes('truce')) {
+      category = 'apology';
     } else if (userOccasion.includes('roman') || userOccasion.includes('love') || userOccasion.includes('propos') || userOccasion.includes('crush')) {
       category = 'romantic';
     } else if (userOccasion.includes('fare') || userOccasion.includes('goodbye') || userOccasion.includes('retire') || userOccasion.includes('leave')) {
@@ -266,7 +285,50 @@
       }
     }
 
-    // Case 2: Romantic / Anniversary -> Royal Velvet // Cinematic Premiere (Edition 01)
+    // Case 2: Apology / Forgiveness / Reconciliation -> Golden Truce // The Confession Vault (Edition 04)
+    if (category === 'apology') {
+      const truceEngine = (typeof window !== 'undefined' && window.WishCraftTemplate_GoldenTruce) ||
+                          (typeof globalThis !== 'undefined' && globalThis.WishCraftTemplate_GoldenTruce) ||
+                          global.WishCraftTemplate_GoldenTruce;
+
+      if (truceEngine && typeof truceEngine.build === 'function') {
+        const truceHtml = truceEngine.build({
+          recipientName: recipientName,
+          senderName: senderName,
+          chapter1Subtitle: `Chapter 01 • For ${recipientName}`,
+          chapter1Title: headline.includes('<br>') ? headline : `Can We Clear The Air?<br>Here is <span>my sincere truth.</span>`,
+          chapter1Subtext: subtitle || `${recipientName}, would you please hear me out just for a moment? 🥺`,
+          chapter2Subtitle: "Chapter 02 • Confession",
+          chapter2Title: "My Confession",
+          confessionHeading: scratchHeading || "I am so genuinely sorry.",
+          confessionMessage: scratchNote,
+          clause1Title: "Clause 01: Sincere Apology",
+          clause1Text: letter1 ? `No excuses, no defenses—<span>${letter1.slice(0, 95)}</span>` : "No excuses, no defenses—just an honest promise to <span>always communicate with kindness.</span>",
+          clause2Title: "Clause 02: Pure Intentions",
+          clause2Text: letter2 ? `<span>${letter2.slice(0, 95)}</span>` : "My words may have stumbled, but my heart has only <span>respect and warmth for you.</span>",
+          clause3Title: "Clause 03: Mutual Harmony",
+          clause3Text: letter3 ? `<span>${letter3.slice(0, 95)}</span>` : "Clear, open conversations from here on out—<span>no more misunderstandings.</span>",
+          clause4Title: "Clause 04: True Empathy",
+          clause4Text: "I should have paused and considered how you felt, <span>before speaking.</span>",
+          clause5Title: "Clause 05: The Truce",
+          clause5Text: "From the bottom of my heart, I am truly sorry.<br>Can we <span>make things right?</span> ❤️",
+          finalPromise: `I promise to always protect our bond and never take your trust for granted.<br><br>Can we hit reset and start fresh? 🥺`,
+          successSubtitle: "Forever Grateful ✨",
+          successTitle: "Thank You.",
+          successMessage: `You are truly extraordinary and have the kindest heart in the world. Thank you for forgiving me. ❤️`,
+          showWatermark: showWatermark
+        });
+
+        return {
+          html: truceHtml,
+          category: 'apology',
+          title: headline,
+          themeColor: themeColor || '#D4AF37'
+        };
+      }
+    }
+
+    // Case 3: Romantic / Anniversary -> Royal Velvet // Cinematic Premiere (Edition 01)
     if (category === 'anniversary' || category === 'romantic') {
       const royalEngine = (typeof window !== 'undefined' && window.WishCraftTemplate_RoyalVelvet) ||
                           (typeof globalThis !== 'undefined' && globalThis.WishCraftTemplate_RoyalVelvet) ||
