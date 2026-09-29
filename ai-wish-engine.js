@@ -837,28 +837,88 @@ Do NOT wrap the output in markdown fences like \`\`\`json. Output ONLY the raw J
           </div>
         `;
       } else {
-        // Finale (Tailored to Archetype)
+        // Finale (Tailored to Archetype with Bespoke Interactive Widgets)
+        let archetypeWidgetHtml = '';
+
+        if (archetype.id === 'birthday') {
+          archetypeWidgetHtml = `
+            <div class="wc-interactive-cake-stage" id="wcCakeStage" onclick="wcBlowCandles()">
+              <div class="wc-cake-candles">
+                <div class="wc-candle"><div class="wc-flame" id="wcFlame1"></div></div>
+                <div class="wc-candle center"><div class="wc-flame" id="wcFlame2"></div></div>
+                <div class="wc-candle"><div class="wc-flame" id="wcFlame3"></div></div>
+              </div>
+              <div class="wc-cake-icon">🎂</div>
+              <div class="wc-widget-prompt" id="wcCakePrompt">🎂 Tap the Cake to Blow Candles & Make a Wish! ✨</div>
+            </div>
+          `;
+        } else if (archetype.id === 'truce') {
+          archetypeWidgetHtml = `
+            <div class="wc-truce-hold-container">
+              <div class="wc-truce-seal-circle" id="wcTruceSealBtn" onmousedown="wcStartTruceHold()" onmouseup="wcEndTruceHold()" onmouseleave="wcEndTruceHold()" ontouchstart="wcStartTruceHold()" ontouchend="wcEndTruceHold()">
+                <svg class="wc-truce-ring-svg" viewBox="0 0 100 100">
+                  <circle class="wc-truce-bg-circle" cx="50" cy="50" r="44"></circle>
+                  <circle class="wc-truce-progress-circle" id="wcTruceProgressCircle" cx="50" cy="50" r="44"></circle>
+                </svg>
+                <div class="wc-truce-seal-inner">
+                  <span class="wc-truce-seal-icon" id="wcTruceSealIcon">🕊️</span>
+                  <span class="wc-truce-seal-label" id="wcTruceSealLabel">HOLD TO FORGIVE</span>
+                </div>
+              </div>
+              <div class="wc-truce-sub-hint" id="wcTruceSubHint">Press & hold for 1.5s to accept sincere peace treaty</div>
+            </div>
+          `;
+        } else if (archetype.id === 'romance') {
+          archetypeWidgetHtml = `
+            <div class="wc-love-lock-widget" onclick="wcEngraveLoveLock()">
+              <div class="wc-lock-visual">
+                <div class="wc-lock-shackle" id="wcLockShackle"></div>
+                <div class="wc-lock-body">
+                  <span class="wc-lock-body-icon">💖</span>
+                </div>
+              </div>
+              <div class="wc-lock-engraving" id="wcLockEngraving">${escapeHtml(recName)} & ${escapeHtml(sender)}</div>
+              <div class="wc-widget-prompt" id="wcLockPrompt">Tap to Lock Our Love in Eternity 🔒</div>
+            </div>
+          `;
+        } else if (archetype.id === 'obsidian') {
+          archetypeWidgetHtml = `
+            <div class="wc-cyber-terminal-widget" onclick="wcAuthorizeCyberMasterKey()">
+              <div class="wc-cyber-scanner">
+                <div class="wc-cyber-laser"></div>
+                <span style="font-size:22px;">⚡</span>
+              </div>
+              <div class="wc-cyber-status" id="wcCyberStatus">[ READY: TAP TO AUTHORIZE CIPHER ]</div>
+              <div class="wc-cyber-hash">SHA-256: 0x9f8b...41c2 // ARMED</div>
+            </div>
+          `;
+        } else {
+          // classic royal
+          archetypeWidgetHtml = `
+            <div class="wc-royal-toast-widget" onclick="wcRoyalToastClink()">
+              <div class="wc-toast-glasses">🥂</div>
+              <div class="wc-widget-prompt" id="wcToastPrompt">Raise Your Glass — Tap to Clink the Royal Toast 👑</div>
+            </div>
+          `;
+        }
+
         innerContentHtml = `
           <div class="wc-badge ${archetype.id}">${escapeHtml(ch.badge || `CHAPTER 0${idx+1} // THE FINALE`)}</div>
           <div class="wc-finale-emojis">${archetype.finaleEmoji}</div>
           <h1 class="wc-hero-title" style="font-size:clamp(1.9rem, 7vw, 2.8rem);">${escapeHtml(ch.title)}</h1>
           <div class="wc-gold-divider"></div>
           <p class="wc-subtitle">${escapeHtml(ch.subtitle)}</p>
-          <p class="wc-body-text" style="font-size:1.05rem; margin-top:16px;">${escapeHtml(ch.wishMessage)}</p>
+          <p class="wc-body-text" style="font-size:1.02rem; margin-top:14px;">${escapeHtml(ch.wishMessage)}</p>
           
-          <!-- Archetype Interactive Finale Button -->
-          <div style="margin: 22px auto 10px;">
-            <button type="button" class="wc-btn-primary wc-finale-action-btn" id="wcFinaleActionBtn" onclick="wcTriggerFinaleAction('${archetype.id}')">
-              <span>${escapeHtml(archetype.finaleBtnText)}</span>
-            </button>
-          </div>
+          <!-- Bespoke Interactive Archetype Widget -->
+          ${archetypeWidgetHtml}
 
           <div class="wc-signature-block">
             <div class="wc-sig-line"></div>
             <div class="wc-sig-text">${escapeHtml(ch.signature || `With all my heart,\n${sender}`).replace(/\\n|\n/g, '<br>')}</div>
           </div>
 
-          <div class="wc-action-row" style="margin-top:28px;">
+          <div class="wc-action-row" style="margin-top:24px;">
             <button type="button" class="wc-btn-ghost" onclick="wcPrevChapter()">← Previous</button>
             <button type="button" class="wc-btn-primary" onclick="wcReplayExperience()">↺ Replay Experience</button>
           </div>
@@ -914,8 +974,10 @@ Do NOT wrap the output in markdown fences like \`\`\`json. Output ONLY the raw J
     }
     body {
       background: radial-gradient(ellipse 1000px 600px at 50% 10%, var(--glow) 0%, transparent 75%), var(--bg);
-      display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
-      padding: 16px 12px 70px;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      min-height: 100vh;
+      padding: clamp(44px, 7vh, 60px) 16px clamp(65px, 9vh, 85px);
+      box-sizing: border-box;
     }
     canvas#wcBgParticles {
       position: fixed; inset: 0; pointer-events: none; z-index: 0; width: 100%; height: 100%;
@@ -1241,13 +1303,170 @@ Do NOT wrap the output in markdown fences like \`\`\`json. Output ONLY the raw J
       transition: all 0.2s ease;
     }
     .wc-wm-badge:hover { color: #fff; border-color: var(--primary); }
+
+    /* --- INTERACTIVE FINALE WIDGETS --- */
+    /* 1. Birthday Cake & Candles */
+    .wc-interactive-cake-stage {
+      margin: 18px auto 14px; padding: 16px 18px;
+      background: rgba(255, 215, 0, 0.05); border: 1.5px dashed rgba(255, 215, 0, 0.35);
+      border-radius: 20px; cursor: pointer; transition: all 0.25s ease;
+      display: flex; flex-direction: column; align-items: center; gap: 8px; max-width: 320px;
+      user-select: none;
+    }
+    .wc-interactive-cake-stage:hover {
+      background: rgba(255, 215, 0, 0.1); border-color: #FFD32A; transform: scale(1.02);
+    }
+    .wc-cake-candles {
+      display: flex; gap: 14px; align-items: flex-end; height: 32px;
+    }
+    .wc-candle {
+      width: 8px; height: 22px; background: linear-gradient(to top, #fff, #ffd32a);
+      border-radius: 4px; position: relative;
+    }
+    .wc-candle.center { height: 26px; }
+    .wc-flame {
+      width: 10px; height: 14px; background: radial-gradient(ellipse at bottom, #fff 0%, #ff9f1a 50%, #ff3838 100%);
+      border-radius: 50% 50% 35% 35%; position: absolute; top: -14px; left: -1px;
+      animation: wcFlameFlicker 0.4s infinite alternate ease-in-out;
+      box-shadow: 0 0 12px #ff9f1a;
+      transition: all 0.3s ease;
+    }
+    .wc-flame.blown {
+      opacity: 0; transform: translateY(-8px) scale(0);
+    }
+    @keyframes wcFlameFlicker {
+      0% { transform: scale(1) rotate(-2deg); }
+      100% { transform: scale(1.15) rotate(3deg); }
+    }
+    .wc-cake-icon { font-size: 34px; line-height: 1; }
+    .wc-widget-prompt {
+      font-size: 12px; font-weight: 600; color: var(--primary); text-align: center;
+      letter-spacing: 0.3px;
+    }
+
+    /* 2. Truce Hold-to-Forgive Circular Progress Seal */
+    .wc-truce-hold-container {
+      margin: 18px auto 14px; display: flex; flex-direction: column; align-items: center; gap: 10px;
+      user-select: none; max-width: 320px;
+    }
+    .wc-truce-seal-circle {
+      width: 90px; height: 90px; position: relative; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      border-radius: 50%; -webkit-tap-highlight-color: transparent;
+    }
+    .wc-truce-ring-svg {
+      width: 100%; height: 100%; transform: rotate(-90deg); position: absolute; inset: 0;
+    }
+    .wc-truce-bg-circle {
+      fill: none; stroke: rgba(230, 194, 128, 0.15); stroke-width: 6;
+    }
+    .wc-truce-progress-circle {
+      fill: none; stroke: var(--primary); stroke-width: 6;
+      stroke-dasharray: 276.46; stroke-dashoffset: 276.46;
+      stroke-linecap: round; transition: stroke-dashoffset 0.1s linear;
+    }
+    .wc-truce-seal-inner {
+      position: relative; z-index: 2; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; text-align: center;
+    }
+    .wc-truce-seal-icon { font-size: 26px; }
+    .wc-truce-seal-label { font-size: 8px; font-weight: 700; letter-spacing: 1px; color: var(--primary); margin-top: 2px; }
+    .wc-truce-sub-hint { font-size: 11.5px; color: rgba(255,255,255,0.7); text-align: center; font-style: italic; }
+
+    /* 3. Romance Metallic Love Lock */
+    .wc-love-lock-widget {
+      margin: 18px auto 14px; padding: 14px 18px;
+      background: radial-gradient(circle at 50% 0%, rgba(255, 107, 129, 0.15) 0%, rgba(20, 5, 12, 0.8) 100%);
+      border: 1.5px solid rgba(255, 107, 129, 0.4); border-radius: 20px;
+      cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 8px;
+      max-width: 320px; user-select: none; transition: all 0.25s ease;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+    }
+    .wc-love-lock-widget:hover {
+      border-color: #FF7EB3; transform: scale(1.02);
+    }
+    .wc-lock-visual {
+      display: flex; flex-direction: column; align-items: center; position: relative;
+    }
+    .wc-lock-shackle {
+      width: 34px; height: 26px; border: 4px solid var(--primary);
+      border-bottom: none; border-radius: 20px 20px 0 0;
+      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      transform: translateY(-4px);
+    }
+    .wc-lock-shackle.locked {
+      transform: translateY(4px);
+    }
+    .wc-lock-body {
+      width: 52px; height: 42px; background: linear-gradient(135deg, var(--primary), #a6344d);
+      border-radius: 10px; display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.5);
+    }
+    .wc-lock-body-icon { font-size: 20px; }
+    .wc-lock-engraving {
+      font-size: 11px; font-family: var(--font-serif); font-style: italic; color: #fff;
+    }
+
+    /* 4. Obsidian Cybernetic Scanner */
+    .wc-cyber-terminal-widget {
+      margin: 18px auto 14px; padding: 14px 16px;
+      background: rgba(0, 245, 212, 0.04); border: 1.5px solid rgba(0, 245, 212, 0.4);
+      border-radius: 10px; cursor: pointer; display: flex; flex-direction: column;
+      align-items: center; gap: 8px; max-width: 320px; font-family: 'Space Grotesk', monospace;
+      user-select: none; transition: all 0.2s ease;
+    }
+    .wc-cyber-terminal-widget:hover {
+      border-color: #00F5D4; box-shadow: 0 0 20px rgba(0, 245, 212, 0.25);
+    }
+    .wc-cyber-scanner {
+      width: 50px; height: 50px; border: 1px solid var(--primary);
+      display: flex; align-items: center; justify-content: center; position: relative;
+      background: rgba(0, 245, 212, 0.08); border-radius: 6px; overflow: hidden;
+    }
+    .wc-cyber-laser {
+      position: absolute; width: 100%; height: 2px; background: #00F5D4;
+      box-shadow: 0 0 8px #00F5D4; top: 0; left: 0;
+      animation: wcCyberScan 1.6s infinite ease-in-out;
+    }
+    @keyframes wcCyberScan {
+      0% { top: 0; }
+      50% { top: 96%; }
+      100% { top: 0; }
+    }
+    .wc-cyber-status {
+      font-size: 11px; color: var(--primary); letter-spacing: 1px; font-weight: 600;
+    }
+    .wc-cyber-hash {
+      font-size: 9px; color: rgba(255,255,255,0.4); letter-spacing: 1.5px;
+    }
+
+    /* 5. Classical Royal Toast */
+    .wc-royal-toast-widget {
+      margin: 18px auto 14px; padding: 16px 18px;
+      background: rgba(212, 175, 106, 0.05); border: 1.5px solid rgba(212, 175, 106, 0.35);
+      border-radius: 20px; cursor: pointer; display: flex; flex-direction: column;
+      align-items: center; gap: 8px; max-width: 320px; user-select: none;
+      transition: all 0.25s ease;
+    }
+    .wc-royal-toast-widget:hover {
+      border-color: #D4AF37; transform: scale(1.02);
+    }
+    .wc-toast-glasses { font-size: 34px; line-height: 1; }
+
     @media (max-width: 600px) {
-      body { padding: 10px 8px 65px; justify-content: flex-start; }
-      .wc-container { margin: 0 auto; width: 100%; }
+      body {
+        padding: 50px 12px 75px;
+        justify-content: center;
+        min-height: 100vh;
+      }
+      .wc-container {
+        margin: auto 0;
+        width: 100%;
+      }
       .wc-glass-card {
-        padding: 16px 14px;
-        border-radius: 18px;
-        max-height: calc(100vh - 80px);
+        padding: 18px 14px;
+        border-radius: 20px;
+        max-height: calc(100vh - 105px);
         overflow-y: auto;
         -webkit-overflow-scrolling: touch;
       }
@@ -1501,27 +1720,115 @@ Do NOT wrap the output in markdown fences like \`\`\`json. Output ONLY the raw J
       }
     };
 
-    // Interactive Archetype Finale Button Action
-    window.wcTriggerFinaleAction = function(archetypeId) {
-      const btn = document.getElementById('wcFinaleActionBtn');
-      launchConfetti();
-      playTone(550, 0.1);
-      setTimeout(() => playTone(880, 0.2), 120);
+    // --- BESPOKE INTERACTIVE FINALE ACTIONS ---
+    // 1. Birthday Candle Blow
+    window.wcBlowCandles = function() {
+      const f1 = document.getElementById('wcFlame1');
+      const f2 = document.getElementById('wcFlame2');
+      const f3 = document.getElementById('wcFlame3');
+      const prompt = document.getElementById('wcCakePrompt');
       
-      if (btn) {
-        btn.disabled = true;
-        btn.style.opacity = '0.9';
-        btn.style.transform = 'scale(1.03)';
-        if (archetypeId === 'truce') {
-          btn.innerHTML = '<span>❤️ Truce Accepted. Forever Grateful. ❤️</span>';
-        } else if (archetypeId === 'romance') {
-          btn.innerHTML = '<span>🔒 Sealed For Eternity In My Heart ❤️</span>';
-        } else if (archetypeId === 'birthday') {
-          btn.innerHTML = '<span>🎂 Wish Manifested! Happy Birthday! ✨</span>';
-        } else {
-          btn.innerHTML = '<span>🌟 Celebrated & Honored Forever 🌟</span>';
-        }
+      if (f1 && !f1.classList.contains('blown')) {
+        f1.classList.add('blown');
+        setTimeout(() => f2 && f2.classList.add('blown'), 90);
+        setTimeout(() => f3 && f3.classList.add('blown'), 180);
+
+        playTone(523, 0.15, 'triangle');
+        setTimeout(() => playTone(659, 0.18, 'triangle'), 120);
+        setTimeout(() => playTone(784, 0.35, 'sine'), 240);
+
+        if (prompt) prompt.innerHTML = '✨ Wish Sent to the Universe! Happy Birthday! ✨';
+        launchConfetti();
       }
+    };
+
+    // 2. Truce Hold to Forgive
+    let truceHoldTimer = null;
+    let truceHoldProgress = 0;
+    let truceHoldInterval = null;
+
+    window.wcStartTruceHold = function() {
+      const circle = document.getElementById('wcTruceProgressCircle');
+      const label = document.getElementById('wcTruceSealLabel');
+      const hint = document.getElementById('wcTruceSubHint');
+      const icon = document.getElementById('wcTruceSealIcon');
+      if (circle && circle.getAttribute('data-sealed') === 'true') return;
+
+      truceHoldProgress = 0;
+      clearInterval(truceHoldInterval);
+      playTone(280, 0.08, 'sine');
+
+      truceHoldInterval = setInterval(() => {
+        truceHoldProgress += 4;
+        if (circle) {
+          const offset = 276.46 - (276.46 * (truceHoldProgress / 100));
+          circle.style.strokeDashoffset = Math.max(0, offset);
+        }
+
+        if (truceHoldProgress >= 100) {
+          clearInterval(truceHoldInterval);
+          if (circle) circle.setAttribute('data-sealed', 'true');
+          if (label) label.textContent = 'TRUCE ACCEPTED';
+          if (icon) icon.textContent = '🤍';
+          if (hint) hint.innerHTML = '❤️ Truce sealed. All is forgiven. Thank you for your sincerity.';
+          playTone(440, 0.15, 'sine');
+          setTimeout(() => playTone(554, 0.18, 'sine'), 120);
+          setTimeout(() => playTone(659, 0.35, 'sine'), 250);
+          launchConfetti();
+        }
+      }, 50);
+    };
+
+    window.wcEndTruceHold = function() {
+      const circle = document.getElementById('wcTruceProgressCircle');
+      if (circle && circle.getAttribute('data-sealed') === 'true') return;
+      clearInterval(truceHoldInterval);
+      if (circle) circle.style.strokeDashoffset = 276.46;
+    };
+
+    // 3. Romance Love Lock
+    window.wcEngraveLoveLock = function() {
+      const shackle = document.getElementById('wcLockShackle');
+      const prompt = document.getElementById('wcLockPrompt');
+      if (shackle && !shackle.classList.contains('locked')) {
+        shackle.classList.add('locked');
+        playTone(320, 0.06, 'square');
+        setTimeout(() => playTone(640, 0.15, 'triangle'), 80);
+        if (prompt) prompt.innerHTML = '🔒 Locked Forever in Our Hearts. Never to be Undone. ❤️';
+        launchConfetti();
+      }
+    };
+
+    // 4. Obsidian Cyber Master Key
+    window.wcAuthorizeCyberMasterKey = function() {
+      const status = document.getElementById('wcCyberStatus');
+      if (status && !status.getAttribute('data-auth')) {
+        status.setAttribute('data-auth', 'true');
+        playTone(440, 0.06, 'sawtooth');
+        setTimeout(() => playTone(880, 0.08, 'sawtooth'), 80);
+        setTimeout(() => playTone(1760, 0.25, 'sine'), 160);
+        status.innerHTML = '🔓 ACCESS GRANTED // PERMANENT CIPHER LOGGED';
+        status.style.color = '#2ed573';
+        launchConfetti();
+      }
+    };
+
+    // 5. Classic Royal Toast
+    window.wcRoyalToastClink = function() {
+      const prompt = document.getElementById('wcToastPrompt');
+      playTone(2093, 0.45, 'sine');
+      setTimeout(() => playTone(2637, 0.6, 'sine'), 100);
+      if (prompt) prompt.innerHTML = '🌟 A Toast to an Unstoppable, Radiant Future! Cheers! 🌟';
+      launchConfetti();
+    };
+
+    // Fallback button action
+    window.wcTriggerFinaleAction = function(archetypeId) {
+      if (archetypeId === 'birthday') wcBlowCandles();
+      else if (archetypeId === 'truce') wcStartTruceHold();
+      else if (archetypeId === 'romance') wcEngraveLoveLock();
+      else if (archetypeId === 'obsidian') wcAuthorizeCyberMasterKey();
+      else wcRoyalToastClink();
     };
 
     // Dynamic background particles tuned to Archetype
