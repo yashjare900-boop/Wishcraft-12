@@ -93,6 +93,7 @@
 <script src="obsidian-vault-template.js"></script>
 <script src="sapphire-vault-template.js"></script>
 <script src="golden-truce-template.js"></script>
+<script src="ai-wish-engine.js"></script>
 <!-- WishCraft Template Injection Engine -->
 <script src="templates/registry.js"></script>
 
@@ -484,14 +485,239 @@
     .hub-back{ padding:6px 10px; font-size:11px; }
   }
 
-  /* Layout */
-  .workshop{ display:grid; grid-template-columns: 420px 1fr; min-height:calc(100vh - 73px); }
-  @media (max-width: 1100px){ .workshop{ grid-template-columns: 380px 1fr; } }
-  @media (max-width: 980px){
-    .workshop{ grid-template-columns: 1fr; min-height:auto; }
-    .rail{ border-right:none; border-bottom:1px solid var(--line); max-height:none; padding:20px 18px; }
-    .stage{ padding:20px 16px 40px; min-height:70vh; }
-    .stage-inner{ max-height:none; height:min(640px, 78vh); }
+  /* Layout: AI Kickstart Studio (Preview Top + Controls on Scroll-Down) */
+  .workshop {
+    display: none;
+    flex-direction: column;
+    width: 100%;
+    background: var(--bg);
+    min-height: calc(100vh - 60px);
+    position: relative;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+  }
+  .workshop.visible {
+    display: flex !important;
+  }
+  .workshop-topbar {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 24px;
+    background: rgba(11, 12, 16, 0.94);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--line);
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .workshop-topbar-left, .workshop-topbar-center, .workshop-topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .workshop-preview-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 18px 14px 12px;
+    background: radial-gradient(circle at 50% 25%, rgba(212, 175, 106, 0.05) 0%, transparent 75%);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .workshop-preview-section .stage-viewport-wrap {
+    position: relative;
+    width: 100%;
+    max-width: 1240px;
+    height: 560px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    padding: 10px;
+    background: #020408;
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+  @media (max-height: 850px) {
+    .workshop-preview-section .stage-viewport-wrap {
+      height: 480px;
+    }
+  }
+  @media (max-width: 768px) {
+    .workshop-preview-section .stage-viewport-wrap {
+      height: 420px;
+    }
+    .workshop-topbar {
+      padding: 8px 12px;
+    }
+    .workshop-controls-section {
+      padding: 16px 12px 60px !important;
+    }
+  }
+  .workshop-controls-section {
+    width: 100%;
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 24px 20px 80px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  /* Chapter Sequence & Visibility Manager */
+  .ai-chapter-manager {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .ai-chapter-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    padding: 10px 14px;
+    transition: all 0.2s ease;
+    gap: 12px;
+  }
+  .ai-chapter-row:hover {
+    border-color: rgba(212, 175, 106, 0.3);
+    background: rgba(255, 255, 255, 0.05);
+  }
+  .ai-chapter-row.active {
+    border-color: rgba(212, 175, 106, 0.6);
+    background: rgba(212, 175, 106, 0.08);
+  }
+  .ai-chapter-row.disabled {
+    opacity: 0.45;
+  }
+  .ai-chapter-row.disabled .ai-chap-title {
+    text-decoration: line-through;
+    color: var(--cream-dim);
+  }
+  .ai-chap-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    flex: 1;
+    min-width: 0;
+  }
+  .ai-chap-badge {
+    font-size: 10px;
+    font-family: var(--mono);
+    padding: 3px 8px;
+    border-radius: 6px;
+    background: rgba(212, 175, 106, 0.12);
+    color: var(--gold);
+    border: 1px solid rgba(212, 175, 106, 0.25);
+    white-space: nowrap;
+    text-transform: uppercase;
+  }
+  .ai-chap-title {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--cream);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .ai-chap-btns {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    flex-shrink: 0;
+  }
+  .ai-chap-btn {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--cream-dim);
+    border-radius: 7px;
+    width: 28px;
+    height: 28px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .ai-chap-btn:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.25);
+  }
+  .ai-chap-btn.delete:hover {
+    color: #ff6b6b;
+    border-color: rgba(255, 107, 107, 0.4);
+    background: rgba(255, 107, 107, 0.1);
+  }
+  .ai-chap-add-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px;
+    border: 1px dashed rgba(212, 175, 106, 0.35);
+    background: rgba(212, 175, 106, 0.04);
+    color: var(--gold);
+    border-radius: 10px;
+    font-size: 12.5px;
+    cursor: pointer;
+    transition: all 0.18s ease;
+    font-family: var(--sans);
+    margin-top: 4px;
+    width: 100%;
+  }
+  .ai-chap-add-btn:hover {
+    background: rgba(212, 175, 106, 0.1);
+    border-color: var(--gold);
+  }
+  .ai-palette-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 8px;
+    margin-top: 6px;
+  }
+  .ai-palette-card {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 8px 10px;
+    border-radius: 9px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    font-size: 11.5px;
+    color: var(--cream-dim);
+  }
+  .ai-palette-card:hover {
+    border-color: rgba(212, 175, 106, 0.3);
+    color: #fff;
+  }
+  .ai-palette-card.selected {
+    border-color: var(--gold);
+    background: rgba(212, 175, 106, 0.1);
+    color: var(--gold-light, #fce698);
+    font-weight: 600;
+  }
+  .ai-palette-swatch {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    flex-shrink: 0;
   }
   @media (max-width: 640px){
     .rail{ padding:18px 14px; gap:16px; }
@@ -1080,7 +1306,7 @@
   .hub-back:hover{ border-color:var(--gold-dim); color:var(--cream); }
   .hub-back.visible{ display:inline-flex; }
   .workshop{ display:none; }
-  .workshop.visible{ display:grid; }
+  .workshop.visible{ display:flex !important; flex-direction:column; }
   .hub.hidden{ display:none; }
 
   /* --- ACCOUNT PANEL: SUBSCRIPTIONS & REDEEM UI --- */
@@ -2517,244 +2743,360 @@
   </div>
 
   <div class="workshop" id="workshop">
-    <!-- LEFT RAIL -->
-    <div class="rail">
+    <!-- TOPBAR -->
+    <div class="workshop-topbar">
+      <div class="workshop-topbar-left">
+        <button type="button" class="tmpl-btn-ghost" id="aiStudioBackBtn" style="padding: 7px 14px; font-size: 12.5px; display: inline-flex; align-items: center; gap: 6px;">
+          ← Back to Hub
+        </button>
+        <div class="tmpl-studio-title-badge">
+          <span>✦</span>
+          <span style="font-size: 13px; font-weight: 600; color: var(--cream);">AI Kickstart Studio</span>
+        </div>
+      </div>
 
+      <div class="workshop-topbar-center">
+        <div class="device-toggle-pills" id="deviceTogglePills" style="margin: 0;">
+          <button type="button" class="dev-btn active" id="devBtnDesktop" title="Full Desktop Ratio (1280×800 Native)">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+            <span>Desktop</span><span class="pill-res"> (1280×800)</span>
+          </button>
+          <button type="button" class="dev-btn" id="devBtnMobile" title="Mobile Phone Ratio (390×844 Smartphone Ratio)">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="3"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+            <span>Phone</span><span class="pill-res"> (390×844)</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="workshop-topbar-right">
+        <div class="stage-actions" id="stageActions" style="visibility:visible;">
+          <button id="openTabBtn" title="Open full experience in new browser tab">
+            <span class="btn-label-long">Open in tab</span>
+            <span class="btn-label-short">Open</span>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </button>
+          <button id="workshopDownloadTopBtn" class="tmpl-btn-primary" style="padding: 7px 16px; font-size: 12px; display: inline-flex; align-items: center; gap: 5px;" onclick="window.openExportModal()">
+            <span>💾</span> Download
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PREVIEW SECTION (STRICTLY ON TOP) -->
+    <div class="workshop-preview-section">
+      <div class="stage-viewport-wrap" id="stageViewportWrap">
+        <div class="empty-stage visible" id="emptyStage">
+          <svg class="ribbon-mark" viewBox="0 0 64 64" fill="none">
+            <circle cx="32" cy="32" r="30" stroke="#D4AF6A" stroke-width="1" opacity="0.4"/>
+            <path d="M20 24 L32 36 L44 24" stroke="#D4AF6A" stroke-width="1.5" opacity="0.8"/>
+            <path d="M20 40 L32 28 L44 40" stroke="#D4AF6A" stroke-width="1.5" opacity="0.8"/>
+          </svg>
+          <h2>The cinematic experience opens here</h2>
+          <p>Fill in the details below or customize directly in the Manual Editor. WishCraft creates an interactive multi-chapter keepsake.</p>
+        </div>
+
+        <div class="loading-stage" id="loadingStage">
+          <svg class="tie-svg" width="90" height="90" viewBox="0 0 90 90" fill="none">
+            <path d="M45 10 C20 10 20 45 45 45 C70 45 70 80 45 80" stroke="#D4AF6A" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          <p id="loadingText">tying the ribbon...</p>
+        </div>
+
+        <div class="error-stage" id="errorStage">
+          <svg class="error-mark" viewBox="0 0 64 64" fill="none">
+            <circle cx="32" cy="32" r="30" stroke="#C97B84" stroke-width="1.5" stroke-dasharray="4 4" opacity="0.6"/>
+            <path d="M24 24 L40 40 M40 24 L24 40" stroke="#C97B84" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          <h2 id="errorTitle">The spell fizzled.</h2>
+          <p id="errorMsg">The AI couldn't complete the generation. Check your API credits or network connection.</p>
+          
+          <div style="display: flex; gap: 10px; justify-content: center; align-items: center; margin-top: 10px; flex-wrap: wrap;">
+            <button class="ghost-btn" id="retryBtn" style="padding: 10px 24px;">Try Again</button>
+            <button class="api-key-pill-btn" id="toggleApiKeyBoxBtn" onclick="openApiKeyModal()" style="display:inline-flex; padding: 9px 18px; font-size: 12.5px;">
+              <span class="api-key-icon">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                  <path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/>
+                </svg>
+              </span>
+              <span>API Key Settings</span>
+            </button>
+          </div>
+
+          <!-- Custom API Key Input Box -->
+          <div id="customApiKeyBox" style="display: none; margin-top: 20px; padding: 22px 20px; border: 1px solid rgba(212,175,106,0.32); border-radius: 16px; background: rgba(14,16,21,0.88); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); max-width: 440px; width: 100%; text-align: left; box-shadow: 0 18px 45px rgba(0,0,0,0.65), inset 0 0 25px rgba(212,175,106,0.04);">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+              <span style="font-size: 13.5px; font-weight: 600; color: #fff; display: flex; align-items: center; gap: 7px; font-family: var(--serif);">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+                Gemini API Key
+              </span>
+              <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener" style="font-size: 11.5px; color: var(--gold); text-decoration: none; border-bottom: 1px dashed var(--gold-dim);">Get free key ↗</a>
+            </div>
+            <p style="font-size: 12.5px; color: var(--cream-dim); margin-bottom: 14px; line-height: 1.5;">
+              Server busy or free quota reached? Insert your free Gemini API key to craft your page directly without server limits.
+            </p>
+            <div class="api-input-wrap" style="margin-bottom: 10px;">
+              <input type="password" id="userCustomKeyInput" class="api-key-input-field" placeholder="Paste key (AIzaSy...)" autocomplete="off" spellcheck="false" />
+            </div>
+            <div style="display: flex; justify-content: flex-end; margin-top: 12px;">
+              <button class="api-save-btn" id="saveAndCraftBtn" style="width: 100%; justify-content: center; display: flex; align-items: center; gap: 6px;">✦ Save & Craft Page</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="preview-device-holder" id="previewDeviceHolder">
+          <div class="phone-dynamic-island" id="phoneDynamicIsland" style="display:none;"></div>
+          <iframe id="preview" title="Generated page preview" sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals"></iframe>
+          <div class="phone-bottom-bar" id="phoneBottomBar" style="display:none;"></div>
+        </div>
+      </div>
+
+      <button type="button" id="workshopScrollPrompt" class="tmpl-scroll-indicator" style="display: inline-flex; align-items: center; gap: 8px; margin-top: 10px; color: var(--cream-dim); font-size: 12px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); padding: 7px 18px; border-radius: 99px; cursor: pointer;">
+        <span>↓</span>
+        <span>Scroll down to customize chapters, order & prompt</span>
+        <span>↓</span>
+      </button>
+    </div>
+
+    <!-- CONTROLS SECTION (SCROLL DOWN) -->
+    <div class="workshop-controls-section" id="workshopControlsSection">
       <!-- Rail Navigation Tabs (AI Generator vs Manual Live Editor) -->
       <div class="rail-tabs-container">
         <button type="button" class="rail-tab-btn active" id="tabAiModeBtn">
           <span class="tab-icon">✦</span> AI Generator
         </button>
         <button type="button" class="rail-tab-btn" id="tabManualModeBtn">
-          <span class="tab-icon">✎</span> Manual Editor
+          <span class="tab-icon">✎</span> Manual Editor (Arrange & Edit Chapters)
           <span class="live-dot-pulse" title="Live Preview Active"></span>
+        </button>
+        <button type="button" class="tmpl-btn-ghost" id="workshopJumpTopBtn" style="margin-left: auto; padding: 7px 14px; font-size: 12px; white-space: nowrap;">
+          ↑ View Live Preview
         </button>
       </div>
 
       <!-- AI GENERATOR VIEW -->
       <div class="ai-generator-view" id="aiGeneratorView">
 
-      <div class="name-pair">
+        <div class="name-pair">
+          <div class="field-group">
+            <label class="field-label">To</label>
+            <input type="text" id="recipientName" placeholder="e.g. Name">
+          </div>
+          <div class="field-group">
+            <label class="field-label">From</label>
+            <input type="text" id="senderName" placeholder="e.g. your name">
+          </div>
+        </div>
+
         <div class="field-group">
-          <label class="field-label">To</label>
-          <input type="text" id="recipientName" placeholder="e.g. Name">
+          <label class="field-label">Your relationship</label>
+          <input type="text" id="relationship" placeholder="e.g. cousin, best friend, partner">
         </div>
+
         <div class="field-group">
-          <label class="field-label">From</label>
-          <input type="text" id="senderName" placeholder="e.g. your name">
-        </div>
-      </div>
-
-      <div class="field-group">
-        <label class="field-label">Your relationship</label>
-        <input type="text" id="relationship" placeholder="e.g. cousin, best friend, partner">
-      </div>
-
-      <div class="field-group">
-        <label class="field-label">Occasion</label>
-        <div class="chip-row" id="occasionChips">
-          <div class="chip selected" data-val="Birthday">Birthday</div>
-          <div class="chip" data-val="Anniversary">Anniversary</div>
-          <div class="chip" data-val="Sister & Family">Sister</div>
-          <div class="chip" data-val="Love & Romance">Love</div>
-          <div class="chip" data-val="Congratulations">Congrats</div>
-          <div class="chip" data-val="Just because">Just because</div>
-          <div class="chip" data-val="Farewell">Farewell</div>
-          <div class="chip" data-val="Wedding">Wedding</div>
-          <div class="chip" data-val="Graduation">Graduation</div>
-          <div class="chip" data-val="Apology">Apology</div>
-          <div class="chip" data-val="New Job">New Job</div>
-          <div class="chip" data-val="Get Well Soon">Get Well</div>
-          <div class="chip" data-val="Valentine's Day">Valentine's</div>
-          <div class="chip" data-val="Proposal">Proposal</div>
-          <div class="chip" data-val="Long Distance">Long Distance</div>
-        </div>
-      </div>
-
-      <div class="field-group">
-        <label class="field-label">Tone</label>
-        <div class="chip-row" id="toneChips">
-          <div class="chip selected" data-val="Romantic & Cinematic" data-tip="Big swoony romance — slow reveals, warm lighting, movie-trailer pacing.">Cinematic</div>
-          <div class="chip" data-val="Funny & Playful" data-tip="Light, joke-y copy and bouncy animations. Good for close friends.">Playful</div>
-          <div class="chip" data-val="Nostalgic & Deep" data-tip="Reflective, memory-driven writing — like flipping through an old photo album.">Nostalgic</div>
-          <div class="chip" data-val="Wholesome" data-tip="Simple, sincere, gentle — no drama, just genuine warmth.">Wholesome</div>
-          <div class="chip" data-val="Dramatic Vault" data-tip="Suspenseful and theatrical — locks, reveals, a sense of ceremony.">Dramatic</div>
-          <div class="chip" data-val="Elegant & Minimal" data-tip="Clean, restrained, lots of whitespace — quiet luxury over spectacle.">Elegant Minimal</div>
-          <div class="chip" data-val="Whimsical & Fairytale" data-tip="Storybook language, magical little flourishes, soft wonder.">Whimsical</div>
-          <div class="chip" data-val="Bold & Energetic" data-tip="High-contrast, punchy copy, fast motion — feels loud and alive.">Bold</div>
-        </div>
-      </div>
-
-      <div class="field-group">
-        <label class="field-label">Craft Mode (Complexity Level)</label>
-        <div class="theme-grid" id="complexityGrid">
-          <div class="theme-card" data-val="fast-glass">
-            <div class="name">✨ Fast Glass</div>
-            <div class="desc">Pure CSS, fast load</div>
-          </div>
-          <div class="theme-card selected" data-val="interactive-vault">
-            <div class="name">🔒 Interactive Vault</div>
-            <div class="desc">Scanners, scratch cards, petals</div>
-          </div>
-          <div class="theme-card" data-val="cinematic-3d">
-            <div class="name">🌌 Cinematic 3D WebGL</div>
-            <div class="desc">Three.js particles, 3D bloom, carousel</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="field-group">
-        <label class="field-label">Visual Theme</label>
-        <div class="theme-grid" id="themeGrid">
-          <div class="theme-card selected" data-val="velvet-plum">
-            <div class="theme-swatch" style="background:linear-gradient(135deg,#1e0b16,#dfaa9c);"></div>
-            <div class="name">Velvet Plum</div>
-            <div class="desc">Deep plum, rose gold</div>
-          </div>
-          <div class="theme-card" data-val="obsidian-gold">
-            <div class="theme-swatch" style="background:linear-gradient(135deg,#0B0C10,#D4AF6A);"></div>
-            <div class="name">Obsidian & Gold</div>
-            <div class="desc">Dark, glass, liquid</div>
-          </div>
-          <div class="theme-card" data-val="blush-romance">
-            <div class="theme-swatch" style="background:linear-gradient(135deg,#3B1F2B,#E8A6B0);"></div>
-            <div class="name">Blush Romance</div>
-            <div class="desc">Soft, warm, intimate</div>
-          </div>
-          <div class="theme-card" data-val="midnight-arcade">
-            <div class="theme-swatch" style="background:linear-gradient(135deg,#0D0221,#00F5D4);"></div>
-            <div class="name">Midnight Neon</div>
-            <div class="desc">Cyberpunk, matrix energy</div>
-          </div>
-          <div class="theme-card" data-val="emerald-noir">
-            <div class="theme-swatch" style="background:linear-gradient(135deg,#031B14,#3FCF8E);"></div>
-            <div class="name">Emerald Noir</div>
-            <div class="desc">Deep forest green, brass</div>
-          </div>
-          <div class="theme-card" data-val="sunset-peach">
-            <div class="theme-swatch" style="background:linear-gradient(135deg,#2B1130,#FFB199);"></div>
-            <div class="name">Sunset Peach</div>
-            <div class="desc">Warm gradient, dreamy glow</div>
-          </div>
-          <div class="theme-card" data-val="lavender-dream">
-            <div class="theme-swatch" style="background:linear-gradient(135deg,#1B1030,#C9A6FF);"></div>
-            <div class="name">Lavender Dream</div>
-            <div class="desc">Soft violet, stardust</div>
-          </div>
-          <div class="theme-card" data-val="arctic-frost">
-            <div class="theme-swatch" style="background:linear-gradient(135deg,#0A1620,#8FD8E8);"></div>
-            <div class="name">Arctic Frost</div>
-            <div class="desc">Icy blue, crystalline glass</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="section-divider">Extra features</div>
-
-      <div class="field-group">
-        <label class="field-label">Add-ons (pick any)</label>
-        <div class="chip-row" id="featureChips">
-          <div class="chip" data-val="Countdown Timer" data-tip="A live ticking countdown to a date/time you set — great for birthdays or events.">⏳ Countdown</div>
-          <div class="chip" data-val="Background Music" data-tip="Upload a song that plays on the page (tap-to-start, since browsers block autoplay).">🎵 Song</div>
-          <div class="chip" data-val="Confetti Finale" data-tip="A burst of animated confetti at the big reveal moment.">🎉 Confetti</div>
-          <div class="chip" data-val="Guestbook Wall" data-tip="Visitors can leave a short note that gets pinned to a wall of sticky notes.">💌 Guestbook</div>
-          <div class="chip" data-val="Star Map" data-tip="Memories and nicknames shown as glowing stars you can tap for a caption.">✨ Star Map</div>
-          <div class="chip" data-val="Memory Timeline" data-tip="A scrolling timeline laying out key moments and inside jokes in order.">🗓 Timeline</div>
-          <div class="chip" data-val="Love Meter" data-tip="A playful animated gauge/slider that fills up to '100% loved' with a fun label.">💗 Love Meter</div>
-          <div class="chip" data-val="Quiz Game" data-tip="A short 'how well do you know us' style quiz using details you provide.">🧠 Quiz</div>
-          <div class="chip" data-val="Reaction Buttons" data-tip="Emoji reaction buttons the recipient can tap while reading, with a little animation.">😍 Reactions</div>
-          <div class="chip" data-val="Voice Note" data-tip="Upload a short voice message audio clip that plays like a recorded note.">🎙 Voice Note</div>
-          <div class="chip" data-val="Map Pin Memory" data-tip="Mark a meaningful place (city/location name) shown as a stylized pin with a caption.">📍 Place Pin</div>
-          <div class="chip" data-val="Printable Card" data-tip="Adds a 'download as printable card' view formatted nicely for A5/A6 paper.">🖨 Printable</div>
-        </div>
-
-        <div class="subfield" id="countdownField">
-          <label class="field-label" style="margin-top:6px;">Countdown to</label>
-          <div class="date-time-row">
-            <input type="date" id="countdownDate">
-            <input type="time" id="countdownTime">
-          </div>
-          <div class="field-hint">The page will show a live countdown until this date/time, then unlock the reveal.</div>
-        </div>
-
-        <div class="subfield" id="songField">
-          <label class="field-label" style="margin-top:6px;">Upload a song</label>
-          <div class="song-drop" id="songDrop">Click to add an mp3, or drop it here</div>
-          <input type="file" id="songInput" accept="audio/*" style="display:none;">
-          <div class="song-chip" id="songChip">
-            <span class="song-name" id="songName"></span>
-            <button id="songRemoveBtn" title="Remove">✕</button>
-          </div>
-          <div class="field-hint">Keep it short (under ~2 min) — it's embedded directly in the file, so smaller is faster and more reliable.</div>
-        </div>
-
-        <div class="subfield" id="voiceField">
-          <label class="field-label" style="margin-top:6px;">Upload a voice note</label>
-          <div class="song-drop" id="voiceDrop">Click to add a short audio clip</div>
-          <input type="file" id="voiceInput" accept="audio/*" style="display:none;">
-          <div class="song-chip" id="voiceChip">
-            <span class="song-name" id="voiceName"></span>
-            <button id="voiceRemoveBtn" title="Remove">✕</button>
+          <label class="field-label">Occasion</label>
+          <div class="chip-row" id="occasionChips">
+            <div class="chip selected" data-val="Birthday">Birthday</div>
+            <div class="chip" data-val="Anniversary">Anniversary</div>
+            <div class="chip" data-val="Sister & Family">Sister</div>
+            <div class="chip" data-val="Love & Romance">Love</div>
+            <div class="chip" data-val="Congratulations">Congrats</div>
+            <div class="chip" data-val="Just because">Just because</div>
+            <div class="chip" data-val="Farewell">Farewell</div>
+            <div class="chip" data-val="Wedding">Wedding</div>
+            <div class="chip" data-val="Graduation">Graduation</div>
+            <div class="chip" data-val="Apology">Apology</div>
+            <div class="chip" data-val="New Job">New Job</div>
+            <div class="chip" data-val="Get Well Soon">Get Well</div>
+            <div class="chip" data-val="Valentine's Day">Valentine's</div>
+            <div class="chip" data-val="Proposal">Proposal</div>
+            <div class="chip" data-val="Long Distance">Long Distance</div>
           </div>
         </div>
 
-        <div class="subfield" id="placeField">
-          <label class="field-label" style="margin-top:6px;">Meaningful place</label>
-          <input type="text" id="placeName" placeholder="e.g. Marine Drive, Mumbai — first date spot">
+        <div class="field-group">
+          <label class="field-label">Tone</label>
+          <div class="chip-row" id="toneChips">
+            <div class="chip selected" data-val="Romantic & Cinematic" data-tip="Big swoony romance — slow reveals, warm lighting, movie-trailer pacing.">Cinematic</div>
+            <div class="chip" data-val="Funny & Playful" data-tip="Light, joke-y copy and bouncy animations. Good for close friends.">Playful</div>
+            <div class="chip" data-val="Nostalgic & Deep" data-tip="Reflective, memory-driven writing — like flipping through an old photo album.">Nostalgic</div>
+            <div class="chip" data-val="Wholesome" data-tip="Simple, sincere, gentle — no drama, just genuine warmth.">Wholesome</div>
+            <div class="chip" data-val="Dramatic Vault" data-tip="Suspenseful and theatrical — locks, reveals, a sense of ceremony.">Dramatic</div>
+            <div class="chip" data-val="Elegant & Minimal" data-tip="Clean, restrained, lots of whitespace — quiet luxury over spectacle.">Elegant Minimal</div>
+            <div class="chip" data-val="Whimsical & Fairytale" data-tip="Storybook language, magical little flourishes, soft wonder.">Whimsical</div>
+            <div class="chip" data-val="Bold & Energetic" data-tip="High-contrast, punchy copy, fast motion — feels loud and alive.">Bold</div>
+          </div>
         </div>
-      </div>
 
-      <div class="field-group">
-        <label class="field-label">Vault Secret / Passcode (Optional)</label>
-        <input type="text" id="passcode" placeholder="e.g. 2026 or secret word">
-      </div>
-
-      <div class="field-group">
-        <label class="field-label">Key Dreams, Nicknames & Inside Jokes</label>
-        <textarea id="aspirations" placeholder="e.g. Wants to join something, called 'Nickname', loves shopping..."></textarea>
-      </div>
-
-      <div class="field-group">
-        <label class="field-label">Your Message (Expanded if left blank)</label>
-        <textarea id="messageText" placeholder="A heartfelt note, a memory, or what you want to say..."></textarea>
-      </div>
-
-      <div class="field-group">
-        <label class="field-label">Photos (Embedded directly)</label>
-        <div class="photo-drop" id="photoDrop">Click to add photos, or drop them here</div>
-        <input type="file" id="photoInput" accept="image/*" multiple style="display:none;">
-        <div class="photo-strip" id="photoStrip"></div>
-      </div>
-
-      <button class="generate-btn" id="generateBtn">✦ Craft the page</button>
-
-      <div class="edit-block" id="editBlock">
-        <label class="field-label">Refine with chat</label>
-        <div class="edit-log" id="editLog"></div>
-        <div class="edit-row">
-          <input type="text" id="editInput" placeholder="e.g. add confetti, change passcode to 2026...">
-          <button id="editBtn">Apply</button>
+        <div class="field-group">
+          <label class="field-label">Craft Mode (Complexity Level)</label>
+          <div class="theme-grid" id="complexityGrid">
+            <div class="theme-card" data-val="fast-glass">
+              <div class="name">✨ Fast Glass</div>
+              <div class="desc">Pure CSS, fast load</div>
+            </div>
+            <div class="theme-card selected" data-val="interactive-vault">
+              <div class="name">🔒 Interactive Vault</div>
+              <div class="desc">Scanners, scratch cards, petals</div>
+            </div>
+            <div class="theme-card" data-val="cinematic-3d">
+              <div class="name">🌌 Cinematic 3D WebGL</div>
+              <div class="desc">Three.js particles, 3D bloom, carousel</div>
+            </div>
+          </div>
         </div>
-        <div class="undo-row">
-          <button class="ghost-btn" id="undoBtn">↺ Undo last edit</button>
-          <button class="ghost-btn" id="downloadBtn" onclick="window.openExportModal()">⇩ Download .html</button>
+
+        <div class="field-group">
+          <label class="field-label">Visual Theme</label>
+          <div class="theme-grid" id="themeGrid">
+            <div class="theme-card selected" data-val="velvet-plum">
+              <div class="theme-swatch" style="background:linear-gradient(135deg,#1e0b16,#dfaa9c);"></div>
+              <div class="name">Velvet Plum</div>
+              <div class="desc">Deep plum, rose gold</div>
+            </div>
+            <div class="theme-card" data-val="obsidian-gold">
+              <div class="theme-swatch" style="background:linear-gradient(135deg,#0B0C10,#D4AF6A);"></div>
+              <div class="name">Obsidian & Gold</div>
+              <div class="desc">Dark, glass, liquid</div>
+            </div>
+            <div class="theme-card" data-val="blush-romance">
+              <div class="theme-swatch" style="background:linear-gradient(135deg,#3B1F2B,#E8A6B0);"></div>
+              <div class="name">Blush Romance</div>
+              <div class="desc">Soft, warm, intimate</div>
+            </div>
+            <div class="theme-card" data-val="midnight-arcade">
+              <div class="theme-swatch" style="background:linear-gradient(135deg,#0D0221,#00F5D4);"></div>
+              <div class="name">Midnight Neon</div>
+              <div class="desc">Cyberpunk, matrix energy</div>
+            </div>
+            <div class="theme-card" data-val="emerald-noir">
+              <div class="theme-swatch" style="background:linear-gradient(135deg,#031B14,#3FCF8E);"></div>
+              <div class="name">Emerald Noir</div>
+              <div class="desc">Deep forest green, brass</div>
+            </div>
+            <div class="theme-card" data-val="sunset-peach">
+              <div class="theme-swatch" style="background:linear-gradient(135deg,#2B1130,#FFB199);"></div>
+              <div class="name">Sunset Peach</div>
+              <div class="desc">Warm gradient, dreamy glow</div>
+            </div>
+            <div class="theme-card" data-val="lavender-dream">
+              <div class="theme-swatch" style="background:linear-gradient(135deg,#1B1030,#C9A6FF);"></div>
+              <div class="name">Lavender Dream</div>
+              <div class="desc">Soft violet, stardust</div>
+            </div>
+            <div class="theme-card" data-val="arctic-frost">
+              <div class="theme-swatch" style="background:linear-gradient(135deg,#0A1620,#8FD8E8);"></div>
+              <div class="name">Arctic Frost</div>
+              <div class="desc">Icy blue, crystalline glass</div>
+            </div>
+          </div>
         </div>
-        <div style="margin-top: 6px;">
-          <button type="button" class="ghost-btn" id="switchToManualBtn" style="width: 100%; border-color: rgba(212,175,106,0.45); color: var(--gold-light); display: flex; align-items: center; justify-content: center; gap: 7px; padding: 10px; font-weight: 500; background: rgba(212,175,106,0.06);">
-            <span>✎</span> Customize in Manual Editor Tab →
-          </button>
+
+        <div class="section-divider">Extra features</div>
+
+        <div class="field-group">
+          <label class="field-label">Add-ons (pick any)</label>
+          <div class="chip-row" id="featureChips">
+            <div class="chip" data-val="Countdown Timer" data-tip="A live ticking countdown to a date/time you set — great for birthdays or events.">⏳ Countdown</div>
+            <div class="chip" data-val="Background Music" data-tip="Upload a song that plays on the page (tap-to-start, since browsers block autoplay).">🎵 Song</div>
+            <div class="chip" data-val="Confetti Finale" data-tip="A burst of animated confetti at the big reveal moment.">🎉 Confetti</div>
+            <div class="chip" data-val="Guestbook Wall" data-tip="Visitors can leave a short note that gets pinned to a wall of sticky notes.">💌 Guestbook</div>
+            <div class="chip" data-val="Star Map" data-tip="Memories and nicknames shown as glowing stars you can tap for a caption.">✨ Star Map</div>
+            <div class="chip" data-val="Memory Timeline" data-tip="A scrolling timeline laying out key moments and inside jokes in order.">🗓 Timeline</div>
+            <div class="chip" data-val="Love Meter" data-tip="A playful animated gauge/slider that fills up to '100% loved' with a fun label.">💗 Love Meter</div>
+            <div class="chip" data-val="Quiz Game" data-tip="A short 'how well do you know us' style quiz using details you provide.">🧠 Quiz</div>
+            <div class="chip" data-val="Reaction Buttons" data-tip="Emoji reaction buttons the recipient can tap while reading, with a little animation.">😍 Reactions</div>
+            <div class="chip" data-val="Voice Note" data-tip="Upload a short voice message audio clip that plays like a recorded note.">🎙 Voice Note</div>
+            <div class="chip" data-val="Map Pin Memory" data-tip="Mark a meaningful place (city/location name) shown as a stylized pin with a caption.">📍 Place Pin</div>
+            <div class="chip" data-val="Printable Card" data-tip="Adds a 'download as printable card' view formatted nicely for A5/A6 paper.">🖨 Printable</div>
+          </div>
+
+          <div class="subfield" id="countdownField">
+            <label class="field-label" style="margin-top:6px;">Countdown to</label>
+            <div class="date-time-row">
+              <input type="date" id="countdownDate">
+              <input type="time" id="countdownTime">
+            </div>
+            <div class="field-hint">The page will show a live countdown until this date/time, then unlock the reveal.</div>
+          </div>
+
+          <div class="subfield" id="songField">
+            <label class="field-label" style="margin-top:6px;">Upload a song</label>
+            <div class="song-drop" id="songDrop">Click to add an mp3, or drop it here</div>
+            <input type="file" id="songInput" accept="audio/*" style="display:none;">
+            <div class="song-chip" id="songChip">
+              <span class="song-name" id="songName"></span>
+              <button id="songRemoveBtn" title="Remove">✕</button>
+            </div>
+            <div class="field-hint">Keep it short (under ~2 min) — it's embedded directly in the file, so smaller is faster and more reliable.</div>
+          </div>
+
+          <div class="subfield" id="voiceField">
+            <label class="field-label" style="margin-top:6px;">Upload a voice note</label>
+            <div class="song-drop" id="voiceDrop">Click to add a short audio clip</div>
+            <input type="file" id="voiceInput" accept="audio/*" style="display:none;">
+            <div class="song-chip" id="voiceChip">
+              <span class="song-name" id="voiceName"></span>
+              <button id="voiceRemoveBtn" title="Remove">✕</button>
+            </div>
+          </div>
+
+          <div class="subfield" id="placeField">
+            <label class="field-label" style="margin-top:6px;">Meaningful place</label>
+            <input type="text" id="placeName" placeholder="e.g. Marine Drive, Mumbai — first date spot">
+          </div>
         </div>
-      </div>
+
+        <div class="field-group">
+          <label class="field-label">Vault Secret / Passcode (Optional)</label>
+          <input type="text" id="passcode" placeholder="e.g. 2026 or secret word">
+        </div>
+
+        <div class="field-group">
+          <label class="field-label">Key Dreams, Nicknames & Inside Jokes</label>
+          <textarea id="aspirations" placeholder="e.g. Wants to join something, called 'Nickname', loves shopping..."></textarea>
+        </div>
+
+        <div class="field-group">
+          <label class="field-label">Your Message (Expanded if left blank)</label>
+          <textarea id="messageText" placeholder="A heartfelt note, a memory, or what you want to say..."></textarea>
+        </div>
+
+        <div class="field-group">
+          <label class="field-label">Photos (Embedded directly)</label>
+          <div class="photo-drop" id="photoDrop">Click to add photos, or drop them here</div>
+          <input type="file" id="photoInput" accept="image/*" multiple style="display:none;">
+          <div class="photo-strip" id="photoStrip"></div>
+        </div>
+
+        <button class="generate-btn" id="generateBtn">✦ Craft the page</button>
+
+        <div class="edit-block" id="editBlock">
+          <label class="field-label">Refine with chat</label>
+          <div class="edit-log" id="editLog"></div>
+          <div class="edit-row">
+            <input type="text" id="editInput" placeholder="e.g. add confetti, change passcode to 2026...">
+            <button id="editBtn">Apply</button>
+          </div>
+          <div class="undo-row">
+            <button class="ghost-btn" id="undoBtn">↺ Undo last edit</button>
+            <button class="ghost-btn" id="downloadBtn" onclick="window.openExportModal()">⇩ Download .html</button>
+          </div>
+          <div style="margin-top: 6px;">
+            <button type="button" class="ghost-btn" id="switchToManualBtn" style="width: 100%; border-color: rgba(212,175,106,0.45); color: var(--gold-light); display: flex; align-items: center; justify-content: center; gap: 7px; padding: 10px; font-weight: 500; background: rgba(212,175,106,0.06);">
+              <span>✎</span> Customize & Arrange Chapters in Manual Editor Tab →
+            </button>
+          </div>
+        </div>
 
       </div> <!-- /aiGeneratorView -->
 
-      <!-- MANUAL STUDIO VIEW (Live Editing & Instant Preview) -->
+      <!-- MANUAL STUDIO VIEW (NO PREBUILT TEMPLATE PILLS — STRICTLY EDITS AI GENERATED CHAPTERS) -->
       <div class="manual-studio-view" id="manualStudioView">
         <div class="manual-studio-header">
           <div>
-            <span class="manual-badge">LIVE STUDIO</span>
+            <span class="manual-badge">AI MULTI-PAGE STUDIO</span>
             <h4>Customize Every Chapter</h4>
-            <p>Every text, note, and lock is editable below. Edits reflect instantly in the live preview.</p>
+            <p>Arrange chapters, skip any page, and edit words freely. Changes reflect instantly in the live preview above.</p>
           </div>
           <div class="live-status-pill">
             <span class="live-dot-pulse"></span>
@@ -2762,169 +3104,172 @@
           </div>
         </div>
 
-        <!-- 0. Active Template Selector -->
-        <div class="field-group">
-          <label class="field-label">Active Luxury Engine</label>
-          <div class="manual-engine-pills" id="manualEnginePills">
-            <button type="button" class="engine-pill selected" data-engine="sapphire-vault" id="manPillSapphire">
-              👑 Sapphire Birthday
-            </button>
-            <button type="button" class="engine-pill" data-engine="royal-velvet" id="manPillRoyal">
-              💎 Royal Velvet
-            </button>
-            <button type="button" class="engine-pill" data-engine="obsidian-vault" id="manPillObsidian">
-              🌌 Obsidian Gold
-            </button>
-            <button type="button" class="engine-pill" data-engine="golden-truce" id="manPillGoldenTruce">
-              🕊️ Golden Truce
+        <!-- 1. CHAPTER SEQUENCE & VISIBILITY MANAGER -->
+        <div class="manual-group" id="aiChapterSequenceSection">
+          <div class="manual-group-header" onclick="this.parentElement.classList.toggle('collapsed')">
+            <span class="manual-group-title"><span>🎞️</span> 1. Chapter Sequence & Visibility (Arrange / Skip)</span>
+            <span class="manual-group-toggle">▼</span>
+          </div>
+          <div class="manual-group-body">
+            <p style="font-size:12px; color:var(--cream-dim); margin:0 0 10px 0; line-height:1.5;">
+              Tap <strong>▲</strong> or <strong>▼</strong> to arrange chapters in your preferred order. Tap <strong>👁️</strong> to skip/include any chapter. Tap <strong>🗑️</strong> to delete. Tap on any chapter row to edit its content.
+            </p>
+            <div class="ai-chapter-manager" id="aiChapterList">
+              <!-- Populated dynamically via JS -->
+            </div>
+            <button type="button" class="ai-chap-add-btn" id="aiAddChapterBtn">
+              <span>+ Add New Chapter</span>
             </button>
           </div>
         </div>
 
-        <!-- 1. Names & Sign-off -->
-        <div class="manual-group">
+        <!-- 2. SELECTED CHAPTER CONTENT CUSTOMIZER -->
+        <div class="manual-group" id="aiActiveChapterEditor">
           <div class="manual-group-header" onclick="this.parentElement.classList.toggle('collapsed')">
-            <span class="manual-group-title"><span>✦</span> 1. Names & Identity</span>
+            <span class="manual-group-title"><span id="aiActiveChapIcon">📝</span> 2. Active Chapter Content: <span id="aiActiveChapTitleHeader" style="color:#fff; text-transform:none; margin-left:4px;">Select Chapter Above</span></span>
+            <span class="manual-group-toggle">▼</span>
+          </div>
+          <div class="manual-group-body" id="aiActiveChapFormBody">
+            <div class="tmpl-input-group">
+              <label>Chapter Headline / Title</label>
+              <input type="text" id="aiChapTitle" placeholder="e.g. Celebrating Ansh">
+            </div>
+            <div class="tmpl-field-row">
+              <div class="tmpl-input-group">
+                <label>Chapter Subtitle</label>
+                <input type="text" id="aiChapSubtitle" placeholder="e.g. A tribute to timeless moments">
+              </div>
+              <div class="tmpl-input-group">
+                <label>Chapter Badge / Tag</label>
+                <input type="text" id="aiChapBadge" placeholder="e.g. CHAPTER 01 // ARRIVAL">
+              </div>
+            </div>
+
+            <div class="tmpl-input-group" id="aiChapIntroWrap">
+              <label>Opening Greeting / Intro Note</label>
+              <textarea id="aiChapIntro" rows="2" placeholder="Introductory welcoming words..."></textarea>
+            </div>
+
+            <div class="tmpl-input-group" id="aiChapBodyWrap">
+              <label>Narrative Body / Memory Reflections</label>
+              <textarea id="aiChapBody" rows="3" placeholder="Shared memories, reflections, or celebratory words..."></textarea>
+            </div>
+
+            <div class="tmpl-input-group" id="aiChapQuoteWrap">
+              <label>Keepsake Quote</label>
+              <textarea id="aiChapQuote" rows="2" placeholder="A meaningful keepsake quote..."></textarea>
+            </div>
+
+            <!-- Secret Reveal Fields -->
+            <div id="aiChapSecretFieldsWrap" style="display:flex; flex-direction:column; gap:10px;">
+              <div class="tmpl-input-group">
+                <label>Secret Heading</label>
+                <input type="text" id="aiChapSecretHeading" placeholder="e.g. Hey Ansh,">
+              </div>
+              <div class="tmpl-input-group">
+                <label>Secret Note (Revealed behind scratch card / cipher)</label>
+                <textarea id="aiChapSecretMessage" rows="3" placeholder="The private note revealed upon unlocking..."></textarea>
+              </div>
+              <div class="tmpl-field-row">
+                <div class="tmpl-input-group">
+                  <label>Passcode</label>
+                  <input type="text" id="aiChapPasscode" placeholder="e.g. 2026">
+                </div>
+                <div class="tmpl-input-group">
+                  <label>Passcode Hint (Code is visible in hint)</label>
+                  <input type="text" id="aiChapPasscodeHint" placeholder="e.g. Key: 2026">
+                </div>
+              </div>
+            </div>
+
+            <!-- Multi-paragraph letter fields -->
+            <div id="aiChapLetterFieldsWrap" style="display:flex; flex-direction:column; gap:10px;">
+              <div class="tmpl-input-group">
+                <label>Letter Paragraph 1</label>
+                <textarea id="aiChapP1" rows="2" placeholder="Paragraph 1..."></textarea>
+              </div>
+              <div class="tmpl-input-group">
+                <label>Letter Paragraph 2</label>
+                <textarea id="aiChapP2" rows="2" placeholder="Paragraph 2..."></textarea>
+              </div>
+              <div class="tmpl-input-group">
+                <label>Letter Paragraph 3</label>
+                <textarea id="aiChapP3" rows="2" placeholder="Paragraph 3..."></textarea>
+              </div>
+            </div>
+
+            <!-- Finale fields -->
+            <div id="aiChapFinaleFieldsWrap" style="display:flex; flex-direction:column; gap:10px;">
+              <div class="tmpl-input-group">
+                <label>Finale Celebration Message</label>
+                <textarea id="aiChapFinaleMsg" rows="2" placeholder="Finale message..."></textarea>
+              </div>
+              <div class="tmpl-input-group">
+                <label>Signature / Sign-off Blessing</label>
+                <input type="text" id="aiChapSignature" placeholder="e.g. With endless love, Yash">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. STORY IDENTITY & PALETTE -->
+        <div class="manual-group" id="aiStorySettingsGroup">
+          <div class="manual-group-header" onclick="this.parentElement.classList.toggle('collapsed')">
+            <span class="manual-group-title"><span>✦</span> 3. Identity & Luxury Palette</span>
             <span class="manual-group-toggle">▼</span>
           </div>
           <div class="manual-group-body">
             <div class="tmpl-field-row">
               <div class="tmpl-input-group">
-                <label>To (Recipient Name)</label>
-                <input type="text" id="manRecipient" placeholder="e.g. Ansh" value="Someone Special">
+                <label>Recipient Name</label>
+                <input type="text" id="aiWishRecipient" placeholder="e.g. Ansh" value="Someone Special">
               </div>
               <div class="tmpl-input-group">
-                <label>From (Sender Name)</label>
-                <input type="text" id="manSender" placeholder="e.g. Yash" value="Forever a Friend">
+                <label>Sender Name</label>
+                <input type="text" id="aiWishSender" placeholder="e.g. Yash" value="Forever a Friend">
               </div>
             </div>
             <div class="tmpl-input-group">
-              <label>Occasion Tag / Theme</label>
-              <input type="text" id="manOccasion" placeholder="e.g. Birthday Celebration" value="Birthday Celebration">
+              <label>Occasion Tag</label>
+              <input type="text" id="aiWishOccasion" placeholder="e.g. Birthday Celebration" value="Birthday Celebration">
             </div>
-          </div>
-        </div>
 
-        <!-- 2. Finale Headline & Opening Subtitles -->
-        <div class="manual-group">
-          <div class="manual-group-header" onclick="this.parentElement.classList.toggle('collapsed')">
-            <span class="manual-group-title"><span>✨</span> 2. Headlines & Subtitles</span>
-            <span class="manual-group-toggle">▼</span>
-          </div>
-          <div class="manual-group-body">
             <div class="tmpl-input-group">
-              <label>Finale Grand Title</label>
-              <input type="text" id="manHeadline" placeholder="e.g. HAPPY BIRTHDAY ANSH!" value="HAPPY BIRTHDAY!">
-            </div>
-            <div class="tmpl-field-row">
-              <div class="tmpl-input-group">
-                <label>Cover Subtitle (Scene 1)</label>
-                <input type="text" id="manCoverSubtitle" placeholder="e.g. Advance Birthday Protocol For" value="Advance Birthday Protocol For">
-              </div>
-              <div class="tmpl-input-group">
-                <label>Opening Tagline / Subtitle</label>
-                <input type="text" id="manSubtitle" placeholder="e.g. Celebrating an unstoppable legend" value="Celebrating an unstoppable milestone">
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- 3. Opening Chapter & Quote -->
-        <div class="manual-group">
-          <div class="manual-group-header" onclick="this.parentElement.classList.toggle('collapsed')">
-            <span class="manual-group-title"><span>📜</span> 3. Opening Scene & Keepsake Quote</span>
-            <span class="manual-group-toggle">▼</span>
-          </div>
-          <div class="manual-group-body">
-            <div class="tmpl-input-group">
-              <label>Opening Message (Scene 1 Card)</label>
-              <textarea id="manIntroMessage" rows="3" placeholder="Opening message shown on the first card...">Your special milestone is almost here, but celebrating someone as extraordinary as you simply cannot be confined to just one day.</textarea>
-            </div>
-            <div class="tmpl-input-group">
-              <label>Keepsake Quote (Scene 2 / 3)</label>
-              <textarea id="manQuote" rows="2" placeholder="Memorable 1-sentence keepsake quote...">Count your age by stars, not years. Count your life by smiles, not tears.</textarea>
-            </div>
-          </div>
-        </div>
-
-        <!-- 4. Interactive Secret Scratch Reveal -->
-        <div class="manual-group">
-          <div class="manual-group-header" onclick="this.parentElement.classList.toggle('collapsed')">
-            <span class="manual-group-title"><span>🔍</span> 4. Secret Scratch Card (Scene 4)</span>
-            <span class="manual-group-toggle">▼</span>
-          </div>
-          <div class="manual-group-body">
-            <div class="tmpl-input-group">
-              <label>Scratch Note Greeting</label>
-              <input type="text" id="manScratchHeading" placeholder="e.g. Hey Ansh," value="Hey There,">
-            </div>
-            <div class="tmpl-input-group">
-              <label>Secret Message (Hidden behind frosted scratch card)</label>
-              <textarea id="manScratchNote" rows="3" placeholder="Secret heartfelt message revealed when scratching...">Happiest Birthday! You are one of the most incredible people in my life, and words can't capture how grateful I am for your presence. Thank you for bringing so much laughter, warmth, and brilliance to every single day.</textarea>
-            </div>
-          </div>
-        </div>
-
-        <!-- 5. Heartfelt Tribute Letter (Multi-Chapter) -->
-        <div class="manual-group">
-          <div class="manual-group-header" onclick="this.parentElement.classList.toggle('collapsed')">
-            <span class="manual-group-title"><span>💌</span> 5. Letter Paragraphs & Closing Blessing</span>
-            <span class="manual-group-toggle">▼</span>
-          </div>
-          <div class="manual-group-body">
-            <div class="tmpl-input-group">
-              <label>Letter Paragraph 1 (Character & Appreciation)</label>
-              <textarea id="manLetter1" rows="3" placeholder="Paragraph celebrating who they are...">Another chapter begins today, written in starlight and infinite possibility. You bring a rare and radiant warmth into the lives of everyone around you.</textarea>
-            </div>
-            <div class="tmpl-input-group">
-              <label>Letter Paragraph 2 (Memories & Shared Moments)</label>
-              <textarea id="manLetter2" rows="3" placeholder="Paragraph with shared moments and laughter...">From the quiet victories to the shared milestones and uncontrollable laughter, having you along for the journey is a gift beyond measure.</textarea>
-            </div>
-            <div class="tmpl-input-group">
-              <label>Letter Paragraph 3 (Future Wishes & Dreams)</label>
-              <textarea id="manLetter3" rows="3" placeholder="Paragraph with future dreams and aspirations...">May this year unfold with fearless adventures, deep peace, and the courage to reach every aspiration you hold close to your heart.</textarea>
-            </div>
-            <div class="tmpl-input-group">
-              <label>Closing Sign-off Blessing</label>
-              <input type="text" id="manClosingNote" placeholder="e.g. CRAFTED WITH IMMENSE LOVE // TO AN UNSTOPPABLE SOUL" value="CRAFTED WITH IMMENSE LOVE // TO AN UNSTOPPABLE SOUL">
-            </div>
-          </div>
-        </div>
-
-        <!-- 6. Security Override Keypad & Clock -->
-        <div class="manual-group">
-          <div class="manual-group-header" onclick="this.parentElement.classList.toggle('collapsed')">
-            <span class="manual-group-title"><span>🔒</span> 6. Security Keypad & Timeline Clock</span>
-            <span class="manual-group-toggle">▼</span>
-          </div>
-          <div class="manual-group-body">
-            <div class="tmpl-field-row">
-              <div class="tmpl-input-group">
-                <label>Security Passcode</label>
-                <input type="text" id="manPasscode" placeholder="e.g. 120711" value="120711">
-              </div>
-              <div class="tmpl-input-group">
-                <label>Passcode Hint</label>
-                <input type="text" id="manPasscodeHint" placeholder="e.g. Day of Birth (DDMMYY)" value="Day of Birth (DDMMYY)">
-              </div>
-            </div>
-            <div class="tmpl-field-row">
-              <div class="tmpl-input-group">
-                <label>Day of Birth / Target Date</label>
-                <input type="date" id="manDate" value="2005-07-12">
-              </div>
-              <div class="tmpl-input-group">
-                <label>Time (Optional)</label>
-                <input type="time" id="manTime" value="00:00">
+              <label>Active Luxury Palette</label>
+              <div class="ai-palette-grid" id="aiPaletteGrid">
+                <div class="ai-palette-card selected" data-theme="royal-velvet">
+                  <div class="ai-palette-swatch" style="background:#D4AF6A;"></div>
+                  <span>Royal Velvet</span>
+                </div>
+                <div class="ai-palette-card" data-theme="obsidian-gold">
+                  <div class="ai-palette-swatch" style="background:#E5C158;"></div>
+                  <span>Obsidian Gold</span>
+                </div>
+                <div class="ai-palette-card" data-theme="midnight-sapphire">
+                  <div class="ai-palette-swatch" style="background:#64B5F6;"></div>
+                  <span>Sapphire Blue</span>
+                </div>
+                <div class="ai-palette-card" data-theme="emerald-noir">
+                  <div class="ai-palette-swatch" style="background:#4ECCA3;"></div>
+                  <span>Emerald Noir</span>
+                </div>
+                <div class="ai-palette-card" data-theme="sunset-peach">
+                  <div class="ai-palette-swatch" style="background:#FF9E9D;"></div>
+                  <span>Sunset Peach</span>
+                </div>
+                <div class="ai-palette-card" data-theme="golden-truce">
+                  <div class="ai-palette-swatch" style="background:#E6C280;"></div>
+                  <span>Golden Truce</span>
+                </div>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- 7. Memory Photos -->
+        <!-- 4. MEMORY PHOTOS -->
         <div class="manual-group">
           <div class="manual-group-header" onclick="this.parentElement.classList.toggle('collapsed')">
-            <span class="manual-group-title"><span>📷</span> 7. Memory Photos</span>
+            <span class="manual-group-title"><span>📷</span> 4. Memory Photos (Embedded into Keepsake)</span>
             <span class="manual-group-toggle">▼</span>
           </div>
           <div class="manual-group-body">
@@ -2938,112 +3283,10 @@
         <div class="manual-actions-bar">
           <button type="button" class="ghost-btn" id="manOpenTabBtn" style="color:var(--gold); border-color:var(--gold-dim);">Open in Tab ↗</button>
           <button type="button" class="ghost-btn" id="manDownloadBtn" onclick="window.openExportModal()">⇩ Download .html</button>
-          <button type="button" class="ghost-btn" id="manBackToAiBtn">✦ AI Kickstart</button>
+          <button type="button" class="ghost-btn" id="manBackToAiBtn">✦ AI Generator</button>
         </div>
       </div> <!-- /manualStudioView -->
-    </div> <!-- /rail -->
-
-    <!-- RIGHT STAGE -->
-    <div class="stage">
-      <div class="stage-inner mode-desktop" id="stageInner">
-        <div class="stage-chrome">
-          <div class="chrome-col-left">
-            <div class="dots"><span></span><span></span><span></span></div>
-            <div class="chrome-status-badge">
-              <span class="live-dot-pulse"></span>
-              <span id="chromeLabel">LIVE PREVIEW</span>
-            </div>
-          </div>
-          <div class="chrome-col-center">
-            <div class="device-toggle-pills" id="deviceTogglePills">
-              <button type="button" class="dev-btn active" id="devBtnDesktop" title="Full Desktop Ratio (1280×800 Native)">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-                <span>Desktop</span><span class="pill-res"> (1280×800)</span>
-              </button>
-              <button type="button" class="dev-btn" id="devBtnMobile" title="Mobile Phone Ratio (390×844 Smartphone Ratio)">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="3"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
-                <span>Phone</span><span class="pill-res"> (390×844)</span>
-              </button>
-            </div>
-          </div>
-          <div class="chrome-col-right">
-            <div class="stage-actions" id="stageActions" style="visibility:visible;">
-              <button id="openTabBtn" title="Open full experience in new browser tab">
-                <span class="btn-label-long">Open in tab</span>
-                <span class="btn-label-short">Open</span>
-                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <div class="stage-viewport-wrap" id="stageViewportWrap">
-          <div class="empty-stage visible" id="emptyStage">
-            <svg class="ribbon-mark" viewBox="0 0 64 64" fill="none">
-              <circle cx="32" cy="32" r="30" stroke="#D4AF6A" stroke-width="1" opacity="0.4"/>
-              <path d="M20 24 L32 36 L44 24" stroke="#D4AF6A" stroke-width="1.5" opacity="0.8"/>
-              <path d="M20 40 L32 28 L44 40" stroke="#D4AF6A" stroke-width="1.5" opacity="0.8"/>
-            </svg>
-            <h2>The cinematic experience opens here</h2>
-            <p>Fill in the details on the left or customize directly in the Manual Editor. WishCraft creates an interactive multi-chapter keepsake.</p>
-          </div>
-
-          <div class="loading-stage" id="loadingStage">
-            <svg class="tie-svg" width="90" height="90" viewBox="0 0 90 90" fill="none">
-              <path d="M45 10 C20 10 20 45 45 45 C70 45 70 80 45 80" stroke="#D4AF6A" stroke-width="2" stroke-linecap="round"/>
-            </svg>
-            <p id="loadingText">tying the ribbon...</p>
-          </div>
-
-          <div class="error-stage" id="errorStage">
-            <svg class="error-mark" viewBox="0 0 64 64" fill="none">
-              <circle cx="32" cy="32" r="30" stroke="#C97B84" stroke-width="1.5" stroke-dasharray="4 4" opacity="0.6"/>
-              <path d="M24 24 L40 40 M40 24 L24 40" stroke="#C97B84" stroke-width="2" stroke-linecap="round"/>
-            </svg>
-            <h2 id="errorTitle">The spell fizzled.</h2>
-            <p id="errorMsg">The AI couldn't complete the generation. Check your API credits or network connection.</p>
-            
-            <div style="display: flex; gap: 10px; justify-content: center; align-items: center; margin-top: 10px; flex-wrap: wrap;">
-              <button class="ghost-btn" id="retryBtn" style="padding: 10px 24px;">Try Again</button>
-              <button class="api-key-pill-btn" id="toggleApiKeyBoxBtn" onclick="openApiKeyModal()" style="display:inline-flex; padding: 9px 18px; font-size: 12.5px;">
-                <span class="api-key-icon">
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-                    <path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/>
-                  </svg>
-                </span>
-                <span>API Key Settings</span>
-              </button>
-            </div>
-
-            <!-- Custom API Key Input Box -->
-            <div id="customApiKeyBox" style="display: none; margin-top: 20px; padding: 22px 20px; border: 1px solid rgba(212,175,106,0.32); border-radius: 16px; background: rgba(14,16,21,0.88); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); max-width: 440px; width: 100%; text-align: left; box-shadow: 0 18px 45px rgba(0,0,0,0.65), inset 0 0 25px rgba(212,175,106,0.04);">
-              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
-                <span style="font-size: 13.5px; font-weight: 600; color: #fff; display: flex; align-items: center; gap: 7px; font-family: var(--serif);">
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
-                  Gemini API Key
-                </span>
-                <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener" style="font-size: 11.5px; color: var(--gold); text-decoration: none; border-bottom: 1px dashed var(--gold-dim);">Get free key ↗</a>
-              </div>
-              <p style="font-size: 12.5px; color: var(--cream-dim); margin-bottom: 14px; line-height: 1.5;">
-                Server busy or free quota reached? Insert your free Gemini API key to craft your page directly without server limits.
-              </p>
-              <div class="api-input-wrap" style="margin-bottom: 10px;">
-                <input type="password" id="userCustomKeyInput" class="api-key-input-field" placeholder="Paste key (AIzaSy...)" autocomplete="off" spellcheck="false" />
-              </div>
-              <div style="display: flex; justify-content: flex-end; margin-top: 12px;">
-                <button class="api-save-btn" id="saveAndCraftBtn" style="width: 100%; justify-content: center; display: flex; align-items: center; gap: 6px;">✦ Save & Craft Page</button>
-              </div>
-            </div>
-          </div>
-
-          <div class="preview-device-holder" id="previewDeviceHolder">
-            <div class="phone-dynamic-island" id="phoneDynamicIsland" style="display:none;"></div>
-            <iframe id="preview" title="Generated page preview" sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals"></iframe>
-            <div class="phone-bottom-bar" id="phoneBottomBar" style="display:none;"></div>
-          </div>
-        </div>
-      </div>
-    </div>
+    </div> <!-- /workshopControlsSection -->
   </div> <!-- /workshop -->
 
   <!-- ================= DEDICATED TEMPLATE STUDIO VIEW (PREVIEW TOP + CUSTOMIZER SCROLL-DOWN) ================= -->
@@ -4197,7 +4440,16 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
   async function callGemini(systemPrompt, userContent, userData = {}) {
     const keySource = localStorage.getItem('wishcraft_key_source') || 'custom';
     const customKey = localStorage.getItem('wishcraft_custom_api_key');
-    let aiData = null;
+    let aiWishData = null;
+
+    // Use WishCraftAiEngine to generate high-precision prompt and structured intake
+    const sysPrompt = (window.WishCraftAiEngine && typeof window.WishCraftAiEngine.getSystemPrompt === 'function')
+      ? window.WishCraftAiEngine.getSystemPrompt(userData)
+      : systemPrompt;
+    
+    const intakePrompt = (window.WishCraftAiEngine && typeof window.WishCraftAiEngine.buildIntakeMessage === 'function')
+      ? window.WishCraftAiEngine.buildIntakeMessage(userData)
+      : userContent;
 
     // If user provided their own key and selected custom key mode, call Gemini directly from browser
     if (keySource !== 'web' && customKey && customKey.trim()) {
@@ -4208,8 +4460,8 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-              system_instruction: systemPrompt ? { parts: [{ text: systemPrompt }] } : undefined,
-              contents: [{ role: 'user', parts: [{ text: userContent }] }],
+              system_instruction: sysPrompt ? { parts: [{ text: sysPrompt }] } : undefined,
+              contents: [{ role: 'user', parts: [{ text: intakePrompt }] }],
               generationConfig: {
                 responseMimeType: 'application/json',
                 temperature: 0.7
@@ -4222,8 +4474,8 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
             const data = JSON.parse(resText);
             const rawText = data.candidates?.[0]?.content?.parts?.[0]?.text;
             if (rawText) {
-              const cleaned = rawText.replace(/^```json\s*/i, "").replace(/^```\s*/i, "").replace(/```\s*$/i, "").trim();
-              aiData = JSON.parse(cleaned);
+              const cleaned = rawText.replace(/^\`\`\`json\s*/i, "").replace(/^\`\`\`\s*/i, "").replace(/\`\`\`\s*$/i, "").trim();
+              aiWishData = JSON.parse(cleaned);
               break;
             }
           }
@@ -4237,7 +4489,7 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
         const response = await fetch('/api/generate', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ systemPrompt, userContent })
+          body: JSON.stringify({ systemPrompt: sysPrompt, userContent: intakePrompt })
         });
 
         const raw = await response.text();
@@ -4245,15 +4497,15 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
           try {
             const parsed = JSON.parse(raw);
             if (parsed.data && typeof parsed.data === 'object') {
-              aiData = parsed.data;
+              aiWishData = parsed.data;
             } else if (parsed.raw) {
-              aiData = JSON.parse(parsed.raw);
-            } else if (typeof parsed === 'object' && parsed.title) {
-              aiData = parsed;
+              aiWishData = JSON.parse(parsed.raw);
+            } else if (typeof parsed === 'object') {
+              aiWishData = parsed;
             }
           } catch (_) {
-            const cleaned = raw.replace(/^```json\s*/i, "").replace(/^```\s*/i, "").replace(/```\s*$/i, "").trim();
-            aiData = JSON.parse(cleaned);
+            const cleaned = raw.replace(/^\`\`\`json\s*/i, "").replace(/^\`\`\`\s*/i, "").replace(/\`\`\`\s*$/i, "").trim();
+            aiWishData = JSON.parse(cleaned);
           }
         }
       } catch (err) {
@@ -4261,16 +4513,32 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
       }
     }
 
-    // Pass parsed AI copywriting object into the pre-tested Template Injection Engine
-    if (window.WishCraftTemplateEngine && typeof window.WishCraftTemplateEngine.buildWishFromTemplate === 'function') {
-      const generated = await window.WishCraftTemplateEngine.buildWishFromTemplate(aiData, userData);
-      if (typeof window.syncAiToManualEditor === 'function') {
-        window.syncAiToManualEditor(aiData, userData);
+    // Validate structured wish data or deploy fallback
+    if (!aiWishData || !Array.isArray(aiWishData.chapters) || aiWishData.chapters.length === 0) {
+      console.info("[WishCraft] Parsing raw or incomplete, generating bespoke multi-chapter architecture.");
+      if (window.WishCraftAiEngine) {
+        aiWishData = window.WishCraftAiEngine.getDefaultWishData(userData);
       }
-      return generated.html;
     }
 
-    throw new Error("Template engine not loaded. Please refresh.");
+    window.currentAiWishData = aiWishData;
+
+    // Compile into standalone multi-page HTML
+    if (window.WishCraftAiEngine && typeof window.WishCraftAiEngine.compileMultiPageWish === 'function') {
+      const isPro = typeof window.isUserProTier === 'function' && window.isUserProTier();
+      const compiledHtml = window.WishCraftAiEngine.compileMultiPageWish(window.currentAiWishData, {
+        isPro: isPro,
+        photos: photos || []
+      });
+
+      if (typeof window.syncAiToManualEditor === 'function') {
+        window.syncAiToManualEditor();
+      }
+
+      return compiledHtml;
+    }
+
+    throw new Error("WishCraft engine not loaded. Please refresh.");
   }
 
   // ---------- Generation Handling ----------
@@ -4289,7 +4557,14 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
 
   document.getElementById('retryBtn').addEventListener('click', () => { generateBtn.click(); });
 
-  const loadingMessages = ["analyzing your sentiments...", "selecting the perfect luxury template...", "crafting poetic verses...", "polishing the gold highlights...", "arranging memory archives...", "perfecting the experience..."];
+  const loadingMessages = [
+    "analyzing your sentiments...",
+    "architecting multi-chapter narrative...",
+    "crafting poetic verses & vows...",
+    "forging interactive secret cipher...",
+    "polishing particles & golden typography...",
+    "perfecting your cinematic keepsake..."
+  ];
 
   generateBtn.addEventListener('click', async () => {
     generateBtn.disabled = true; generateBtn.textContent = "Crafting...";
@@ -4298,7 +4573,7 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
     loadingStage.classList.add('visible');
     
     let i = 0; const loadingText = document.getElementById('loadingText');
-    const interval = setInterval(() => { i = (i + 1) % loadingMessages.length; loadingText.textContent = loadingMessages[i]; }, 1000);
+    const interval = setInterval(() => { i = (i + 1) % loadingMessages.length; loadingText.textContent = loadingMessages[i]; }, 1100);
 
     let countdownTarget = null;
     const cd = document.getElementById('countdownDate')?.value;
@@ -4311,11 +4586,11 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
       recipientName: document.getElementById('recipientName').value.trim() || "Someone Special",
       senderName: document.getElementById('senderName').value.trim() || "",
       relationship: document.getElementById('relationship').value.trim() || "",
-      occasion: selectedOccasion || "birthday",
-      tone: selectedTone || "heartfelt",
-      themeName: selectedTheme || "royal-gold",
-      passcode: document.getElementById('passcode').value.trim() || "",
-      passcodeHint: "6-Digit Security Decryption Key",
+      occasion: selectedOccasion || "Birthday",
+      tone: selectedTone || "Romantic & Cinematic",
+      themeName: selectedTheme || "royal-velvet",
+      passcode: document.getElementById('passcode').value.trim() || "2026",
+      passcodeHint: "Secret Passcode: " + (document.getElementById('passcode').value.trim() || "2026"),
       countdownTarget: countdownTarget,
       aspirations: document.getElementById('aspirations').value.trim() || "",
       userMessage: document.getElementById('messageText').value.trim() || "",
@@ -4323,28 +4598,47 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
     };
 
     try {
-      const systemPrompt = getSystemPrompt();
-      const intakeMessage = buildIntakeMessage();
-      const html = await callGemini(systemPrompt, intakeMessage, userData);
+      const html = await callGemini(null, null, userData);
       
-      window.currentHtml = html; window.versions = [html];
+      window.currentHtml = html;
+      window.versions = [html];
       renderPreview(html);
       
-      editBlock.classList.add('visible'); stageActions.style.visibility = 'visible';
-      chromeLabel.textContent = 'live preview'; step1.classList.remove('active'); step2.classList.add('active');
+      editBlock.classList.add('visible');
+      if (stageActions) stageActions.style.visibility = 'visible';
+      if (chromeLabel) chromeLabel.textContent = 'live preview';
+      if (step1) step1.classList.remove('active');
+      if (step2) step2.classList.add('active');
+
+      // Scroll smoothly to top preview so user sees output immediately
+      document.getElementById('stageViewportWrap')?.scrollIntoView({ behavior: 'smooth' });
     } catch(err) {
-      console.warn("API/Network Error, deploying instant luxury fallback:", err);
-      // Instant graceful offline fallback
+      console.warn("API/Network Error, deploying instant fallback wish:", err);
       try {
-        if (window.WishCraftTemplateEngine) {
-          const fallbackGen = await window.WishCraftTemplateEngine.buildWishFromTemplate(null, userData);
+        if (window.WishCraftAiEngine) {
+          const fallbackData = window.WishCraftAiEngine.getDefaultWishData(userData);
+          window.currentAiWishData = fallbackData;
+          const isPro = typeof window.isUserProTier === 'function' && window.isUserProTier();
+          const fallbackHtml = window.WishCraftAiEngine.compileMultiPageWish(fallbackData, {
+            isPro: isPro,
+            photos: photos || []
+          });
+
+          window.currentHtml = fallbackHtml;
+          window.versions = [fallbackHtml];
+          renderPreview(fallbackHtml);
+
           if (typeof window.syncAiToManualEditor === 'function') {
-            window.syncAiToManualEditor(fallbackGen, userData);
+            window.syncAiToManualEditor();
           }
-          window.currentHtml = fallbackGen.html; window.versions = [fallbackGen.html];
-          renderPreview(fallbackGen.html);
-          editBlock.classList.add('visible'); stageActions.style.visibility = 'visible';
-          chromeLabel.textContent = 'live preview'; step1.classList.remove('active'); step2.classList.add('active');
+
+          editBlock.classList.add('visible');
+          if (stageActions) stageActions.style.visibility = 'visible';
+          if (chromeLabel) chromeLabel.textContent = 'live preview';
+          if (step1) step1.classList.remove('active');
+          if (step2) step2.classList.add('active');
+
+          document.getElementById('stageViewportWrap')?.scrollIntoView({ behavior: 'smooth' });
         } else {
           throw err;
         }
@@ -4354,16 +4648,18 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
         errorStage.classList.add('visible'); 
       }
     } finally {
-      clearInterval(interval); loadingStage.classList.remove('visible');
-      generateBtn.disabled = false; generateBtn.textContent = "✦ Craft the page";
+      clearInterval(interval);
+      loadingStage.classList.remove('visible');
+      generateBtn.disabled = false;
+      generateBtn.textContent = "✦ Craft the page";
     }
   });
 
   // =========================================================================
-  // ---------- MANUAL STUDIO CONTROLLER & LIVE TWO-WAY SYNC ----------
+  // ---------- MULTI-CHAPTER MANUAL STUDIO & LIVE SYNC CONTROLLER ----------
   // =========================================================================
-  window.manualActiveEngine = 'sapphire-vault';
-  window._manDebounceTimer = null;
+  window.selectedChapterIndex = 0;
+  window._aiManualDebounce = null;
 
   const tabAiModeBtn = document.getElementById('tabAiModeBtn');
   const tabManualModeBtn = document.getElementById('tabManualModeBtn');
@@ -4372,43 +4668,59 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
   const switchToManualBtn = document.getElementById('switchToManualBtn');
   const manBackToAiBtn = document.getElementById('manBackToAiBtn');
   const manOpenTabBtn = document.getElementById('manOpenTabBtn');
+  const aiStudioBackBtn = document.getElementById('aiStudioBackBtn');
+  const workshopScrollPrompt = document.getElementById('workshopScrollPrompt');
+  const workshopJumpTopBtn = document.getElementById('workshopJumpTopBtn');
 
-  // Manual Editor Inputs
-  const manRecipient = document.getElementById('manRecipient');
-  const manSender = document.getElementById('manSender');
-  const manOccasion = document.getElementById('manOccasion');
-  const manHeadline = document.getElementById('manHeadline');
-  const manCoverSubtitle = document.getElementById('manCoverSubtitle');
-  const manSubtitle = document.getElementById('manSubtitle');
-  const manIntroMessage = document.getElementById('manIntroMessage');
-  const manQuote = document.getElementById('manQuote');
-  const manScratchHeading = document.getElementById('manScratchHeading');
-  const manScratchNote = document.getElementById('manScratchNote');
-  const manLetter1 = document.getElementById('manLetter1');
-  const manLetter2 = document.getElementById('manLetter2');
-  const manLetter3 = document.getElementById('manLetter3');
-  const manClosingNote = document.getElementById('manClosingNote');
-  const manPasscode = document.getElementById('manPasscode');
-  const manPasscodeHint = document.getElementById('manPasscodeHint');
-  const manDate = document.getElementById('manDate');
-  const manTime = document.getElementById('manTime');
+  // Manual Inputs
+  const aiWishRecipient = document.getElementById('aiWishRecipient');
+  const aiWishSender = document.getElementById('aiWishSender');
+  const aiWishOccasion = document.getElementById('aiWishOccasion');
+  const aiChapterList = document.getElementById('aiChapterList');
+  const aiAddChapterBtn = document.getElementById('aiAddChapterBtn');
 
-  // Engine Pill Buttons
-  const manPills = document.querySelectorAll('#manualEnginePills .engine-pill');
+  // Active Chapter Inputs
+  const aiActiveChapTitleHeader = document.getElementById('aiActiveChapTitleHeader');
+  const aiChapTitle = document.getElementById('aiChapTitle');
+  const aiChapSubtitle = document.getElementById('aiChapSubtitle');
+  const aiChapBadge = document.getElementById('aiChapBadge');
+  const aiChapIntro = document.getElementById('aiChapIntro');
+  const aiChapIntroWrap = document.getElementById('aiChapIntroWrap');
+  const aiChapBody = document.getElementById('aiChapBody');
+  const aiChapBodyWrap = document.getElementById('aiChapBodyWrap');
+  const aiChapQuote = document.getElementById('aiChapQuote');
+  const aiChapQuoteWrap = document.getElementById('aiChapQuoteWrap');
+  const aiChapSecretFieldsWrap = document.getElementById('aiChapSecretFieldsWrap');
+  const aiChapSecretHeading = document.getElementById('aiChapSecretHeading');
+  const aiChapSecretMessage = document.getElementById('aiChapSecretMessage');
+  const aiChapPasscode = document.getElementById('aiChapPasscode');
+  const aiChapPasscodeHint = document.getElementById('aiChapPasscodeHint');
+  const aiChapLetterFieldsWrap = document.getElementById('aiChapLetterFieldsWrap');
+  const aiChapP1 = document.getElementById('aiChapP1');
+  const aiChapP2 = document.getElementById('aiChapP2');
+  const aiChapP3 = document.getElementById('aiChapP3');
+  const aiChapFinaleFieldsWrap = document.getElementById('aiChapFinaleFieldsWrap');
+  const aiChapFinaleMsg = document.getElementById('aiChapFinaleMsg');
+  const aiChapSignature = document.getElementById('aiChapSignature');
 
-  function setManualEngine(engineId) {
-    window.manualActiveEngine = engineId;
-    manPills.forEach(p => {
-      p.classList.toggle('selected', p.getAttribute('data-engine') === engineId);
-    });
-    window.rebuildManualExperience();
-  }
+  // Smooth Navigation Between Preview & Customizer
+  workshopScrollPrompt?.addEventListener('click', () => {
+    document.getElementById('workshopControlsSection')?.scrollIntoView({ behavior: 'smooth' });
+  });
 
-  manPills.forEach(pill => {
-    pill.addEventListener('click', () => {
-      const eng = pill.getAttribute('data-engine');
-      if (eng) setManualEngine(eng);
-    });
+  workshopJumpTopBtn?.addEventListener('click', () => {
+    document.getElementById('stageViewportWrap')?.scrollIntoView({ behavior: 'smooth' });
+  });
+
+  aiStudioBackBtn?.addEventListener('click', () => {
+    const hub = document.getElementById('hub');
+    const workshop = document.getElementById('workshop');
+    const backBtn = document.getElementById('hubBackBtn');
+    const indicator = document.getElementById('aiStepIndicator');
+    if (workshop) workshop.classList.remove('visible');
+    if (hub) hub.classList.remove('hidden');
+    if (backBtn) backBtn.classList.remove('visible');
+    if (indicator) indicator.style.display = 'none';
   });
 
   // Switch to Manual Mode Tab
@@ -4418,8 +4730,17 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
     aiGeneratorView?.classList.add('hidden');
     manualStudioView?.classList.add('active');
 
-    window.syncInputsToManualEditor();
-    window.rebuildManualExperience();
+    if (!window.currentAiWishData && window.WishCraftAiEngine) {
+      window.currentAiWishData = window.WishCraftAiEngine.getDefaultWishData({
+        recipientName: document.getElementById('recipientName')?.value?.trim() || "Someone Special",
+        senderName: document.getElementById('senderName')?.value?.trim() || "",
+        occasion: selectedOccasion || "Birthday",
+        tone: selectedTone || "Romantic & Cinematic"
+      });
+    }
+
+    window.syncAiToManualEditor();
+    window.recompileAiWishPreview();
   }
 
   // Switch to AI Mode Tab
@@ -4432,234 +4753,323 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
 
   tabManualModeBtn?.addEventListener('click', activateManualTab);
   tabAiModeBtn?.addEventListener('click', activateAiTab);
-  switchToManualBtn?.addEventListener('click', activateManualTab);
+  switchToManualBtn?.addEventListener('click', () => {
+    activateManualTab();
+    document.getElementById('workshopControlsSection')?.scrollIntoView({ behavior: 'smooth' });
+  });
   manBackToAiBtn?.addEventListener('click', activateAiTab);
 
-  // Sync AI Generation payload into Manual Editor inputs
-  window.syncAiToManualEditor = function(aiData, userData) {
-    if (!aiData && !userData) return;
-    const occ = (userData?.occasion || selectedOccasion || 'birthday').toLowerCase();
-    
-    // Select flagship template matching occasion
-    if (occ.includes('apol') || occ.includes('sorr') || occ.includes('forgiv') || occ.includes('pardon') || occ.includes('reconcil') || occ.includes('truce')) {
-      window.manualActiveEngine = 'golden-truce';
-    } else if (occ.includes('birth') || occ.includes('bday')) {
-      window.manualActiveEngine = 'sapphire-vault';
-    } else if (occ.includes('anniv') || occ.includes('love') || occ.includes('roman') || occ.includes('wedding')) {
-      window.manualActiveEngine = 'royal-velvet';
-    } else {
-      window.manualActiveEngine = 'obsidian-vault';
-    }
-    manPills.forEach(p => {
-      p.classList.toggle('selected', p.getAttribute('data-engine') === window.manualActiveEngine);
-    });
+  // Helper escape
+  function escText(str) {
+    if (!str) return '';
+    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
 
-    if (manRecipient && userData.recipientName) manRecipient.value = userData.recipientName;
-    if (manSender && userData.senderName) manSender.value = userData.senderName;
-    if (manOccasion) manOccasion.value = (userData.occasion || selectedOccasion || 'Birthday Celebration');
-    
-    if (aiData) {
-      if (manHeadline && (aiData.headline || aiData.title)) manHeadline.value = aiData.headline || aiData.title;
-      if (manSubtitle && aiData.subtitle) manSubtitle.value = aiData.subtitle;
-      if (manCoverSubtitle && aiData.cover_subtitle) manCoverSubtitle.value = aiData.cover_subtitle;
-      if (manIntroMessage && (aiData.intro_note || aiData.intro_message)) manIntroMessage.value = aiData.intro_note || aiData.intro_message;
-      if (manQuote && aiData.quote) manQuote.value = aiData.quote;
-      if (manScratchHeading && aiData.scratch_heading) manScratchHeading.value = aiData.scratch_heading;
-      if (manScratchNote && (aiData.scratch_note || aiData.body_text)) manScratchNote.value = aiData.scratch_note || aiData.body_text;
-      if (manLetter1 && aiData.letter_p1) manLetter1.value = aiData.letter_p1;
-      if (manLetter2 && aiData.letter_p2) manLetter2.value = aiData.letter_p2;
-      if (manLetter3 && aiData.letter_p3) manLetter3.value = aiData.letter_p3;
-      if (manClosingNote && aiData.closing_note) manClosingNote.value = aiData.closing_note;
-    }
-
-    if (manPasscode && userData.passcode) manPasscode.value = userData.passcode;
-    if (manDate && userData.countdownTarget) {
-      manDate.value = userData.countdownTarget.split('T')[0];
-    }
-  };
-
-  // Sync basic inputs before AI run
-  window.syncInputsToManualEditor = function() {
-    const rName = document.getElementById('recipientName')?.value?.trim();
-    const sName = document.getElementById('senderName')?.value?.trim();
-    const pCode = document.getElementById('passcode')?.value?.trim();
-    const cDate = document.getElementById('countdownDate')?.value;
-
-    if (rName && manRecipient) {
-      manRecipient.value = rName;
-      if (manHeadline && (!manHeadline.value || manHeadline.value === 'HAPPY BIRTHDAY!')) {
-        manHeadline.value = `HAPPY BIRTHDAY ${rName.toUpperCase()}!`;
+  // Render Chapter List with Reordering (▲/▼), Visibility (👁️), and Delete (🗑️)
+  window.renderAiChapterList = function() {
+    if (!aiChapterList) return;
+    if (!window.currentAiWishData || !Array.isArray(window.currentAiWishData.chapters)) {
+      if (window.WishCraftAiEngine) {
+        window.currentAiWishData = window.WishCraftAiEngine.getDefaultWishData();
+      } else {
+        return;
       }
     }
-    if (sName && manSender) manSender.value = sName;
-    if (pCode && manPasscode) manPasscode.value = pCode;
-    if (cDate && manDate) manDate.value = cDate;
 
-    // Set engine if not chosen yet
-    const occ = (selectedOccasion || 'birthday').toLowerCase();
-    if (occ.includes('birth') || occ.includes('bday')) {
-      window.manualActiveEngine = 'sapphire-vault';
-    } else if (occ.includes('anniv') || occ.includes('love') || occ.includes('roman') || occ.includes('wedding')) {
-      window.manualActiveEngine = 'royal-velvet';
-    } else {
-      window.manualActiveEngine = 'obsidian-vault';
+    const chapters = window.currentAiWishData.chapters;
+    if (window.selectedChapterIndex >= chapters.length) {
+      window.selectedChapterIndex = Math.max(0, chapters.length - 1);
     }
-    manPills.forEach(p => {
-      p.classList.toggle('selected', p.getAttribute('data-engine') === window.manualActiveEngine);
+
+    aiChapterList.innerHTML = '';
+
+    chapters.forEach((chap, idx) => {
+      const row = document.createElement('div');
+      row.className = `ai-chapter-row ${idx === window.selectedChapterIndex ? 'active' : ''} ${chap.disabled ? 'disabled' : ''}`;
+      
+      const badgeText = chap.badge || (`CH 0${idx + 1}`);
+      const titleText = chap.title || chap.navTitle || (`Chapter ${idx + 1}`);
+
+      row.innerHTML = `
+        <div class="ai-chap-info" onclick="window.selectAiChapter(${idx})">
+          <span class="ai-chap-badge">${escText(badgeText)}</span>
+          <span class="ai-chap-title">${escText(titleText)}</span>
+        </div>
+        <div class="ai-chap-btns">
+          <button type="button" class="ai-chap-btn" title="Move Up" onclick="window.moveAiChapter(${idx}, -1)" ${idx === 0 ? 'disabled style="opacity:0.3;"' : ''}>▲</button>
+          <button type="button" class="ai-chap-btn" title="Move Down" onclick="window.moveAiChapter(${idx}, 1)" ${idx === chapters.length - 1 ? 'disabled style="opacity:0.3;"' : ''}>▼</button>
+          <button type="button" class="ai-chap-btn" title="${chap.disabled ? 'Include in wish' : 'Skip chapter'}" onclick="window.toggleAiChapter(${idx})">
+            ${chap.disabled ? '🚫' : '👁️'}
+          </button>
+          <button type="button" class="ai-chap-btn delete" title="Delete chapter" onclick="window.deleteAiChapter(${idx})">🗑️</button>
+        </div>
+      `;
+
+      aiChapterList.appendChild(row);
     });
   };
 
-  // Live Real-Time Builder for Manual Editor
-  window.rebuildManualExperience = function() {
-    const engine = window.manualActiveEngine || 'sapphire-vault';
-    const recName = manRecipient?.value?.trim() || "Someone Special";
-    const sndName = manSender?.value?.trim() || "Forever a Friend";
-    const headLine = manHeadline?.value?.trim() || `HAPPY CELEBRATION ${recName.toUpperCase()}!`;
-    const subTitle = manSubtitle?.value?.trim() || "A celebration of timeless moments";
-    const covSubtitle = manCoverSubtitle?.value?.trim() || "Advance Celebration Protocol For";
-    const introMsg = manIntroMessage?.value?.trim() || "Your special milestone is almost here, but celebrating someone as extraordinary as you simply cannot be confined to just one day.";
-    const quot = manQuote?.value?.trim() || "Count your age by stars, not years. Count your life by smiles, not tears.";
-    const scrHeading = manScratchHeading?.value?.trim() || `Hey ${recName},`;
-    const scrNote = manScratchNote?.value?.trim() || "Happiest celebration! You are one of the most incredible people in my life, and words can't capture how grateful I am for your presence.";
-    const let1 = manLetter1?.value?.trim() || "Another chapter begins today, written in starlight and infinite possibility. You bring a rare and radiant warmth into the lives of everyone around you.";
-    const let2 = manLetter2?.value?.trim() || "From the quiet victories to the shared milestones and uncontrollable laughter, having you along for the journey is a gift beyond measure.";
-    const let3 = manLetter3?.value?.trim() || "May this year unfold with fearless adventures, deep peace, and the courage to reach every aspiration you hold close to your heart.";
-    const clsNote = manClosingNote?.value?.trim() || "CRAFTED WITH IMMENSE LOVE // TO AN UNSTOPPABLE SOUL";
+  // Chapter Selection
+  window.selectAiChapter = function(index) {
+    window.selectedChapterIndex = index;
+    window.renderAiChapterList();
+    window.renderAiActiveChapterEditor();
+  };
+
+  // Move Chapter Up/Down
+  window.moveAiChapter = function(index, dir) {
+    const chapters = window.currentAiWishData.chapters;
+    const target = index + dir;
+    if (target < 0 || target >= chapters.length) return;
+
+    const temp = chapters[index];
+    chapters[index] = chapters[target];
+    chapters[target] = temp;
+
+    if (window.selectedChapterIndex === index) {
+      window.selectedChapterIndex = target;
+    } else if (window.selectedChapterIndex === target) {
+      window.selectedChapterIndex = index;
+    }
+
+    window.renderAiChapterList();
+    window.renderAiActiveChapterEditor();
+    window.recompileAiWishPreview();
+  };
+
+  // Toggle Chapter Skip / Include
+  window.toggleAiChapter = function(index) {
+    const chapters = window.currentAiWishData.chapters;
+    if (!chapters[index]) return;
+    chapters[index].disabled = !chapters[index].disabled;
+
+    window.renderAiChapterList();
+    window.recompileAiWishPreview();
+  };
+
+  // Delete Chapter
+  window.deleteAiChapter = function(index) {
+    const chapters = window.currentAiWishData.chapters;
+    if (chapters.length <= 1) {
+      if (window.appModal) {
+        window.appModal({
+          title: "Minimum Chapters Reached",
+          msg: "A cinematic keepsake requires at least one chapter."
+        });
+      } else {
+        alert("A keepsake requires at least one chapter.");
+      }
+      return;
+    }
+
+    chapters.splice(index, 1);
+    if (window.selectedChapterIndex >= chapters.length) {
+      window.selectedChapterIndex = chapters.length - 1;
+    }
+
+    window.renderAiChapterList();
+    window.renderAiActiveChapterEditor();
+    window.recompileAiWishPreview();
+  };
+
+  // Add Custom Chapter
+  aiAddChapterBtn?.addEventListener('click', () => {
+    if (!window.currentAiWishData || !Array.isArray(window.currentAiWishData.chapters)) return;
+    const chapters = window.currentAiWishData.chapters;
+    const nextNum = String(chapters.length + 1).padStart(2, '0');
+
+    chapters.push({
+      id: `chap_${Date.now()}`,
+      type: 'memories',
+      navTitle: `${nextNum}. Reflection`,
+      badge: `CHAPTER ${nextNum} // MEMORIES`,
+      title: "A Timeless Chapter",
+      subtitle: "Honoring our shared memories",
+      body: "Every shared moment and memory makes this story completely unforgettable.",
+      quote: "Timeless moments held forever in our hearts."
+    });
+
+    window.selectedChapterIndex = chapters.length - 1;
+    window.renderAiChapterList();
+    window.renderAiActiveChapterEditor();
+    window.recompileAiWishPreview();
+  });
+
+  // Render Fields for Selected Chapter
+  window.renderAiActiveChapterEditor = function() {
+    if (!window.currentAiWishData || !Array.isArray(window.currentAiWishData.chapters)) return;
+    const chapters = window.currentAiWishData.chapters;
+    const chap = chapters[window.selectedChapterIndex];
+    if (!chap) return;
+
+    if (aiActiveChapTitleHeader) {
+      aiActiveChapTitleHeader.textContent = chap.title || chap.navTitle || (`Chapter ${window.selectedChapterIndex + 1}`);
+    }
+
+    if (aiChapTitle) aiChapTitle.value = chap.title || '';
+    if (aiChapSubtitle) aiChapSubtitle.value = chap.subtitle || '';
+    if (aiChapBadge) aiChapBadge.value = chap.badge || '';
+
+    // Intro field
+    if (aiChapIntroWrap && aiChapIntro) {
+      const hasIntro = chap.type === 'cover' || chap.intro !== undefined;
+      aiChapIntroWrap.style.display = hasIntro ? 'flex' : 'none';
+      aiChapIntro.value = chap.intro || '';
+    }
+
+    // Body field
+    if (aiChapBodyWrap && aiChapBody) {
+      const hasBody = chap.type === 'memories' || chap.body !== undefined;
+      aiChapBodyWrap.style.display = hasBody ? 'flex' : 'none';
+      aiChapBody.value = chap.body || '';
+    }
+
+    // Quote field
+    if (aiChapQuoteWrap && aiChapQuote) {
+      const hasQuote = chap.quote !== undefined;
+      aiChapQuoteWrap.style.display = hasQuote ? 'flex' : 'none';
+      aiChapQuote.value = chap.quote || '';
+    }
+
+    // Secret chamber fields
+    if (aiChapSecretFieldsWrap) {
+      const isSecret = chap.type === 'interactive_reveal' || chap.secretMessage !== undefined;
+      aiChapSecretFieldsWrap.style.display = isSecret ? 'flex' : 'none';
+      if (aiChapSecretHeading) aiChapSecretHeading.value = chap.secretHeading || '';
+      if (aiChapSecretMessage) aiChapSecretMessage.value = chap.secretMessage || '';
+      if (aiChapPasscode) aiChapPasscode.value = chap.passcode || window.currentAiWishData.passcode || '2026';
+      if (aiChapPasscodeHint) aiChapPasscodeHint.value = chap.passcodeHint || window.currentAiWishData.passcodeHint || 'Key: 2026';
+    }
+
+    // Letter paragraphs
+    if (aiChapLetterFieldsWrap) {
+      const isLetter = chap.type === 'letter' || chap.p1 !== undefined;
+      aiChapLetterFieldsWrap.style.display = isLetter ? 'flex' : 'none';
+      if (aiChapP1) aiChapP1.value = chap.p1 || '';
+      if (aiChapP2) aiChapP2.value = chap.p2 || '';
+      if (aiChapP3) aiChapP3.value = chap.p3 || '';
+    }
+
+    // Finale fields
+    if (aiChapFinaleFieldsWrap) {
+      const isFinale = chap.type === 'finale' || chap.wishMessage !== undefined;
+      aiChapFinaleFieldsWrap.style.display = isFinale ? 'flex' : 'none';
+      if (aiChapFinaleMsg) aiChapFinaleMsg.value = chap.wishMessage || '';
+      if (aiChapSignature) aiChapSignature.value = chap.signature || '';
+    }
+  };
+
+  // Sync AI wish data to Manual inputs
+  window.syncAiToManualEditor = function() {
+    if (!window.currentAiWishData) return;
     
-    let rawCode = (manPasscode?.value?.trim() || "120711").replace(/\D/g, '');
-    let sixDigit = (rawCode + "120711").slice(0, 6);
-    let dtString = manDate?.value ? `${manDate.value}T${manTime?.value || '00:00'}:00` : undefined;
+    if (aiWishRecipient) aiWishRecipient.value = window.currentAiWishData.recipientName || '';
+    if (aiWishSender) aiWishSender.value = window.currentAiWishData.senderName || '';
+    if (aiWishOccasion) aiWishOccasion.value = window.currentAiWishData.occasion || 'Birthday Celebration';
+
+    // Highlight active palette
+    const activeTheme = window.currentAiWishData.theme || 'royal-velvet';
+    document.querySelectorAll('#aiPaletteGrid .ai-palette-card').forEach(card => {
+      card.classList.toggle('selected', card.getAttribute('data-theme') === activeTheme);
+    });
+
+    window.renderAiChapterList();
+    window.renderAiActiveChapterEditor();
+  };
+
+  // Luxury Palette Selection
+  document.querySelectorAll('#aiPaletteGrid .ai-palette-card').forEach(card => {
+    card.addEventListener('click', () => {
+      const themeKey = card.getAttribute('data-theme');
+      if (!themeKey || !window.currentAiWishData) return;
+
+      document.querySelectorAll('#aiPaletteGrid .ai-palette-card').forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+
+      window.currentAiWishData.theme = themeKey;
+      if (window.WishCraftAiEngine?.THEME_PALETTES?.[themeKey]) {
+        window.currentAiWishData.themeColor = window.WishCraftAiEngine.THEME_PALETTES[themeKey].primary;
+      }
+
+      window.recompileAiWishPreview();
+    });
+  });
+
+  // Live Recompile Engine
+  window.recompileAiWishPreview = function() {
+    if (!window.currentAiWishData || !window.WishCraftAiEngine) return;
 
     const isPro = typeof window.isUserProTier === 'function' && window.isUserProTier();
-    const showWatermark = !isPro;
+    const html = window.WishCraftAiEngine.compileMultiPageWish(window.currentAiWishData, {
+      isPro: isPro,
+      photos: photos || []
+    });
 
-    let html = '';
-
-    if (engine === 'golden-truce' && window.WishCraftTemplate_GoldenTruce) {
-      html = window.WishCraftTemplate_GoldenTruce.build({
-        recipientName: recName,
-        senderName: sndName,
-        chapter1Subtitle: `Chapter 01 • For ${recName}`,
-        chapter1Title: headLine.includes('<br>') ? headLine : `Can We Clear The Air?<br>Here is <span>my sincere truth.</span>`,
-        chapter1Subtext: subTitle || `${recName}, would you please hear me out just for a moment? 🥺`,
-        chapter2Subtitle: "Chapter 02 • Confession",
-        chapter2Title: "My Confession",
-        confessionHeading: scrHeading || "I am so genuinely sorry.",
-        confessionMessage: scrNote,
-        clause1Title: "Clause 01: Sincere Apology",
-        clause1Text: let1 ? `No excuses, no defenses—<span>${let1.slice(0, 95)}</span>` : "No excuses, no defenses—just an honest promise to <span>always communicate with kindness.</span>",
-        clause2Title: "Clause 02: Pure Intentions",
-        clause2Text: let2 ? `<span>${let2.slice(0, 95)}</span>` : "My words may have stumbled, but my heart has only <span>respect and warmth for you.</span>",
-        clause3Title: "Clause 03: Mutual Harmony",
-        clause3Text: let3 ? `<span>${let3.slice(0, 95)}</span>` : "Clear, open conversations from here on out—<span>no more misunderstandings.</span>",
-        clause4Title: "Clause 04: True Empathy",
-        clause4Text: "I should have paused and considered how you felt, <span>before speaking.</span>",
-        clause5Title: "Clause 05: The Truce",
-        clause5Text: "From the bottom of my heart, I am truly sorry.<br>Can we <span>make things right?</span> ❤️",
-        finalPromise: clsNote || `I promise to always protect our bond and never take your trust for granted.<br><br>Can we hit reset and start fresh? 🥺`,
-        successSubtitle: "Forever Grateful ✨",
-        successTitle: "Thank You.",
-        successMessage: `You are truly extraordinary and have the kindest heart in the world. Thank you for forgiving me. ❤️`,
-        showWatermark: showWatermark
-      });
-    } else if (engine === 'sapphire-vault' && window.WishCraftTemplate_SapphireVault) {
-      html = window.WishCraftTemplate_SapphireVault.build({
-        recipientName: recName,
-        sender: sndName,
-        coverSubtitle: covSubtitle,
-        introMessage: introMsg,
-        protocolSubtitle: "For An Incredible Soul",
-        protocolTitle: "PROTOCOL INITIATED",
-        protocolMessage: quot,
-        scratchTitle: "Secured Birthday File",
-        scratchSubtitle: "Wipe the frosted glass to reveal",
-        scratchNoteHeading: scrHeading,
-        scratchNote: scrNote,
-        passcode: sixDigit,
-        passcodeHint: manPasscodeHint?.value?.trim() || "6-Digit Security Decryption Key",
-        targetDateTime: dtString,
-        finalePreTitle: "SPECIAL ARCHIVE",
-        finaleSubTitle: "The Ultimate Celebration",
-        finaleMainTitle: headLine,
-        closingNote: clsNote,
-        photos: photos || [],
-        showWatermark: showWatermark
-      });
-    } else if (engine === 'royal-velvet' && window.WishCraftTemplate_RoyalVelvet) {
-      html = window.WishCraftTemplate_RoyalVelvet.build({
-        recipientName: recName,
-        sender: sndName,
-        tagline: subTitle,
-        polaroidCaption: "Pure Grace & Wonder.",
-        quote: quot,
-        heartQuote: scrNote,
-        heartTitle: "The Reserved Chamber",
-        treat1Title: "Starlight Dinner",
-        treat1Desc: "Your favorite restaurant, anytime.",
-        treat2Title: "Spontaneous Getaway",
-        treat2Desc: "A weekend adventure, my treat.",
-        wishMessage: headLine,
-        passcode: manPasscode?.value?.trim() || "2026",
-        hint: manPasscodeHint?.value?.trim() || "The year of magic",
-        letter1: let1,
-        letter2: let2,
-        letter3: let3,
-        letter4: clsNote,
-        occasion: manOccasion?.value?.trim() || "Romantic Keepsake",
-        photos: photos || [],
-        showWatermark: showWatermark
-      });
-    } else if (window.WishCraftTemplate_ObsidianVault) {
-      html = window.WishCraftTemplate_ObsidianVault.build({
-        recipientName: recName,
-        sender: sndName,
-        tagline: subTitle,
-        introMessage: introMsg,
-        scratchTitle: "Secured Archive",
-        scratchSubtitle: "Wipe the frosted glass to reveal",
-        scratchNoteHeading: scrHeading,
-        scratchNote: scrNote,
-        startDate: dtString,
-        passcode: sixDigit,
-        terminalName: recName.toUpperCase(),
-        finaleTitle: headLine,
-        letter1: let1,
-        letter2: let2,
-        letter3: let3,
-        letter4: clsNote,
-        signature: `With highest admiration,\n${sndName}`,
-        photos: photos || [],
-        showWatermark: showWatermark
-      });
+    window.currentHtml = html;
+    if (preview) {
+      preview.srcdoc = typeof stripEditorArtifacts === 'function' ? stripEditorArtifacts(html) : html;
+      preview.classList.add('visible');
     }
 
-    if (html) {
-      window.currentHtml = html;
-      window.versions = [html];
-      renderPreview(html);
-      editBlock.classList.add('visible');
-      stageActions.style.visibility = 'visible';
-      chromeLabel.textContent = 'live preview';
-      step1.classList.remove('active');
-      step2.classList.add('active');
+    const holder = document.getElementById('previewDeviceHolder');
+    if (holder) holder.classList.add('visible');
+
+    if (emptyStage) emptyStage.classList.remove('visible');
+    if (loadingStage) loadingStage.classList.remove('visible');
+    if (errorStage) errorStage.classList.remove('visible');
+
+    if (typeof window.updateStageScale === 'function') {
+      window.updateStageScale();
     }
   };
 
-  // Debounced listener on all manual inputs
-  window.renderManualLivePreview = function() {
-    clearTimeout(window._manDebounceTimer);
-    window._manDebounceTimer = setTimeout(() => {
-      window.rebuildManualExperience();
-    }, 80);
-  };
+  // Debounced input listener on manual form
+  manualStudioView?.addEventListener('input', (e) => {
+    if (!window.currentAiWishData) return;
 
-  // Attach live input listener to the manual container
-  manualStudioView?.addEventListener('input', window.renderManualLivePreview);
-  manualStudioView?.addEventListener('change', window.renderManualLivePreview);
+    clearTimeout(window._aiManualDebounce);
+    window._aiManualDebounce = setTimeout(() => {
+      // Story Identity
+      if (aiWishRecipient) window.currentAiWishData.recipientName = aiWishRecipient.value.trim();
+      if (aiWishSender) window.currentAiWishData.senderName = aiWishSender.value.trim();
+      if (aiWishOccasion) window.currentAiWishData.occasion = aiWishOccasion.value.trim();
 
-  // Open in New Tab handler for manual action button
+      // Active Chapter
+      const chap = window.currentAiWishData.chapters?.[window.selectedChapterIndex];
+      if (chap) {
+        if (aiChapTitle) chap.title = aiChapTitle.value;
+        if (aiChapSubtitle) chap.subtitle = aiChapSubtitle.value;
+        if (aiChapBadge) chap.badge = aiChapBadge.value;
+        if (aiChapIntro) chap.intro = aiChapIntro.value;
+        if (aiChapBody) chap.body = aiChapBody.value;
+        if (aiChapQuote) chap.quote = aiChapQuote.value;
+        if (aiChapSecretHeading) chap.secretHeading = aiChapSecretHeading.value;
+        if (aiChapSecretMessage) chap.secretMessage = aiChapSecretMessage.value;
+        if (aiChapPasscode) chap.passcode = aiChapPasscode.value;
+        if (aiChapPasscodeHint) chap.passcodeHint = aiChapPasscodeHint.value;
+        if (aiChapP1) chap.p1 = aiChapP1.value;
+        if (aiChapP2) chap.p2 = aiChapP2.value;
+        if (aiChapP3) chap.p3 = aiChapP3.value;
+        if (aiChapFinaleMsg) chap.wishMessage = aiChapFinaleMsg.value;
+        if (aiChapSignature) chap.signature = aiChapSignature.value;
+
+        // Keep chapter row title in sync
+        const activeRow = aiChapterList?.children[window.selectedChapterIndex];
+        if (activeRow) {
+          const titleSpan = activeRow.querySelector('.ai-chap-title');
+          if (titleSpan) titleSpan.textContent = chap.title || chap.navTitle || ('Chapter ' + (window.selectedChapterIndex + 1));
+          const badgeSpan = activeRow.querySelector('.ai-chap-badge');
+          if (badgeSpan) badgeSpan.textContent = chap.badge || ('CH ' + (window.selectedChapterIndex + 1));
+        }
+      }
+
+      window.recompileAiWishPreview();
+    }, 60);
+  });
+
+  // Open in Tab Button
   manOpenTabBtn?.addEventListener('click', () => {
-    if (!window.currentHtml) window.rebuildManualExperience();
+    if (!window.currentHtml) window.recompileAiWishPreview();
     if (!window.currentHtml) return;
     const clean = typeof stripEditorArtifacts === 'function' ? stripEditorArtifacts(window.currentHtml) : window.currentHtml;
     const blob = new Blob([clean], { type: 'text/html' });
@@ -4691,7 +5101,7 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
         photos.splice(idx, 1);
         if (typeof window.renderManualPhotoStrip === 'function') window.renderManualPhotoStrip();
         renderPhotoStrip();
-        window.rebuildManualExperience();
+        window.recompileAiWishPreview();
       };
       wrap.appendChild(img);
       wrap.appendChild(del);
@@ -4708,7 +5118,7 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
     }
     if (typeof window.renderManualPhotoStrip === 'function') window.renderManualPhotoStrip();
     renderPhotoStrip();
-    window.rebuildManualExperience();
+    window.recompileAiWishPreview();
   });
 
   // ---------- Device Viewport & Proportional Auto-Scaler ----------
