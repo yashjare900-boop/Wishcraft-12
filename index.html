@@ -2140,6 +2140,131 @@
     box-shadow: 0 4px 14px rgba(212, 175, 106, 0.35);
   }
 
+  /* ================= TEMPLATE STUDIO DEDICATED VIEW ================= */
+  .template-studio-view {
+    display: none;
+    flex-direction: column;
+    width: 100%;
+    background: var(--bg);
+    min-height: calc(100vh - 60px);
+    position: relative;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+  }
+  .tmpl-studio-topbar {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 24px;
+    background: rgba(11, 12, 16, 0.94);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--line);
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .tmpl-studio-left, .tmpl-studio-center, .tmpl-studio-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .tmpl-studio-title-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--line);
+    padding: 5px 12px;
+    border-radius: 99px;
+  }
+  .tmpl-studio-preview-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 18px 14px 10px;
+    background: radial-gradient(circle at 50% 25%, rgba(212, 175, 106, 0.05) 0%, transparent 75%);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  }
+  .tmpl-studio-viewport-wrap {
+    position: relative;
+    width: 100%;
+    max-width: 1240px;
+    height: 560px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    padding: 10px;
+  }
+  @media (max-height: 850px) {
+    .tmpl-studio-viewport-wrap {
+      height: 480px;
+    }
+  }
+  @media (max-width: 768px) {
+    .tmpl-studio-viewport-wrap {
+      height: 420px;
+    }
+    .tmpl-studio-topbar {
+      padding: 8px 12px;
+    }
+    .tmpl-studio-right {
+      width: 100%;
+      justify-content: flex-end;
+    }
+  }
+  .tmpl-scroll-indicator {
+    transition: transform 0.2s ease, opacity 0.2s ease;
+    user-select: none;
+  }
+  .tmpl-scroll-indicator:hover {
+    transform: translateY(2px);
+    color: #fff;
+  }
+  .tmpl-studio-customizer-section {
+    width: 100%;
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 32px 18px 100px;
+  }
+  .scene-toggles-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--line);
+    padding: 12px 14px;
+    border-radius: 12px;
+  }
+  .scene-toggle-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 10px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    font-size: 11.5px;
+    color: var(--cream);
+    cursor: pointer;
+    user-select: none;
+    transition: all 0.15s ease;
+  }
+  .scene-toggle-item:hover {
+    border-color: var(--gold-dim);
+  }
+  .scene-toggle-item.disabled {
+    opacity: 0.45;
+    text-decoration: line-through;
+    background: rgba(255, 255, 255, 0.01);
+  }
+
 </style>
 </head>
 <body>
@@ -2882,6 +3007,251 @@
           </div>
         </div>
       </div>
+  </div>
+
+  <!-- ================= DEDICATED TEMPLATE STUDIO VIEW (PREVIEW TOP + CUSTOMIZER SCROLL-DOWN) ================= -->
+  <div class="template-studio-view" id="templateStudioView">
+    <!-- Studio Topbar -->
+    <div class="tmpl-studio-topbar">
+      <div class="tmpl-studio-left">
+        <button type="button" class="tmpl-btn-ghost" id="tmplStudioBackBtn" style="padding: 7px 14px; font-size: 12.5px; display: inline-flex; align-items: center; gap: 6px;">
+          ← Back to Templates
+        </button>
+        <div class="tmpl-studio-title-badge">
+          <span id="tmplStudioActiveIcon">👑</span>
+          <span id="tmplStudioActiveTitle" style="font-size: 13px; font-weight: 600; color: var(--cream);">Royal Velvet Premiere</span>
+        </div>
+      </div>
+
+      <div class="tmpl-studio-center">
+        <div class="device-toggle" style="margin: 0;">
+          <button type="button" class="device-btn active" id="tmplDevBtnDesktop" title="Desktop Preview (1280x800)">🖥️ Desktop</button>
+          <button type="button" class="device-btn" id="tmplDevBtnMobile" title="Phone Preview (390x844)">📱 Phone</button>
+        </div>
+      </div>
+
+      <div class="tmpl-studio-right">
+        <button type="button" class="tmpl-btn-ghost" id="tmplStudioOpenTabBtn" style="padding: 7px 14px; font-size: 12px; display: inline-flex; align-items: center; gap: 5px;">
+          Open in Tab ↗
+        </button>
+        <button type="button" class="tmpl-btn-primary" id="tmplStudioDownloadBtn" style="padding: 7px 16px; font-size: 12.5px; display: inline-flex; align-items: center; gap: 6px;">
+          <span>💾</span> Download Standalone
+        </button>
+      </div>
+    </div>
+
+    <!-- Live Preview Section (Strictly on Top) -->
+    <div class="tmpl-studio-preview-section">
+      <div class="tmpl-studio-viewport-wrap" id="tmplStudioViewportWrap">
+        <div class="preview-device-holder" id="tmplStudioDeviceHolder" style="width: 1280px; height: 800px; transform-origin: top center; transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);">
+          <div class="phone-dynamic-island" id="tmplStudioDynamicIsland" style="display:none;"></div>
+          <iframe id="tmplStudioFrame" title="Template live interactive preview" sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals"></iframe>
+          <div class="phone-bottom-bar" id="tmplStudioBottomBar" style="display:none;"></div>
+        </div>
+      </div>
+
+      <button type="button" id="tmplStudioScrollPrompt" class="tmpl-scroll-indicator" style="display: inline-flex; align-items: center; gap: 8px; margin-top: 10px; color: var(--cream-dim); font-size: 12px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); padding: 7px 18px; border-radius: 99px; cursor: pointer;">
+        <span>↓</span>
+        <span>Scroll down to customize chapters, text & photos</span>
+        <span>↓</span>
+      </button>
+    </div>
+
+    <!-- Customizer Section (Tailored Dynamically Per Template on Scroll Down) -->
+    <div class="tmpl-studio-customizer-section" id="tmplStudioCustomizerSection">
+      <div class="tmpl-customizer open" id="tmplCustomizerView" style="display: block;">
+        <div class="tmpl-customizer-header" style="display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:14px; margin-bottom: 18px;">
+          <div>
+            <h4 id="tmplCustomizerTitle" style="font-family:var(--serif); font-size:20px; color:#fff; margin:0 0 4px;">Personalize "Royal Velvet Premiere"</h4>
+            <p id="tmplCustomizerSubtitle" style="font-size:12.5px; color:var(--cream-dim); margin:0;">Every text across all chapters is editable below. Changes reflect live in the preview above.</p>
+          </div>
+          <button type="button" class="tmpl-btn-ghost" id="tmplStudioJumpTopBtn" style="padding:7px 14px; font-size:12px; white-space:nowrap;">↑ View Live Preview</button>
+        </div>
+
+        <!-- CHAPTER / SCENE SEQUENCE & VISIBILITY MANAGER -->
+        <div class="tmpl-sec-group" id="tmplSceneManagerGroup">
+          <div class="tmpl-sec-title"><span>🎞️</span> Chapter Sequence & Visibility</div>
+          <p style="font-size:12px; color:var(--cream-dim); margin:4px 0 10px 0; line-height:1.5;">
+            Customize which chapters appear in this experience. Tap any chapter below to toggle or skip it.
+          </p>
+          <div class="scene-toggles-bar" id="tmplSceneTogglesBar">
+            <!-- Dynamically populated via JS according to template -->
+          </div>
+        </div>
+
+        <!-- GROUP 1: Identity & Premiere Opening -->
+        <div class="tmpl-sec-group">
+          <div class="tmpl-sec-title"><span>✦</span> 1. Identity & Premiere Opening</div>
+          <div class="tmpl-field-row">
+            <div class="tmpl-input-group">
+              <label>Recipient Name</label>
+              <input type="text" id="tmplRecipient" value="My Dearest" placeholder="e.g. Sarah / Bestie / Sister / Alex">
+            </div>
+            <div class="tmpl-input-group">
+              <label>Occasion / Title</label>
+              <input type="text" id="tmplOccasion" value="Birthday Premiere" placeholder="e.g. Birthday / Anniversary / Sisterhood">
+            </div>
+          </div>
+          <div class="tmpl-field-row">
+            <div class="tmpl-input-group">
+              <label>Opening Tagline / Subtitle</label>
+              <input type="text" id="tmplTagline" value="A celebration of grace, laughter, and timeless memories." placeholder="Subtext on the opening card">
+            </div>
+            <div class="tmpl-input-group">
+              <label id="tmplPolaroidCaptionLabel">Scene 2 Polaroid Headline</label>
+              <input type="text" id="tmplPolaroidCaption" value="Pure Grace." placeholder="e.g. Pure Grace. / Pure Magic.">
+            </div>
+          </div>
+        </div>
+
+        <!-- GROUP 2: Chamber of Affection & Scratch Note -->
+        <div class="tmpl-sec-group">
+          <div class="tmpl-sec-title" id="tmplGroup2Title"><span>💖</span> 2. Chamber of Affection (Scenes 3 & 4)</div>
+          <div class="tmpl-input-group" id="tmplQuoteGroup">
+            <label id="tmplQuoteLabel">Chapter 03 Affection Quote</label>
+            <input type="text" id="tmplQuote" value="To the world you may be one person, but to me you make everything better.">
+          </div>
+          <div class="tmpl-field-row">
+            <div class="tmpl-input-group">
+              <label id="tmplHeartQuoteLabel">Scene 4 Heart Chamber Quote</label>
+              <input type="text" id="tmplHeartQuote" value="Side by side or miles apart,\nwe are always connected by the heart.">
+            </div>
+            <div class="tmpl-input-group">
+              <label id="tmplHeartTitleLabel">Scene 4 Chamber Title</label>
+              <input type="text" id="tmplHeartTitle" value="The Reserved Chamber" placeholder="e.g. The Reserved Chamber / An Eternal Orbit">
+            </div>
+          </div>
+        </div>
+
+        <!-- GROUP 3: Interactive Treats & Scratch Cards -->
+        <div class="tmpl-sec-group" id="tmplTreatsGroup">
+          <div class="tmpl-sec-title"><span>🎁</span> 3. Interactive Treats & Scratch Cards (Scene 6)</div>
+          <div class="tmpl-field-row">
+            <div class="tmpl-input-group">
+              <label>Treat 1 Title</label>
+              <input type="text" id="tmplTreat1Title" value="Shopping Spree!">
+            </div>
+            <div class="tmpl-input-group">
+              <label>Treat 1 Description</label>
+              <input type="text" id="tmplTreat1Desc" value="My treat. Pick your favorites.">
+            </div>
+          </div>
+          <div class="tmpl-field-row">
+            <div class="tmpl-input-group">
+              <label>Treat 2 Title</label>
+              <input type="text" id="tmplTreat2Title" value="Royal Dinner!">
+            </div>
+            <div class="tmpl-input-group">
+              <label>Treat 2 Description</label>
+              <input type="text" id="tmplTreat2Desc" value="Your favorite restaurant, anytime.">
+            </div>
+          </div>
+        </div>
+
+        <!-- GROUP 4: Ceremony & Vault Gate -->
+        <div class="tmpl-sec-group" id="tmplPasscodeGroup">
+          <div class="tmpl-sec-title" id="tmplGroup4Title"><span>🔐</span> 4. Ceremony & Vault Gate</div>
+          <div class="tmpl-input-group">
+            <label id="tmplWishMessageLabel">Scene 8 Candle Wish Reveal Message</label>
+            <input type="text" id="tmplWishMessage" value="May Every Dream Flourish">
+          </div>
+          
+          <div class="tmpl-field-row" id="tmplStartDateRow" style="display:none; margin-top:12px; margin-bottom:8px; flex-direction:column; gap:8px;">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <label id="tmplStartDateLabel" style="font-weight:600; font-size:0.85rem; color:var(--gold-primary, #d4af37);">
+                Day of Birth & Time (Scene 5: Lifetime Journey)
+              </label>
+              <span id="tmplDateBadge" style="font-size:10px; padding:2px 8px; border-radius:12px; background:rgba(229,193,88,0.15); color:var(--gold-light, #fce698); border:1px solid rgba(229,193,88,0.3);">
+                Day of Birth
+              </span>
+            </div>
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+              <div class="tmpl-input-group" style="margin-bottom:0;">
+                <label id="tmplPickDateLabel" style="font-size:0.75rem; color:rgba(255,255,255,0.7); margin-bottom:4px;">📅 Date of Birth</label>
+                <input type="date" id="tmplPickDate" style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.2); color:#fff; padding:10px 12px; border-radius:8px; font-size:0.9rem; width:100%; color-scheme:dark;">
+              </div>
+              <div class="tmpl-input-group" style="margin-bottom:0;">
+                <label id="tmplPickTimeLabel" style="font-size:0.75rem; color:rgba(255,255,255,0.7); margin-bottom:4px;">⏰ Birth Time (Optional)</label>
+                <input type="time" id="tmplPickTime" value="00:00" style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.2); color:#fff; padding:10px 12px; border-radius:8px; font-size:0.9rem; width:100%; color-scheme:dark;">
+              </div>
+            </div>
+            <div id="tmplDatePreviewHelper" style="font-size:0.78rem; color:rgba(229,193,88,0.95); font-family:'Space Mono',monospace; padding:8px 12px; background:rgba(229,193,88,0.08); border:1px dashed rgba(229,193,88,0.3); border-radius:6px; margin-top:2px; line-height:1.4;">
+              ✨ Clock will calculate exact time spent in this beautiful world
+            </div>
+            <input type="hidden" id="tmplStartDate" value="2011-07-12T00:00:00">
+          </div>
+          <div class="tmpl-field-row" id="tmplPasscodeRow">
+            <div class="tmpl-input-group">
+              <label id="tmplPasscodeLabel">Secret Vault Passcode</label>
+              <input type="text" id="tmplPasscode" value="2026" placeholder="e.g. 2026 or secret word">
+            </div>
+            <div class="tmpl-input-group">
+              <label>Passcode Hint</label>
+              <input type="text" id="tmplHint" value="The year of magic" placeholder="e.g. Our special year or favorite place">
+            </div>
+          </div>
+        </div>
+
+        <!-- GROUP 5: The Vault Letter & Sign-off -->
+        <div class="tmpl-sec-group">
+          <div class="tmpl-sec-title" id="tmplGroup5Title"><span>📜</span> 5. The Vault Letter & Sign-off</div>
+          <div class="tmpl-input-group">
+            <label id="tmplLetter1Label">Letter Paragraph 1</label>
+            <textarea id="tmplLetter1" rows="2">I wanted to create something truly magical and unforgettable for you today. A regular card could never capture how much you mean to everyone around you.</textarea>
+          </div>
+          <div class="tmpl-input-group">
+            <label id="tmplLetter2Label">Letter Paragraph 2</label>
+            <textarea id="tmplLetter2" rows="2">From every quiet conversation to every milestone along the way, your presence brings warmth and inspiration to everything you touch. You have an extraordinary spirit that lifts everyone around you.</textarea>
+          </div>
+          <div class="tmpl-field-row">
+            <div class="tmpl-input-group">
+              <label id="tmplLetter3Label">Letter Paragraph 3</label>
+              <textarea id="tmplLetter3" rows="2">Whether reaching for tomorrow's boldest dreams or celebrating today's simplest joys, know that you are held in the highest regard, always admired, supported, and loved.</textarea>
+            </div>
+            <div class="tmpl-input-group">
+              <label id="tmplLetter4Label">Letter Paragraph 4</label>
+              <textarea id="tmplLetter4" rows="2">Never stop exploring. Never settle for the ordinary. May this year shower you with laughter, boundless success, and unforgettable moments.</textarea>
+            </div>
+          </div>
+          <div class="tmpl-input-group">
+            <label>Sender Sign-off / Signature</label>
+            <input type="text" id="tmplSender" value="Forever Yours" placeholder="e.g. Forever Yours / With Endless Love, Alex">
+          </div>
+        </div>
+
+        <!-- GROUP 6: Photo Memories (Conditionally Hidden If Template Has No Photos) -->
+        <div class="tmpl-sec-group" id="tmplPhotosGroup">
+          <div class="tmpl-sec-title" id="tmplGroup6Title"><span>📸</span> 6. Photo Memories</div>
+          <div class="tmpl-input-group" style="margin:0;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:8px;">
+              <span style="font-size:12px; color:var(--cream-dim);">
+                <span id="tmplPhotoLimitNote">Memory carousel holds <strong>strictly 6 photos</strong>.</span>
+              </span>
+              <div style="display:flex; gap:8px;">
+                <label for="tmplBatchPhotoUpload" style="background: rgba(212,175,106,0.15); border: 1px solid rgba(212,175,106,0.4); color: var(--gold); border-radius: 6px; padding: 5px 10px; font-size: 11px; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; margin: 0;">
+                  <span id="tmplBatchUploadLabelText">📂 Choose Photos</span>
+                </label>
+                <button type="button" id="tmplClearAllPhotosBtn" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.15); color: #aaa; border-radius: 6px; padding: 5px 10px; font-size: 11px; cursor: pointer;">
+                  ✕ Clear All
+                </button>
+              </div>
+              <input type="file" id="tmplBatchPhotoUpload" multiple accept="image/*" style="display:none;">
+              <input type="file" id="tmplSingleSlotUpload" accept="image/*" style="display:none;">
+            </div>
+            <div id="tmplPhotoSlotsGrid" style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px;"></div>
+            <div id="tmplPhotoStatusText" style="font-size:11px; color:var(--cream-dim); margin-top:8px;">0 of 6 custom photos uploaded (default aesthetic memories fill any empty slots).</div>
+          </div>
+        </div>
+
+        <div class="tmpl-customizer-footer" style="display:flex; justify-content:flex-end; gap:12px; margin-top:20px; flex-wrap:wrap;">
+          <button type="button" class="tmpl-btn-ghost" id="tmplStudioUpdatePreviewBtn" style="padding:12px 22px; font-size:13.5px;">
+            ✦ Update Preview
+          </button>
+          <button type="button" class="tmpl-btn-primary" id="tmplStudioExportBtn" style="padding:12px 28px; font-size:13.5px;">
+            💾 Download Standalone HTML
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -3068,209 +3438,6 @@
             <h4>No experiences found</h4>
             <p>We couldn't find any templates matching your search criteria. Try a different keyword or reset categories to see all experiences.</p>
             <button class="tmpl-btn-ghost" id="tmplResetFilterBtn" style="display: inline-flex; margin: 0 auto;">✦ Show All Experiences</button>
-          </div>
-        </div>
-
-        <!-- Customizer Form (Revealed when user clicks Customize & Launch) -->
-        <div class="tmpl-customizer" id="tmplCustomizerView">
-          <div class="tmpl-customizer-header" style="display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:12px;">
-            <div>
-              <h4 id="tmplCustomizerTitle" style="font-family:var(--serif); font-size:18px; color:#fff; margin:0 0 4px;">Personalize "Royal Velvet Premiere"</h4>
-              <p id="tmplCustomizerSubtitle" style="font-size:12px; color:var(--cream-dim); margin:0;">Every text across all 10 chapters is editable below. Leave defaults or write your own heartfelt words.</p>
-            </div>
-            <button class="tmpl-btn-ghost" id="backToTmplGalleryBtn" style="padding:6px 12px; font-size:11.5px;">← Back to Gallery</button>
-          </div>
-
-          <!-- GROUP 1: Identity & Premiere Opening (Scenes 1 & 2) -->
-          <div class="tmpl-sec-group">
-            <div class="tmpl-sec-title"><span>✦</span> 1. Identity & Premiere Opening (Scenes 1 & 2)</div>
-            <div class="tmpl-field-row">
-              <div class="tmpl-input-group">
-                <label>Recipient Name</label>
-                <input type="text" id="tmplRecipient" value="My Dearest" placeholder="e.g. Sarah / Bestie / Sister / Alex">
-              </div>
-              <div class="tmpl-input-group">
-                <label>Occasion / Title</label>
-                <input type="text" id="tmplOccasion" value="Birthday Premiere" placeholder="e.g. Birthday / Anniversary / Sisterhood">
-              </div>
-            </div>
-            <div class="tmpl-field-row">
-              <div class="tmpl-input-group">
-                <label>Opening Tagline / Subtitle</label>
-                <input type="text" id="tmplTagline" value="A celebration of grace, laughter, and timeless memories." placeholder="Subtext on the opening card">
-              </div>
-              <div class="tmpl-input-group">
-                <label>Scene 2 Polaroid Headline</label>
-                <input type="text" id="tmplPolaroidCaption" value="Pure Grace." placeholder="e.g. Pure Grace. / Pure Magic.">
-              </div>
-            </div>
-          </div>
-
-          <!-- GROUP 2: Chamber of Affection & 3D Heart (Scenes 3 & 4) -->
-          <div class="tmpl-sec-group">
-            <div class="tmpl-sec-title" id="tmplGroup2Title"><span>💖</span> 2. Chamber of Affection (Scenes 3 & 4)</div>
-            <div class="tmpl-input-group">
-              <label>Chapter 03 Affection Quote</label>
-              <input type="text" id="tmplQuote" value="To the world you may be one person, but to me you make everything better.">
-            </div>
-            <div class="tmpl-field-row">
-              <div class="tmpl-input-group">
-                <label id="tmplHeartQuoteLabel">Scene 4 Heart Chamber Quote</label>
-                <input type="text" id="tmplHeartQuote" value="Side by side or miles apart, we are always connected by the heart.">
-              </div>
-              <div class="tmpl-input-group">
-                <label id="tmplHeartTitleLabel">Scene 4 Chamber Title</label>
-                <input type="text" id="tmplHeartTitle" value="The Reserved Chamber" placeholder="e.g. The Reserved Chamber / An Eternal Orbit">
-              </div>
-            </div>
-          </div>
-
-          <!-- GROUP 3: Interactive Treats & Scratch Cards (Scene 6) -->
-          <div class="tmpl-sec-group" id="tmplTreatsGroup">
-            <div class="tmpl-sec-title"><span>🎁</span> 3. Interactive Treats & Scratch Cards (Scene 6)</div>
-            <div class="tmpl-field-row">
-              <div class="tmpl-input-group">
-                <label>Treat 1 Title</label>
-                <input type="text" id="tmplTreat1Title" value="Shopping Spree!">
-              </div>
-              <div class="tmpl-input-group">
-                <label>Treat 1 Description</label>
-                <input type="text" id="tmplTreat1Desc" value="My treat. Pick your favorites.">
-              </div>
-            </div>
-            <div class="tmpl-field-row">
-              <div class="tmpl-input-group">
-                <label>Treat 2 Title</label>
-                <input type="text" id="tmplTreat2Title" value="Royal Dinner!">
-              </div>
-              <div class="tmpl-input-group">
-                <label>Treat 2 Description</label>
-                <input type="text" id="tmplTreat2Desc" value="Your favorite restaurant, anytime.">
-              </div>
-            </div>
-          </div>
-
-          <!-- GROUP 4: Ceremony & Vault Gate (Scenes 8 & 9) -->
-          <div class="tmpl-sec-group">
-            <div class="tmpl-sec-title" id="tmplGroup4Title"><span>🔐</span> 4. Ceremony & Vault Gate (Scenes 8 & 9)</div>
-            <div class="tmpl-input-group">
-              <label id="tmplWishMessageLabel">Scene 8 Candle Wish Reveal Message</label>
-              <input type="text" id="tmplWishMessage" value="May Every Dream Flourish">
-            </div>
-            
-            <div class="tmpl-field-row" id="tmplStartDateRow" style="display:none; margin-top:12px; margin-bottom:8px; flex-direction:column; gap:8px;">
-              <div style="display:flex; justify-content:space-between; align-items:center;">
-                <label id="tmplStartDateLabel" style="font-weight:600; font-size:0.85rem; color:var(--gold-primary, #d4af37);">
-                  Day of Birth & Time (Scene 5: Lifetime Journey)
-                </label>
-                <span id="tmplDateBadge" style="font-size:10px; padding:2px 8px; border-radius:12px; background:rgba(229,193,88,0.15); color:var(--gold-light, #fce698); border:1px solid rgba(229,193,88,0.3);">
-                  Day of Birth
-                </span>
-              </div>
-              <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-                <div class="tmpl-input-group" style="margin-bottom:0;">
-                  <label id="tmplPickDateLabel" style="font-size:0.75rem; color:rgba(255,255,255,0.7); margin-bottom:4px;">📅 Date of Birth</label>
-                  <input type="date" id="tmplPickDate" style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.2); color:#fff; padding:10px 12px; border-radius:8px; font-size:0.9rem; width:100%; color-scheme:dark;">
-                </div>
-                <div class="tmpl-input-group" style="margin-bottom:0;">
-                  <label id="tmplPickTimeLabel" style="font-size:0.75rem; color:rgba(255,255,255,0.7); margin-bottom:4px;">⏰ Birth Time (Optional)</label>
-                  <input type="time" id="tmplPickTime" value="00:00" style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.2); color:#fff; padding:10px 12px; border-radius:8px; font-size:0.9rem; width:100%; color-scheme:dark;">
-                </div>
-              </div>
-              <div id="tmplDatePreviewHelper" style="font-size:0.78rem; color:rgba(229,193,88,0.95); font-family:'Space Mono',monospace; padding:8px 12px; background:rgba(229,193,88,0.08); border:1px dashed rgba(229,193,88,0.3); border-radius:6px; margin-top:2px; line-height:1.4;">
-                ✨ Clock will calculate exact time spent in this beautiful world
-              </div>
-              <!-- Hidden synced input preserving full compatibility with existing code and export -->
-              <input type="hidden" id="tmplStartDate" value="2011-07-12T00:00:00">
-            </div>
-            <div class="tmpl-field-row" id="tmplPasscodeRow">
-              <div class="tmpl-input-group">
-                <label id="tmplPasscodeLabel">Secret Vault Passcode</label>
-                <input type="text" id="tmplPasscode" value="2026" placeholder="e.g. 2026 or secret word">
-              </div>
-              <div class="tmpl-input-group">
-                <label>Passcode Hint</label>
-                <input type="text" id="tmplHint" value="The year of magic" placeholder="e.g. Our special year or favorite place">
-              </div>
-            </div>
-          </div>
-
-          <!-- GROUP 5: The Vault Letter & Sign-off (Scene 10) -->
-          <div class="tmpl-sec-group">
-            <div class="tmpl-sec-title" id="tmplGroup5Title"><span>📜</span> 5. The Vault Letter & Sign-off (Scene 10)</div>
-            <div class="tmpl-input-group">
-              <label>Letter Paragraph 1</label>
-              <textarea id="tmplLetter1" rows="2">I wanted to create something truly magical and unforgettable for you today. A regular card could never capture how much you mean to everyone around you.</textarea>
-            </div>
-            <div class="tmpl-input-group">
-              <label>Letter Paragraph 2</label>
-              <textarea id="tmplLetter2" rows="2">From every quiet conversation to every milestone along the way, your presence brings warmth and inspiration to everything you touch. You have an extraordinary spirit that lifts everyone around you.</textarea>
-            </div>
-            <div class="tmpl-field-row">
-              <div class="tmpl-input-group">
-                <label>Letter Paragraph 3</label>
-                <textarea id="tmplLetter3" rows="2">Whether reaching for tomorrow's boldest dreams or celebrating today's simplest joys, know that you are held in the highest regard, always admired, supported, and loved.</textarea>
-              </div>
-              <div class="tmpl-input-group">
-                <label>Letter Paragraph 4</label>
-                <textarea id="tmplLetter4" rows="2">Never stop exploring. Never settle for the ordinary. May this year shower you with laughter, boundless success, and unforgettable moments.</textarea>
-              </div>
-            </div>
-            <div class="tmpl-input-group">
-              <label>Sender Sign-off / Signature</label>
-              <input type="text" id="tmplSender" value="Forever Yours" placeholder="e.g. Forever Yours / With Endless Love, Alex">
-            </div>
-          </div>
-
-          <!-- GROUP 6: Photo Memories (Strict 6 Slots) -->
-          <div class="tmpl-sec-group">
-            <div class="tmpl-sec-title" id="tmplGroup6Title"><span>📸</span> 6. Photo Memories (Exactly 6 Memory Slots)</div>
-            <div class="tmpl-input-group" style="margin:0;">
-              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:8px;">
-                <span style="font-size:12px; color:var(--cream-dim);">
-                  <span id="tmplPhotoLimitNote">Memory carousel holds <strong>up to 10 photos</strong> (minimum 1, maximum 10).</span>
-                </span>
-                <div style="display:flex; gap:8px;">
-                  <label for="tmplBatchPhotoUpload" style="background: rgba(212,175,106,0.15); border: 1px solid rgba(212,175,106,0.4); color: var(--gold); border-radius: 6px; padding: 5px 10px; font-size: 11px; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; margin: 0;">
-                    <span id="tmplBatchUploadLabelText">📂 Choose Photos</span>
-                  </label>
-                  <button type="button" id="tmplClearAllPhotosBtn" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.15); color: #aaa; border-radius: 6px; padding: 5px 10px; font-size: 11px; cursor: pointer;">
-                    ✕ Clear All
-                  </button>
-                </div>
-                <input type="file" id="tmplBatchPhotoUpload" multiple accept="image/*" style="display:none;">
-                <input type="file" id="tmplSingleSlotUpload" accept="image/*" style="display:none;">
-              </div>
-              <div id="tmplPhotoSlotsGrid" style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px;"></div>
-              <div id="tmplPhotoStatusText" style="font-size:11px; color:var(--cream-dim); margin-top:8px;">0 of 6 custom photos uploaded (default aesthetic memories fill any empty slots).</div>
-            </div>
-          </div>
-
-          <!-- GROUP 7: Branding & Watermark Settings (Pro Toggle) -->
-          <div class="tmpl-sec-group">
-            <div class="tmpl-sec-title"><span>🏷️</span> 7. Watermark & Branding</div>
-            <div class="tmpl-watermark-row" style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.03); border:1px solid var(--line); padding:14px 18px; border-radius:14px; gap:14px;">
-              <div>
-                <div style="font-size:13px; font-weight:600; color:var(--cream); display:flex; align-items:center; gap:8px;">
-                  <span>Show "Crafted with WishCraft" Badge</span>
-                  <span style="font-size:9.5px; background:rgba(212,175,106,0.18); border:1px solid rgba(212,175,106,0.35); color:var(--gold); padding:2px 7px; border-radius:4px; font-weight:700; letter-spacing:0.5px;">PRO TOGGLE</span>
-                </div>
-                <div style="font-size:11.5px; color:var(--cream-dim); margin-top:4px; line-height:1.4;">
-                  Displays a subtle, luxury floating badge at the bottom. Turn off anytime for a 100% white-labeled gift.
-                </div>
-              </div>
-              <label class="wc-toggle-switch" title="Toggle watermark on/off">
-                <input type="checkbox" id="tmplShowWatermark" checked>
-                <span class="wc-toggle-track"></span>
-              </label>
-            </div>
-          </div>
-
-          <div class="tmpl-customizer-footer" style="display:flex; justify-content:flex-end; gap:10px; margin-top:10px;">
-            <button class="tmpl-btn-ghost" id="cancelCustomizerBtn">Cancel</button>
-            <button class="tmpl-btn-primary" id="launchCustomizedTmplBtn" style="padding:12px 28px; font-size:13.5px;">
-              ✦ Generate & Open in Studio Preview
-            </button>
           </div>
         </div>
 
@@ -5593,8 +5760,8 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
         finalPromise: (custom && (custom.letter4 || custom.wishMessage)) || `I promise to always protect our bond and never take your trust for granted.<br><br>Can we hit reset and start fresh? 🥺`,
         successSubtitle: "Forever Grateful ✨",
         successTitle: "Thank You.",
-        successMessage: `You are truly extraordinary and have the kindest heart in the world. Thank you for forgiving me. ❤️`,
-        showWatermark: (custom && typeof custom.showWatermark === 'boolean') ? custom.showWatermark : true
+        showWatermark: (custom && typeof custom.showWatermark === 'boolean') ? custom.showWatermark : true,
+        disabledScenes: (custom && custom.disabledScenes) ? custom.disabledScenes : []
       });
     }
     if (tmplId === 'sapphire-vault' && window.WishCraftTemplate_SapphireVault && typeof window.WishCraftTemplate_SapphireVault.build === "function") {
@@ -5911,296 +6078,584 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
     pickTimeEl.addEventListener('change', window.updateSyncedStartDate);
   }
 
-  // Preview Buttons across all template cards
+  // ================= DEDICATED TEMPLATE STUDIO CONTROLLER =================
+  const TEMPLATE_METADATA = {
+    'royal-velvet': {
+      icon: '👑',
+      title: 'Royal Velvet Premiere',
+      scenes: [
+        { num: 1, name: "01. Arrival & Premiere" },
+        { num: 2, name: "02. The Portrait" },
+        { num: 3, name: "03. Affection Quote" },
+        { num: 4, name: "04. 3D Heart Chamber" },
+        { num: 5, name: "05. Constellation Orbit" },
+        { num: 6, name: "06. Interactive Polaroids" },
+        { num: 7, name: "07. Royal Treats" },
+        { num: 8, name: "08. The Candle Wish" },
+        { num: 9, name: "09. Security Vault" },
+        { num: 10, name: "10. Sovereign Scroll" }
+      ]
+    },
+    'obsidian-vault': {
+      icon: '🔒',
+      title: 'Obsidian Vault // Private Sanctuary',
+      scenes: [
+        { num: 1, name: "01. Obsidian Premiere" },
+        { num: 2, name: "02. Biometric Verification" },
+        { num: 3, name: "03. Frosted Note Wipe" },
+        { num: 4, name: "04. 3D Carousel Cylinder" },
+        { num: 5, name: "05. Relic Time Capsule" },
+        { num: 6, name: "06. Keypad & Final Sanctuary" }
+      ]
+    },
+    'sapphire-vault': {
+      icon: '💎',
+      title: 'Sapphire Protocol // Cipher Decryption',
+      scenes: [
+        { num: 1, name: "01. Protocol Authorization" },
+        { num: 2, name: "02. Biometric Cipher Handprint" },
+        { num: 3, name: "03. Live Chronometer Countdown" },
+        { num: 4, name: "04. Scratch-Off Reveal" },
+        { num: 5, name: "05. Keypad Decryption" },
+        { num: 6, name: "06. Decrypted Vault Archive" }
+      ]
+    },
+    'golden-truce': {
+      icon: '🕊️',
+      title: 'Golden Truce // The Confession Vault',
+      scenes: [
+        { num: 1, name: "01. Sincere Truce Arrival" },
+        { num: 2, name: "02. Confession Scratch Mist" },
+        { num: 3, name: "03. Reflection Pond & Clauses" },
+        { num: 4, name: "04. Hold to Forgive Sanctuary" }
+      ]
+    }
+  };
+
+  window.templateDisabledScenes = {
+    'royal-velvet': new Set(),
+    'obsidian-vault': new Set(),
+    'sapphire-vault': new Set(),
+    'golden-truce': new Set()
+  };
+
+  // Render Scene Toggles Bar strictly tailored to active template
+  window.renderSceneManager = function(tmplId) {
+    const bar = document.getElementById('tmplSceneTogglesBar');
+    if (!bar) return;
+    bar.innerHTML = '';
+
+    const meta = TEMPLATE_METADATA[tmplId] || TEMPLATE_METADATA['royal-velvet'];
+    const scenes = meta.scenes || [];
+    if (!window.templateDisabledScenes[tmplId]) {
+      window.templateDisabledScenes[tmplId] = new Set();
+    }
+    const disabledSet = window.templateDisabledScenes[tmplId];
+
+    scenes.forEach(sc => {
+      const isDisabled = disabledSet.has(sc.num);
+      const item = document.createElement('div');
+      item.className = 'scene-toggle-item' + (isDisabled ? ' disabled' : '');
+      item.title = isDisabled ? `Click to re-enable ${sc.name}` : `Click to skip ${sc.name}`;
+      item.innerHTML = `
+        <span style="font-weight:700; font-size:12px;">${isDisabled ? '✕' : '✓'}</span>
+        <span>${escapeHtml(sc.name)}</span>
+        <span style="font-size:10px; opacity:0.6; margin-left:2px;">${isDisabled ? '(Skipped)' : ''}</span>
+      `;
+
+      item.addEventListener('click', () => {
+        if (disabledSet.has(sc.num)) {
+          disabledSet.delete(sc.num);
+        } else {
+          // Prevent disabling all scenes (keep at least one active)
+          if (disabledSet.size >= scenes.length - 1) {
+            alert("At least one chapter must remain active.");
+            return;
+          }
+          disabledSet.add(sc.num);
+        }
+        window.renderSceneManager(tmplId);
+        window.renderTemplateStudioLive();
+      });
+
+      bar.appendChild(item);
+    });
+  };
+
+  // Proportional scale updater for Desktop (1280x800) and Mobile (390x844)
+  window.updateTmplStudioScale = function() {
+    const holder = document.getElementById('tmplStudioDeviceHolder');
+    const wrap = document.getElementById('tmplStudioViewportWrap');
+    if (!holder || !wrap) return;
+
+    const isMobile = holder.classList.contains('mobile-view');
+    const targetW = isMobile ? 390 : 1280;
+    const targetH = isMobile ? 844 : 800;
+
+    holder.style.width = targetW + 'px';
+    holder.style.height = targetH + 'px';
+
+    const availW = wrap.clientWidth - 16;
+    const availH = wrap.clientHeight - 16;
+
+    const scaleW = availW / targetW;
+    const scaleH = availH / targetH;
+    const scale = Math.min(scaleW, scaleH, 1);
+
+    holder.style.transform = `scale(${scale})`;
+  };
+
+  window.addEventListener('resize', window.updateTmplStudioScale);
+
+  // Device Toggle in Template Studio
+  const tmplDevDesktop = document.getElementById('tmplDevBtnDesktop');
+  const tmplDevMobile = document.getElementById('tmplDevBtnMobile');
+  const tmplHolder = document.getElementById('tmplStudioDeviceHolder');
+  const tmplIsland = document.getElementById('tmplStudioDynamicIsland');
+  const tmplBottomBar = document.getElementById('tmplStudioBottomBar');
+
+  if (tmplDevDesktop && tmplDevMobile && tmplHolder) {
+    tmplDevDesktop.addEventListener('click', () => {
+      tmplDevDesktop.classList.add('active');
+      tmplDevMobile.classList.remove('active');
+      tmplHolder.classList.remove('mobile-view');
+      if (tmplIsland) tmplIsland.style.display = 'none';
+      if (tmplBottomBar) tmplBottomBar.style.display = 'none';
+      window.updateTmplStudioScale();
+    });
+
+    tmplDevMobile.addEventListener('click', () => {
+      tmplDevMobile.classList.add('active');
+      tmplDevDesktop.classList.remove('active');
+      tmplHolder.classList.add('mobile-view');
+      if (tmplIsland) tmplIsland.style.display = 'block';
+      if (tmplBottomBar) tmplBottomBar.style.display = 'block';
+      window.updateTmplStudioScale();
+    });
+  }
+
+  // Gather current customizer data
+  window.getTemplateCustomizerData = function() {
+    const getVal = (id, fallback) => {
+      const el = document.getElementById(id);
+      return (el && el.value.trim()) ? el.value.trim() : fallback;
+    };
+
+    const tmplId = window.currentActiveTmplId || 'royal-velvet';
+    const preset = curatedTemplatePresets[tmplId] || curatedTemplatePresets['royal-velvet'];
+
+    const rName = getVal('tmplRecipient', preset.recipientName || "My Dearest");
+    const occ = getVal('tmplOccasion', preset.occasion || "Birthday Premiere");
+    const tag = getVal('tmplTagline', preset.tagline || "A celebration of grace, laughter, and timeless memories.");
+    const polaroid = getVal('tmplPolaroidCaption', preset.polaroidCaption || "Pure Grace.");
+    const sender = getVal('tmplSender', preset.sender || "Forever Yours");
+    const pass = getVal('tmplPasscode', preset.passcode || "2026");
+    const hint = getVal('tmplHint', preset.hint || "The year of magic");
+    const quote = getVal('tmplQuote', preset.quote || "To the world you may be one person, but to me you make everything better.");
+    const heartQuote = getVal('tmplHeartQuote', preset.heartQuote || "Side by side or miles apart,\nwe are always connected by the heart.");
+    const heartTitle = getVal('tmplHeartTitle', preset.heartTitle || "The Reserved Chamber");
+    const treat1T = getVal('tmplTreat1Title', preset.treat1Title || "Shopping Spree!");
+    const treat1D = getVal('tmplTreat1Desc', preset.treat1Desc || "My treat. Pick your favorites.");
+    const treat2T = getVal('tmplTreat2Title', preset.treat2Title || "Royal Dinner!");
+    const treat2D = getVal('tmplTreat2Desc', preset.treat2Desc || "Your favorite restaurant, anytime.");
+    const wishMsg = getVal('tmplWishMessage', preset.wishMessage || "May Every Dream Flourish");
+    const startDate = getVal('tmplStartDate', preset.startDate || "2023-06-29T20:25:00");
+    const letter1 = getVal('tmplLetter1', preset.letter1 || "");
+    const letter2 = getVal('tmplLetter2', preset.letter2 || "");
+    const letter3 = getVal('tmplLetter3', preset.letter3 || "");
+    const letter4 = getVal('tmplLetter4', preset.letter4 || "");
+
+    const isUserPro = (typeof window.isUserProTier === 'function') ? window.isUserProTier() : false;
+    const pubToggle = document.getElementById('publishWatermarkToggle');
+    const showWatermark = isUserPro ? (pubToggle ? pubToggle.checked : false) : true;
+
+    const disabledList = Array.from(window.templateDisabledScenes[tmplId] || []);
+
+    return {
+      templateId: tmplId,
+      recipientName: rName,
+      occasion: occ,
+      tagline: tag,
+      polaroidCaption: polaroid,
+      sender: sender,
+      passcode: pass,
+      hint: hint,
+      quote: quote,
+      heartQuote: heartQuote,
+      heartTitle: heartTitle,
+      treat1Title: treat1T,
+      treat1Desc: treat1D,
+      treat2Title: treat2T,
+      treat2Desc: treat2D,
+      wishMessage: wishMsg,
+      startDate: startDate,
+      letter1: letter1,
+      letter2: letter2,
+      letter3: letter3,
+      letter4: letter4,
+      disabledScenes: disabledList,
+      photos: (window.customTmplPhotos || []).filter(Boolean),
+      showWatermark: showWatermark
+    };
+  };
+
+  // Live rendering into #tmplStudioFrame
+  let liveRenderDebounceTimer = null;
+  window.renderTemplateStudioLive = function(delay) {
+    if (typeof delay === 'number' && delay > 0) {
+      clearTimeout(liveRenderDebounceTimer);
+      liveRenderDebounceTimer = setTimeout(() => window.renderTemplateStudioLive(0), delay);
+      return;
+    }
+
+    const data = window.getTemplateCustomizerData();
+    let customHtml = window.buildCuratedTemplateHtml(data);
+    if (!data.showWatermark) {
+      customHtml = window.stripWatermarkFromHtml(customHtml);
+    }
+
+    window.currentHtml = customHtml;
+    window.versions = [customHtml];
+
+    const frame = document.getElementById('tmplStudioFrame');
+    if (frame) {
+      frame.srcdoc = customHtml;
+    }
+  };
+
+  // Adapt customizer form fields strictly to selected template
+  window.adaptCustomizerToTemplate = function(tmplId) {
+    window.currentActiveTmplId = tmplId;
+    const meta = TEMPLATE_METADATA[tmplId] || TEMPLATE_METADATA['royal-velvet'];
+    const preset = curatedTemplatePresets[tmplId] || curatedTemplatePresets['royal-velvet'];
+
+    // Topbar title badge
+    const iconEl = document.getElementById('tmplStudioActiveIcon');
+    const activeTitleEl = document.getElementById('tmplStudioActiveTitle');
+    if (iconEl) iconEl.textContent = meta.icon;
+    if (activeTitleEl) activeTitleEl.textContent = meta.title;
+
+    // Customizer heading
+    const titleEl = document.getElementById('tmplCustomizerTitle');
+    const subtitleEl = document.getElementById('tmplCustomizerSubtitle');
+    if (titleEl) titleEl.textContent = 'Personalize "' + meta.title + '"';
+
+    const isObsidian = (tmplId === 'obsidian-vault');
+    const isSapphire = (tmplId === 'sapphire-vault');
+    const isGoldenTruce = (tmplId === 'golden-truce');
+    const isRoyal = (tmplId === 'royal-velvet');
+
+    if (subtitleEl) {
+      if (isGoldenTruce) {
+        subtitleEl.textContent = 'Customize all 4 chapters of this heartfelt apology sanctuary with scratch confession, ripple pond, and hold-to-forgive vault.';
+      } else if (isSapphire) {
+        subtitleEl.textContent = 'Customize all 6 chapters of this luxury Midnight Sapphire & Champagne Gold interactive vault.';
+      } else if (isObsidian) {
+        subtitleEl.textContent = 'Every text across all 6 chapters is editable below. Leave defaults or write your own heartfelt words.';
+      } else {
+        subtitleEl.textContent = 'Every text across all 10 chapters is editable below. Leave defaults or write your own heartfelt words.';
+      }
+    }
+
+    // Render Scene Manager
+    window.renderSceneManager(tmplId);
+
+    // Group 3 (Treats) — Royal Velvet only
+    const treatsGroup = document.getElementById('tmplTreatsGroup');
+    if (treatsGroup) treatsGroup.style.display = isRoyal ? 'flex' : 'none';
+
+    // Group 2 Titles & Labels
+    const g2Title = document.getElementById('tmplGroup2Title');
+    const hTitleLabel = document.getElementById('tmplHeartTitleLabel');
+    const hQuoteLabel = document.getElementById('tmplHeartQuoteLabel');
+    const quoteGroup = document.getElementById('tmplQuoteGroup');
+    const polLabel = document.getElementById('tmplPolaroidCaptionLabel');
+
+    if (g2Title) {
+      if (isGoldenTruce) g2Title.innerHTML = '<span>📜</span> 2. Confession Salutation & Scratch Note (Chapter 02)';
+      else if (isSapphire) g2Title.innerHTML = '<span>📜</span> 2. Secured File & Scratch Note (Scene 4)';
+      else if (isObsidian) g2Title.innerHTML = '<span>📜</span> 2. Secured File & Secret Note (Scene 3)';
+      else g2Title.innerHTML = '<span>💖</span> 2. Chamber of Affection (Scenes 3 & 4)';
+    }
+
+    if (hTitleLabel) {
+      if (isGoldenTruce) hTitleLabel.textContent = 'Chapter 2 Confession Heading';
+      else if (isSapphire) hTitleLabel.textContent = 'Secured File Scratch Title';
+      else if (isObsidian) hTitleLabel.textContent = 'Secured File Secret Heading';
+      else hTitleLabel.textContent = 'Scene 4 Chamber Title';
+    }
+
+    if (hQuoteLabel) {
+      if (isGoldenTruce) hQuoteLabel.textContent = 'Scratch Confession Note';
+      else if (isSapphire) hQuoteLabel.textContent = 'Frosted Glass Scratch-Off Note';
+      else if (isObsidian) hQuoteLabel.textContent = 'Frosted Glass Wipe Reveal Note';
+      else hQuoteLabel.textContent = 'Scene 4 Heart Chamber Quote';
+    }
+
+    if (quoteGroup) {
+      quoteGroup.style.display = isRoyal ? 'block' : 'none';
+    }
+
+    if (polLabel) {
+      polLabel.textContent = isGoldenTruce ? 'Chapter 1 Opening Subtitle' : 'Scene 2 Polaroid Headline';
+    }
+
+    // Group 4 (Passcode & Clock) — Hidden completely for Golden Truce
+    const passGroup = document.getElementById('tmplPasscodeGroup');
+    const startDateRow = document.getElementById('tmplStartDateRow');
+    const passRow = document.getElementById('tmplPasscodeRow');
+    const passLabel = document.getElementById('tmplPasscodeLabel');
+    const passInp = document.getElementById('tmplPasscode');
+    const hintInp = document.getElementById('tmplHint');
+    const g4Title = document.getElementById('tmplGroup4Title');
+    const wishLabel = document.getElementById('tmplWishMessageLabel');
+
+    if (passGroup) passGroup.style.display = isGoldenTruce ? 'none' : 'flex';
+    if (startDateRow) startDateRow.style.display = (isObsidian || isSapphire) ? 'flex' : 'none';
+
+    if (isObsidian || isSapphire) {
+      let initialVal = preset.startDate;
+      if (isSapphire) {
+        initialVal = preset.startDate || '2011-07-12T00:00:00';
+      } else {
+        initialVal = preset.startDate || '2023-06-29T20:25:00';
+      }
+      if (typeof window.populateDatePickerFromIso === 'function') {
+        window.populateDatePickerFromIso(initialVal, isSapphire);
+      }
+
+      if (passLabel) passLabel.textContent = '6-Digit Secret Passcode (Keypad)';
+      if (passInp) {
+        passInp.maxLength = 6;
+        passInp.minLength = 6;
+        passInp.placeholder = isSapphire ? '120711' : '290623';
+        passInp.value = preset.passcode || (isSapphire ? '120711' : '290623');
+      }
+      if (hintInp) {
+        hintInp.value = preset.hint || (isSapphire ? 'Day of Birth (DDMMYY) — Key: 120711' : 'The date it all started — Key: 290623');
+      }
+    } else if (isRoyal) {
+      if (passLabel) passLabel.textContent = 'Secret Vault Passcode';
+      if (passInp) {
+        passInp.removeAttribute('maxLength');
+        passInp.placeholder = 'e.g. 2026';
+        passInp.value = preset.passcode || '2026';
+      }
+      if (hintInp) {
+        hintInp.value = preset.hint || 'The year of magic (Passcode: 2026)';
+      }
+    }
+
+    if (g4Title) {
+      if (isSapphire) g4Title.innerHTML = '<span>🔐</span> 4. Decryption Ceremony (Scenes 5 & 6)';
+      else if (isObsidian) g4Title.innerHTML = '<span>🔐</span> 4. Decryption Ceremony (Scenes 4 & 5)';
+      else g4Title.innerHTML = '<span>🔐</span> 4. Ceremony & Vault Gate (Scenes 8 & 9)';
+    }
+
+    if (wishLabel) {
+      wishLabel.textContent = 'Scene 8 Candle Wish Reveal Message';
+    }
+
+    // Group 5 (Letter / Clauses)
+    const g5Title = document.getElementById('tmplGroup5Title');
+    const l1L = document.getElementById('tmplLetter1Label');
+    const l2L = document.getElementById('tmplLetter2Label');
+    const l3L = document.getElementById('tmplLetter3Label');
+    const l4L = document.getElementById('tmplLetter4Label');
+
+    if (g5Title) {
+      if (isGoldenTruce) g5Title.innerHTML = '<span>📜</span> 5. Sincere Clauses & Final Promise (Chapters 03 & 04)';
+      else if (isSapphire) g5Title.innerHTML = '<span>📜</span> 5. Decrypted Archive Vow & Final Message (Scene 6)';
+      else if (isObsidian) g5Title.innerHTML = '<span>📜</span> 5. The Obsidian Vault Letter & Sign-off (Scene 6)';
+      else g5Title.innerHTML = '<span>📜</span> 5. The Vault Letter & Sign-off (Scene 10)';
+    }
+
+    if (l1L) l1L.textContent = isGoldenTruce ? 'Clause 01: Sincere Apology' : 'Letter Paragraph 1';
+    if (l2L) l2L.textContent = isGoldenTruce ? 'Clause 02: Pure Intentions' : 'Letter Paragraph 2';
+    if (l3L) l3L.textContent = isGoldenTruce ? 'Clause 03: Mutual Harmony' : 'Letter Paragraph 3';
+    if (l4L) l4L.textContent = isGoldenTruce ? 'Clause 04 & Final Reconciliation Promise' : 'Letter Paragraph 4';
+
+    // Group 6: Photo Memories (COMPLETELY HIDDEN for Sapphire & Golden Truce)
+    const photosGroup = document.getElementById('tmplPhotosGroup');
+    const g6Title = document.getElementById('tmplGroup6Title');
+    const limitNote = document.getElementById('tmplPhotoLimitNote');
+    const batchBtn = document.getElementById('tmplBatchUploadLabelText');
+
+    if (isSapphire || isGoldenTruce) {
+      if (photosGroup) photosGroup.style.display = 'none';
+    } else {
+      if (photosGroup) photosGroup.style.display = 'flex';
+      if (g6Title) {
+        g6Title.innerHTML = isObsidian
+          ? '<span>📸</span> 6. Photo Memories (Strictly 10 Memory Slots)'
+          : '<span>📸</span> 6. Photo Memories (Strictly 6 Memory Slots)';
+      }
+      const maxSlots = isObsidian ? 10 : 6;
+      if (limitNote) {
+        limitNote.innerHTML = isObsidian
+          ? 'Memory carousel requires <strong>strictly 10 photos</strong>.'
+          : 'Rotating 3D memory cylinder holds <strong>strictly 6 photos</strong>.';
+      }
+      if (batchBtn) batchBtn.textContent = `📂 Choose ${maxSlots} Photos`;
+    }
+
+    // Pre-populate input values from preset
+    const fill = (id, val) => {
+      const el = document.getElementById(id);
+      if (el && val !== undefined) el.value = val;
+    };
+    fill('tmplRecipient', preset.recipientName);
+    fill('tmplOccasion', preset.occasion);
+    fill('tmplTagline', preset.tagline);
+    fill('tmplPolaroidCaption', preset.polaroidCaption);
+    fill('tmplQuote', preset.quote);
+    fill('tmplHeartQuote', preset.heartQuote);
+    fill('tmplHeartTitle', preset.heartTitle);
+    fill('tmplWishMessage', preset.wishMessage);
+    fill('tmplSender', preset.sender || 'Forever Yours');
+    fill('tmplTreat1Title', preset.treat1Title || 'Shopping Spree!');
+    fill('tmplTreat1Desc', preset.treat1Desc || 'My treat. Pick your favorites.');
+    fill('tmplTreat2Title', preset.treat2Title || 'Royal Dinner!');
+    fill('tmplTreat2Desc', preset.treat2Desc || 'Your favorite restaurant, anytime.');
+    fill('tmplLetter1', preset.letter1 || '');
+    fill('tmplLetter2', preset.letter2 || '');
+    fill('tmplLetter3', preset.letter3 || '');
+    fill('tmplLetter4', preset.letter4 || '');
+  };
+
+  // Open Template Studio
+  window.openTemplateStudio = function(tmplId, autoScrollDown) {
+    window.currentActiveTmplId = tmplId || 'royal-velvet';
+
+    // Close curated templates modal
+    window.closeTemplatesModal();
+
+    // Hide hub and workshop
+    if (hubEl) hubEl.classList.add('hidden');
+    if (workshopEl) workshopEl.classList.remove('visible');
+
+    // Show template studio view
+    const studio = document.getElementById('templateStudioView');
+    if (studio) {
+      studio.style.display = 'flex';
+    }
+
+    // Configure fields for this template
+    window.adaptCustomizerToTemplate(window.currentActiveTmplId);
+    renderPhotoSlots();
+
+    // Live render preview
+    window.renderTemplateStudioLive();
+
+    // Proportional scaling for preview frame
+    setTimeout(() => {
+      window.updateTmplStudioScale();
+    }, 50);
+
+    // Scroll positioning
+    if (autoScrollDown) {
+      setTimeout(() => {
+        const customizerSec = document.getElementById('tmplStudioCustomizerSection');
+        if (customizerSec) {
+          customizerSec.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 150);
+    } else {
+      window.scrollTo(0, 0);
+      if (studio) studio.scrollTop = 0;
+    }
+  };
+
+  // Wire Preview & Customize Buttons in Gallery
   document.querySelectorAll('.tmpl-preview-action').forEach(btn => {
     btn.addEventListener('click', (e) => {
       const tmplId = e.currentTarget.getAttribute('data-tmpl') || 'royal-velvet';
-      const preset = Object.assign({ templateId: tmplId }, curatedTemplatePresets[tmplId] || curatedTemplatePresets['royal-velvet']);
-      window.currentActiveTmplId = tmplId;
-      const isUserPro = (typeof window.isUserProTier === 'function') ? window.isUserProTier() : false;
-      const pubWatermark = document.getElementById('publishWatermarkToggle');
-      const showW = isUserPro ? (pubWatermark ? pubWatermark.checked : false) : true;
-      let previewHtml = window.buildCuratedTemplateHtml(Object.assign({ showWatermark: showW }, preset));
-      if (!showW) previewHtml = window.stripWatermarkFromHtml(previewHtml);
-      launchTemplateIntoStudio(previewHtml, 'Preview // ' + preset.title);
+      window.openTemplateStudio(tmplId, false);
     });
   });
 
-  // Customize & Launch buttons across all template cards
   document.querySelectorAll('.tmpl-customize-action').forEach(btn => {
     btn.addEventListener('click', (e) => {
       const tmplId = e.currentTarget.getAttribute('data-tmpl') || 'royal-velvet';
-      const preset = curatedTemplatePresets[tmplId] || curatedTemplatePresets['royal-velvet'];
-
-      // Pre-populate customizer fields if element exists
-      if (document.getElementById('tmplRecipient')) document.getElementById('tmplRecipient').value = preset.recipientName;
-      if (document.getElementById('tmplOccasion')) document.getElementById('tmplOccasion').value = preset.occasion;
-      if (document.getElementById('tmplTagline')) document.getElementById('tmplTagline').value = preset.tagline;
-      if (document.getElementById('tmplPolaroidCaption')) document.getElementById('tmplPolaroidCaption').value = preset.polaroidCaption;
-      if (document.getElementById('tmplQuote')) document.getElementById('tmplQuote').value = preset.quote;
-      if (document.getElementById('tmplHeartQuote')) document.getElementById('tmplHeartQuote').value = preset.heartQuote;
-      if (document.getElementById('tmplHeartTitle')) document.getElementById('tmplHeartTitle').value = preset.heartTitle;
-      if (document.getElementById('tmplWishMessage')) document.getElementById('tmplWishMessage').value = preset.wishMessage;
-
-      // Switch to customizer view and configure for active template
-      window.currentActiveTmplId = tmplId;
-      const titleEl = document.getElementById('tmplCustomizerTitle');
-      if (titleEl) titleEl.textContent = 'Personalize "' + preset.title + '"';
-
-      const isObsidian = (tmplId === 'obsidian-vault');
-      const isSapphire = (tmplId === 'sapphire-vault');
-      const isGoldenTruce = (tmplId === 'golden-truce');
-
-      const subtitleEl = document.getElementById('tmplCustomizerSubtitle');
-      if (subtitleEl) {
-        if (isGoldenTruce) {
-          subtitleEl.textContent = 'Customize all 4 chapters of this heartfelt apology sanctuary with scratch confession, ripple pond, and hold-to-forgive vault.';
-        } else if (isSapphire) {
-          subtitleEl.textContent = 'Customize all 6 chapters of this luxury Midnight Sapphire & Champagne Gold interactive vault.';
-        } else if (isObsidian) {
-          subtitleEl.textContent = 'Every text across all 6 chapters is editable below. Leave defaults or write your own heartfelt words.';
-        } else {
-          subtitleEl.textContent = 'Every text across all 10 chapters is editable below. Leave defaults or write your own heartfelt words.';
-        }
-      }
-
-      // 1. Group 3 (Treats vs Vaults)
-      const treatsGroup = document.getElementById('tmplTreatsGroup');
-      if (treatsGroup) treatsGroup.style.display = (isObsidian || isSapphire || isGoldenTruce) ? 'none' : 'flex';
-
-      const g2Title = document.getElementById('tmplGroup2Title');
-      if (g2Title) {
-        if (isGoldenTruce) g2Title.innerHTML = '<span>📜</span> 2. Confession Salutation & Scratch Note (Chapter 02)';
-        else if (isSapphire) g2Title.innerHTML = '<span>📜</span> 2. Secured File & Scratch Note (Scene 4)';
-        else if (isObsidian) g2Title.innerHTML = '<span>📜</span> 2. Secured File & Secret Note (Scene 3)';
-        else g2Title.innerHTML = '<span>💖</span> 2. Chamber of Affection (Scenes 3 & 4)';
-      }
-
-      const hTitleLabel = document.getElementById('tmplHeartTitleLabel');
-      if (hTitleLabel) {
-        if (isGoldenTruce) hTitleLabel.textContent = 'Chapter 2 Confession Heading';
-        else if (isSapphire) hTitleLabel.textContent = 'Secured File Scratch Title';
-        else if (isObsidian) hTitleLabel.textContent = 'Secured File Secret Heading';
-        else hTitleLabel.textContent = 'Scene 4 Chamber Title';
-      }
-
-      const hQuoteLabel = document.getElementById('tmplHeartQuoteLabel');
-      if (hQuoteLabel) {
-        if (isGoldenTruce) hQuoteLabel.textContent = 'Scratch Confession Note';
-        else if (isSapphire) hQuoteLabel.textContent = 'Frosted Glass Scratch-Off Note';
-        else if (isObsidian) hQuoteLabel.textContent = 'Frosted Glass Wipe Reveal Note';
-        else hQuoteLabel.textContent = 'Scene 4 Heart Chamber Quote';
-      }
-
-      // 2. Day of Birth / Infinity Clock Date & Time Picker
-      const startDateRow = document.getElementById('tmplStartDateRow');
-      if (startDateRow) {
-        startDateRow.style.display = (isObsidian || isSapphire) ? 'flex' : 'none';
-        const startInp = document.getElementById('tmplStartDate');
-        let initialVal = preset.startDate;
-        if (isSapphire) {
-          if (!startInp || !startInp.value || startInp.value.startsWith('2023') || startInp.value.startsWith('2026')) {
-            initialVal = preset.startDate || '2011-07-12T00:00:00';
-          } else {
-            initialVal = startInp.value;
-          }
-        } else if (isObsidian) {
-          if (!startInp || !startInp.value || startInp.value.startsWith('2026') || startInp.value.startsWith('2011')) {
-            initialVal = preset.startDate || '2023-06-29T20:25:00';
-          } else {
-            initialVal = startInp.value;
-          }
-        }
-        if (typeof window.populateDatePickerFromIso === 'function') {
-          window.populateDatePickerFromIso(initialVal, isSapphire);
-        }
-      }
-
-      // 3. Strict 6-Character Passcode
-      const passLabel = document.getElementById('tmplPasscodeLabel');
-      const passInp = document.getElementById('tmplPasscode');
-      const hintInp = document.getElementById('tmplHint');
-      const passRow = document.getElementById('tmplPasscodeRow');
-      if (passRow) passRow.style.display = isGoldenTruce ? 'none' : 'flex';
-
-      const g4Title = document.getElementById('tmplGroup4Title');
-      if (g4Title) {
-        if (isGoldenTruce) g4Title.innerHTML = '<span>🕊️</span> 4. The Reset & Final Question (Chapter 04)';
-        else if (isSapphire) g4Title.innerHTML = '<span>🔐</span> 4. Decryption Ceremony (Scenes 5 & 6)';
-        else if (isObsidian) g4Title.innerHTML = '<span>🔐</span> 4. Decryption Ceremony (Scenes 4 & 5)';
-        else g4Title.innerHTML = '<span>🔐</span> 4. Ceremony & Vault Gate (Scenes 8 & 9)';
-      }
-
-      const wishLabel = document.getElementById('tmplWishMessageLabel');
-      if (wishLabel) {
-        wishLabel.textContent = isGoldenTruce ? 'Chapter 4 Hold-To-Forgive Question / Subtext' : 'Scene 8 Candle Wish Reveal Message';
-      }
-
-      const g5Title = document.getElementById('tmplGroup5Title');
-      if (g5Title) {
-        if (isGoldenTruce) g5Title.innerHTML = '<span>📜</span> 5. Sincere Clauses & Final Promise (Chapters 03 & 04)';
-        else g5Title.innerHTML = '<span>📜</span> 5. The Vault Letter & Sign-off (Scene 10)';
-      }
-
-      if (isObsidian || isSapphire) {
-        if (passLabel) passLabel.textContent = '6-Digit Secret Passcode (Exactly 6 digits)';
-        if (passInp) {
-          passInp.maxLength = 6;
-          passInp.minLength = 6;
-          passInp.placeholder = isSapphire ? 'e.g. 120711' : 'e.g. 290623';
-          if (!passInp.value || passInp.value === '2026' || passInp.value === '081110') {
-            passInp.value = preset.passcode || (isSapphire ? '120711' : '290623');
-          }
-        }
-        if (hintInp && (!hintInp.value || hintInp.value === 'The year of magic')) {
-          hintInp.value = preset.hint || (isSapphire ? 'Day of Birth (DDMMYY) — 120711' : 'The date it all started');
-        }
-      } else {
-        if (passLabel) passLabel.textContent = 'Secret Vault Passcode';
-        if (passInp) {
-          passInp.removeAttribute('maxLength');
-          passInp.placeholder = 'e.g. 2026 or secret word';
-          if (!passInp.value || passInp.value === '290623' || passInp.value === '081110' || passInp.value === '120711') passInp.value = '2026';
-        }
-        if (hintInp && (hintInp.value.includes('120711') || hintInp.value.includes('290623'))) {
-          hintInp.value = 'The year of magic';
-        }
-      }
-
-      // 4. Photo memories (Strictly 10 for Obsidian, Strictly 6 for Royal Velvet, 0 for Sapphire & Golden Truce)
-      const g6Title = document.getElementById('tmplGroup6Title');
-      if (isSapphire || isGoldenTruce) {
-        if (g6Title) {
-          g6Title.innerHTML = isGoldenTruce
-            ? '<span>🕊️</span> 6. Sincere Truce Architecture (Zero Photos Required)'
-            : '<span>🔒</span> 6. Cipher Protocol Architecture (Zero Photos Required)';
-        }
-        if (tmplPhotoSlotsGrid) tmplPhotoSlotsGrid.style.display = 'none';
-        if (tmplPhotoStatusText) tmplPhotoStatusText.style.display = 'none';
-        const batchBtn = document.getElementById('tmplBatchUploadLabelText');
-        if (batchBtn && batchBtn.parentElement) batchBtn.parentElement.style.display = 'none';
-        if (tmplClearAllPhotosBtn) tmplClearAllPhotosBtn.style.display = 'none';
-        const limitNote = document.getElementById('tmplPhotoLimitNote');
-        if (limitNote) {
-          limitNote.innerHTML = isGoldenTruce
-            ? '✨ <strong>Zero photos required</strong>: Golden Truce is a pure emotional experience featuring an interactive scratch confession pad, dynamic water ripple pond, golden leaves shower, and hold-to-forgive reconciliation vault.'
-            : '✨ <strong>Zero photos required</strong>: Sapphire Protocol is an interactive cipher encryption vault featuring biometric verification, scratch reveal, live birthday countdown, and 6-digit keypad decryption.';
-        }
-      } else {
-        if (tmplPhotoSlotsGrid) tmplPhotoSlotsGrid.style.display = 'grid';
-        if (tmplPhotoStatusText) tmplPhotoStatusText.style.display = 'block';
-        const batchBtn = document.getElementById('tmplBatchUploadLabelText');
-        if (batchBtn && batchBtn.parentElement) batchBtn.parentElement.style.display = 'inline-flex';
-        if (tmplClearAllPhotosBtn) tmplClearAllPhotosBtn.style.display = 'inline-block';
-        if (g6Title) {
-          g6Title.innerHTML = isObsidian
-            ? '<span>📸</span> 6. Photo Memories (Strictly 10 Memory Slots)'
-            : '<span>📸</span> 6. Photo Memories (Strictly 6 Memory Slots)';
-        }
-        const limitNote = document.getElementById('tmplPhotoLimitNote');
-        const maxSlots = getPhotoSlotLimit();
-        if (limitNote) {
-          limitNote.innerHTML = isObsidian
-            ? 'Memory carousel requires <strong>strictly 10 photos</strong> (no more, no less).'
-            : 'Rotating 3D memory cylinder holds <strong>strictly 6 photos</strong>.';
-        }
-        if (batchBtn) batchBtn.textContent = `📂 Choose ${maxSlots} Photos`;
-      }
-
-      // 5. Watermark Toggle Defaults (Pro/Studio defaults to false; Free tier is locked to true)
-      const isUserPro = (typeof window.isUserProTier === 'function') ? window.isUserProTier() : false;
-      const tmplWatermark = document.getElementById('tmplShowWatermark');
-      const pubWatermark = document.getElementById('publishWatermarkToggle');
-      if (tmplWatermark) {
-        tmplWatermark.checked = pubWatermark ? pubWatermark.checked : !isUserPro;
-      }
-
-      renderPhotoSlots();
-
-      if (tmplGalleryView && tmplCustomizerView) {
-        tmplGalleryView.style.display = 'none';
-        tmplCustomizerView.classList.add('open');
-        tmplCustomizerView.scrollIntoView({ behavior: 'smooth' });
-      }
+      window.openTemplateStudio(tmplId, true);
     });
   });
 
-  if (launchCustomizedTmplBtn) {
-    launchCustomizedTmplBtn.addEventListener('click', () => {
-      const getVal = (id, fallback) => {
-        const el = document.getElementById(id);
-        return (el && el.value.trim()) ? el.value.trim() : fallback;
-      };
+  // Wire Template Studio Topbar & Footer Buttons
+  const studioBackBtn = document.getElementById('tmplStudioBackBtn');
+  if (studioBackBtn) {
+    studioBackBtn.addEventListener('click', () => {
+      const studio = document.getElementById('templateStudioView');
+      if (studio) studio.style.display = 'none';
+      if (hubEl) hubEl.classList.remove('hidden');
+      window.openTemplatesModal();
+    });
+  }
 
-      const rName = getVal('tmplRecipient', "My Dearest");
-      const occ = getVal('tmplOccasion', "Birthday Premiere");
-      const tag = getVal('tmplTagline', "A celebration of grace, laughter, and timeless memories.");
-      const polaroid = getVal('tmplPolaroidCaption', "Pure Grace.");
-      const sender = getVal('tmplSender', "Forever Yours");
-      const pass = getVal('tmplPasscode', "2026");
-      const hint = getVal('tmplHint', "The year of magic");
-      const quote = getVal('tmplQuote', "To the world you may be one person, but to me you make everything better.");
-      const heartQuote = getVal('tmplHeartQuote', "Side by side or miles apart,\nwe are always connected by the heart.");
-      const heartTitle = getVal('tmplHeartTitle', "The Reserved Chamber");
-      const treat1T = getVal('tmplTreat1Title', "Shopping Spree!");
-      const treat1D = getVal('tmplTreat1Desc', "My treat. Pick your favorites.");
-      const treat2T = getVal('tmplTreat2Title', "Royal Dinner!");
-      const treat2D = getVal('tmplTreat2Desc', "Your favorite restaurant, anytime.");
-      const wishMsg = getVal('tmplWishMessage', "May Every Dream Flourish");
-      const startDate = getVal('tmplStartDate', "2023-06-29T20:25:00");
-      const letter1 = getVal('tmplLetter1', "I wanted to create something truly magical and unforgettable for you today. A regular card could never capture how much you mean to everyone around you.");
-      const letter2 = getVal('tmplLetter2', "From every quiet conversation to every milestone along the way, your presence brings warmth and inspiration to everything you touch. You have an extraordinary spirit that lifts everyone around you.");
-      const letter3 = getVal('tmplLetter3', "Whether reaching for tomorrow's boldest dreams or celebrating today's simplest joys, know that you are held in the highest regard, always admired, supported, and loved.");
-      const letter4 = getVal('tmplLetter4', "Never stop exploring. Never settle for the ordinary. May this year shower you with laughter, boundless success, and unforgettable moments.");
+  const studioOpenTabBtn = document.getElementById('tmplStudioOpenTabBtn');
+  if (studioOpenTabBtn) {
+    studioOpenTabBtn.addEventListener('click', () => {
+      if (!window.currentHtml) return;
+      const blob = new Blob([window.currentHtml], { type: 'text/html;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      window.open(url, '_blank');
+    });
+  }
 
-      if (window.currentActiveTmplId === 'obsidian-vault' || window.currentActiveTmplId === 'sapphire-vault') {
-        if (pass.length !== 6) {
-          alert("Secret passcode must be exactly 6 characters (no more, no less). Please enter a 6-digit code!");
-          const pEl = document.getElementById('tmplPasscode');
-          if (pEl) { pEl.focus(); pEl.scrollIntoView({ behavior: 'smooth' }); }
-          return;
-        }
+  const studioDownloadBtn = document.getElementById('tmplStudioDownloadBtn');
+  if (studioDownloadBtn) {
+    studioDownloadBtn.addEventListener('click', () => {
+      window.openExportModal();
+    });
+  }
+
+  const studioExportBtn = document.getElementById('tmplStudioExportBtn');
+  if (studioExportBtn) {
+    studioExportBtn.addEventListener('click', () => {
+      window.openExportModal();
+    });
+  }
+
+  const studioUpdatePreviewBtn = document.getElementById('tmplStudioUpdatePreviewBtn');
+  if (studioUpdatePreviewBtn) {
+    studioUpdatePreviewBtn.addEventListener('click', () => {
+      window.renderTemplateStudioLive();
+      studioUpdatePreviewBtn.textContent = '✓ Preview Updated!';
+      setTimeout(() => {
+        studioUpdatePreviewBtn.textContent = '✦ Update Preview';
+      }, 1200);
+    });
+  }
+
+  const studioScrollPrompt = document.getElementById('tmplStudioScrollPrompt');
+  if (studioScrollPrompt) {
+    studioScrollPrompt.addEventListener('click', () => {
+      const customizerSec = document.getElementById('tmplStudioCustomizerSection');
+      if (customizerSec) customizerSec.scrollIntoView({ behavior: 'smooth' });
+    });
+  }
+
+  const studioJumpTopBtn = document.getElementById('tmplStudioJumpTopBtn');
+  if (studioJumpTopBtn) {
+    studioJumpTopBtn.addEventListener('click', () => {
+      const studio = document.getElementById('templateStudioView');
+      if (studio) studio.scrollTo({ top: 0, behavior: 'smooth' });
+      else window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  }
+
+  // Live Debounced Input Binding in Customizer
+  const customizerViewEl = document.getElementById('tmplCustomizerView');
+  if (customizerViewEl) {
+    customizerViewEl.addEventListener('input', (e) => {
+      if (e.target && e.target.id && e.target.id.startsWith('tmpl')) {
+        window.renderTemplateStudioLive(350);
       }
-
-      const isUserPro = (typeof window.isUserProTier === 'function') ? window.isUserProTier() : false;
-      const showWatermark = isUserPro
-        ? (document.getElementById('tmplShowWatermark') ? document.getElementById('tmplShowWatermark').checked : false)
-        : true;
-
-      let customHtml = window.buildCuratedTemplateHtml({
-        templateId: window.currentActiveTmplId || 'royal-velvet',
-        recipientName: rName,
-        occasion: occ,
-        tagline: tag,
-        polaroidCaption: polaroid,
-        sender: sender,
-        passcode: pass,
-        hint: hint,
-        quote: quote,
-        heartQuote: heartQuote,
-        heartTitle: heartTitle,
-        treat1Title: treat1T,
-        treat1Desc: treat1D,
-        treat2Title: treat2T,
-        treat2Desc: treat2D,
-        wishMessage: wishMsg,
-        startDate: startDate,
-        letter1: letter1,
-        letter2: letter2,
-        letter3: letter3,
-        letter4: letter4,
-        photos: (window.customTmplPhotos || []).filter(Boolean),
-        showWatermark: showWatermark
-      });
-
-      if (!showWatermark) {
-        customHtml = window.stripWatermarkFromHtml(customHtml);
+    });
+    customizerViewEl.addEventListener('change', (e) => {
+      if (e.target && e.target.id && e.target.id.startsWith('tmpl')) {
+        window.renderTemplateStudioLive(100);
       }
-
-      const pubToggle = document.getElementById('publishWatermarkToggle');
-      if (pubToggle) pubToggle.checked = showWatermark;
-
-      launchTemplateIntoStudio(customHtml, 'Template // ' + rName);
     });
   }
 

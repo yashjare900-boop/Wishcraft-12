@@ -981,7 +981,11 @@
         // 3. Scene Switcher Transitions
         // ---------------------------------
         let currentSceneNum = 1;
+        const disabledScenes = ` + JSON.stringify(Array.isArray(c.disabledScenes) ? c.disabledScenes.map(Number) : []) + `;
         function transitionToScene(targetNum) {
+            while (disabledScenes.includes(targetNum) && targetNum < 4) {
+                targetNum++;
+            }
             const currentEl = document.getElementById('scene' + currentSceneNum);
             const targetEl = document.getElementById('scene' + targetNum);
             if (!currentEl || !targetEl) return;

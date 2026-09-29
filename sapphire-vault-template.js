@@ -1067,8 +1067,8 @@
             <button type="button" class="key action-key" id="keyBack">⌫</button>
           </div>
 
-          <div style="font-size:11px; color:rgba(255,255,255,0.45); font-family:'Space Mono',monospace; margin-top:8px;">
-            Hint: ${escapeHtml(c.passcodeHint)}
+          <div style="font-size:11.5px; color:var(--gold-light); font-family:'Space Mono',monospace; margin-top:10px; background:rgba(229,193,88,0.1); border:1px solid rgba(229,193,88,0.3); border-radius:6px; padding:6px 12px; display:inline-block;">
+            🔑 Hint: ${escapeHtml(c.passcodeHint && c.passcodeHint.includes(c.passcode) ? c.passcodeHint : (c.passcodeHint ? `${c.passcodeHint} — Key: ${c.passcode}` : `Key: ${c.passcode}`))}
           </div>
         </div>
 
@@ -1179,7 +1179,11 @@
       6: document.getElementById('scene6')
     };
 
+    const disabledScenes = ` + JSON.stringify(Array.isArray(c.disabledScenes) ? c.disabledScenes.map(Number) : []) + `;
     function showScene(sceneNum) {
+      while (disabledScenes.includes(sceneNum) && sceneNum < 6) {
+        sceneNum++;
+      }
       Object.keys(scenes).forEach(key => {
         if (scenes[key]) scenes[key].classList.remove('active');
       });

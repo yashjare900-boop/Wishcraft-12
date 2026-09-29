@@ -803,6 +803,9 @@
         <div style="margin-bottom: 15px;">
           <h2 style="font-family: 'Cinzel', serif; font-size: 1.8rem; margin-bottom: 5px; background: linear-gradient(to bottom, #FFFFFF 20%, var(--gold-light) 50%, var(--gold-dark) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Final Decryption</h2>
           <p style="font-size: 0.72rem; color: rgba(255, 255, 255, 0.6); letter-spacing: 3px; text-transform: uppercase;">Enter The 6-Digit Passcode</p>
+          <div style="font-size: 11.5px; color: var(--gold-light); font-family: 'Space Mono', monospace; margin-top: 8px; background: rgba(212,175,55,0.1); border: 1px solid rgba(212,175,55,0.3); border-radius: 6px; padding: 5px 12px; display: inline-block;">
+            🔑 Hint: ${escapeHtml((c.hint || "The date it all started").includes(c.passcode || "290623") ? (c.hint || "The date it all started") : `${c.hint || "The date it all started"} — Key: ${c.passcode || "290623"}`)}
+          </div>
         </div>
 
         <div class="code-display" id="code-display">
@@ -864,8 +867,12 @@
     // ----------------------------------------------------
     let currentScene = 1;
     const totalScenes = 6;
+    const disabledScenes = ` + JSON.stringify(Array.isArray(c.disabledScenes) ? c.disabledScenes.map(Number) : []) + `;
 
     window.nextScene = function(n) {
+      while (disabledScenes.includes(n) && n < totalScenes) {
+        n++;
+      }
       const curEl = document.getElementById('scene-' + currentScene);
       const nextEl = document.getElementById('scene-' + n);
       if (!nextEl) return;

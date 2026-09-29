@@ -788,7 +788,7 @@
     <div class="terminal-card" id="termBox">
       <p class="top-label">Chapter 09 // Vault Access</p>
       <h2 style="font-family:'Playfair Display',serif; font-size:1.6rem; font-style:italic;">Secret Passcode</h2>
-      <p style="font-size:11px; color:rgba(255,255,255,0.65); margin-top:6px;">Hint: ` + escapeHtml(c.hint || "The secret key") + `</p>
+      <p style="font-size:11.5px; color:var(--accent-gold); margin-top:6px; font-family:'Space Mono',monospace;">🔑 Hint: ` + escapeHtml((c.hint && c.hint.includes(c.passcode || "2026")) ? c.hint : `${c.hint || "The year of magic"} (Passcode: ${c.passcode || "2026"})`) + `</p>
       <input type="password" id="passInp" class="pass-input" placeholder="PASSCODE" maxlength="12" autocomplete="off">
       <div id="passStat" style="font-size:12px; min-height:18px; margin-bottom:12px; color:var(--accent-gold); letter-spacing:2px;"></div>
       <button class="nav-btn" onclick="checkPass()">Verify & Decrypt →</button>
@@ -894,10 +894,14 @@
     ` : '') + `
     const CORRECT_CODE = "` + escapeHtml(c.passcode || "2026") + `";
     const CHAPTER_NAMES = {1:"PREMIERE", 2:"MEMORY", 3:"AFFECTION", 4:"VENTRICLE", 5:"BIOMETRIC", 6:"PROMISES", 7:"ARCHIVES", 8:"WISH", 9:"SECURITY", 10:"THE LETTER"};
+    const disabledScenes = ` + JSON.stringify(Array.isArray(c.disabledScenes) ? c.disabledScenes.map(Number) : []) + `;
     let cur = 1;
 
     window.nextScene = function(n) {
       try {
+        while (disabledScenes.includes(n) && n < 10) {
+          n++;
+        }
         const oldSc = document.getElementById('sc' + cur);
         const newSc = document.getElementById('sc' + n);
         if(!newSc) return;
