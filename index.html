@@ -2152,6 +2152,9 @@
     overflow-x: hidden;
     -webkit-overflow-scrolling: touch;
   }
+  .template-studio-view.visible {
+    display: flex !important;
+  }
   .tmpl-studio-topbar {
     position: sticky;
     top: 0;
@@ -2206,7 +2209,7 @@
     display: flex !important;
     align-items: center;
     justify-content: center;
-    transform-origin: top center;
+    transform-origin: center center;
     flex-shrink: 0;
     width: 1280px;
     height: 800px;
@@ -3040,7 +3043,8 @@
           </div>
         </div>
       </div>
-  </div>
+    </div>
+  </div> <!-- /workshop -->
 
   <!-- ================= DEDICATED TEMPLATE STUDIO VIEW (PREVIEW TOP + CUSTOMIZER SCROLL-DOWN) ================= -->
   <div class="template-studio-view" id="templateStudioView">
@@ -3815,6 +3819,11 @@
   hubBackBtn.addEventListener('click', () => {
     hubEl.classList.remove('hidden');
     workshopEl.classList.remove('visible');
+    const studio = document.getElementById('templateStudioView');
+    if (studio) {
+      studio.style.display = 'none';
+      studio.classList.remove('visible');
+    }
     hubBackBtn.classList.remove('visible');
     aiStepIndicator.style.display = 'none';
   });
@@ -5655,7 +5664,7 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
   let activeSlotTargetIdx = null;
 
   function getPhotoSlotLimit() {
-    if (window.currentActiveTmplId === 'sapphire-vault') return 0;
+    if (window.currentActiveTmplId === 'sapphire-vault' || window.currentActiveTmplId === 'golden-truce') return 0;
     return (window.currentActiveTmplId === 'obsidian-vault') ? 10 : 6;
   }
 
@@ -5665,7 +5674,7 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
   const tmplSingleSlotUpload = document.getElementById("tmplSingleSlotUpload");
   const tmplClearAllPhotosBtn = document.getElementById("tmplClearAllPhotosBtn");
 
-    function renderPhotoSlots() {
+  function renderPhotoSlots() {
     if (!tmplPhotoSlotsGrid) return;
     tmplPhotoSlotsGrid.innerHTML = "";
     const maxSlots = getPhotoSlotLimit();
@@ -5716,6 +5725,7 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
     }
   }
 
+  window.renderPhotoSlots = renderPhotoSlots;
   renderPhotoSlots();
 
   if (tmplSingleSlotUpload) {
@@ -6349,275 +6359,292 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
       return;
     }
 
-    const data = window.getTemplateCustomizerData();
-    let customHtml = window.buildCuratedTemplateHtml(data);
-    if (!data.showWatermark) {
-      customHtml = window.stripWatermarkFromHtml(customHtml);
-    }
+    try {
+      const data = window.getTemplateCustomizerData();
+      let customHtml = window.buildCuratedTemplateHtml(data);
+      if (!data.showWatermark && typeof window.stripWatermarkFromHtml === 'function') {
+        customHtml = window.stripWatermarkFromHtml(customHtml);
+      }
 
-    window.currentHtml = customHtml;
-    window.versions = [customHtml];
+      window.currentHtml = customHtml;
+      window.versions = [customHtml];
 
-    const frame = document.getElementById('tmplStudioFrame');
-    if (frame) {
-      frame.srcdoc = customHtml;
+      const frame = document.getElementById('tmplStudioFrame');
+      if (frame) {
+        frame.srcdoc = customHtml;
+      }
+    } catch (err) {
+      console.error("Error in renderTemplateStudioLive:", err);
     }
   };
 
   // Adapt customizer form fields strictly to selected template
   window.adaptCustomizerToTemplate = function(tmplId) {
-    window.currentActiveTmplId = tmplId;
-    const meta = TEMPLATE_METADATA[tmplId] || TEMPLATE_METADATA['royal-velvet'];
-    const preset = curatedTemplatePresets[tmplId] || curatedTemplatePresets['royal-velvet'];
+    try {
+      window.currentActiveTmplId = tmplId;
+      const meta = TEMPLATE_METADATA[tmplId] || TEMPLATE_METADATA['royal-velvet'];
+      const preset = curatedTemplatePresets[tmplId] || curatedTemplatePresets['royal-velvet'];
 
-    // Topbar title badge
-    const iconEl = document.getElementById('tmplStudioActiveIcon');
-    const activeTitleEl = document.getElementById('tmplStudioActiveTitle');
-    if (iconEl) iconEl.textContent = meta.icon;
-    if (activeTitleEl) activeTitleEl.textContent = meta.title;
+      // Topbar title badge
+      const iconEl = document.getElementById('tmplStudioActiveIcon');
+      const activeTitleEl = document.getElementById('tmplStudioActiveTitle');
+      if (iconEl) iconEl.textContent = meta.icon;
+      if (activeTitleEl) activeTitleEl.textContent = meta.title;
 
-    // Customizer heading
-    const titleEl = document.getElementById('tmplCustomizerTitle');
-    const subtitleEl = document.getElementById('tmplCustomizerSubtitle');
-    if (titleEl) titleEl.textContent = 'Personalize "' + meta.title + '"';
+      // Customizer heading
+      const titleEl = document.getElementById('tmplCustomizerTitle');
+      const subtitleEl = document.getElementById('tmplCustomizerSubtitle');
+      if (titleEl) titleEl.textContent = 'Personalize "' + meta.title + '"';
 
-    const isObsidian = (tmplId === 'obsidian-vault');
-    const isSapphire = (tmplId === 'sapphire-vault');
-    const isGoldenTruce = (tmplId === 'golden-truce');
-    const isRoyal = (tmplId === 'royal-velvet');
+      const isObsidian = (tmplId === 'obsidian-vault');
+      const isSapphire = (tmplId === 'sapphire-vault');
+      const isGoldenTruce = (tmplId === 'golden-truce');
+      const isRoyal = (tmplId === 'royal-velvet');
 
-    if (subtitleEl) {
-      if (isGoldenTruce) {
-        subtitleEl.textContent = 'Customize all 4 chapters of this heartfelt apology sanctuary with scratch confession, ripple pond, and hold-to-forgive vault.';
-      } else if (isSapphire) {
-        subtitleEl.textContent = 'Customize all 6 chapters of this luxury Midnight Sapphire & Champagne Gold interactive vault.';
-      } else if (isObsidian) {
-        subtitleEl.textContent = 'Every text across all 6 chapters is editable below. Leave defaults or write your own heartfelt words.';
+      if (subtitleEl) {
+        if (isGoldenTruce) {
+          subtitleEl.textContent = 'Customize all 4 chapters of this heartfelt apology sanctuary with scratch confession, ripple pond, and hold-to-forgive vault.';
+        } else if (isSapphire) {
+          subtitleEl.textContent = 'Customize all 6 chapters of this luxury Midnight Sapphire & Champagne Gold interactive vault.';
+        } else if (isObsidian) {
+          subtitleEl.textContent = 'Every text across all 6 chapters is editable below. Leave defaults or write your own heartfelt words.';
+        } else {
+          subtitleEl.textContent = 'Every text across all 10 chapters is editable below. Leave defaults or write your own heartfelt words.';
+        }
+      }
+
+      // Render Scene Manager
+      window.renderSceneManager(tmplId);
+
+      // Group 3 (Treats) — Royal Velvet only
+      const treatsGroup = document.getElementById('tmplTreatsGroup');
+      if (treatsGroup) treatsGroup.style.display = isRoyal ? 'flex' : 'none';
+
+      // Group 2 Titles & Labels
+      const g2Title = document.getElementById('tmplGroup2Title');
+      const hTitleLabel = document.getElementById('tmplHeartTitleLabel');
+      const hQuoteLabel = document.getElementById('tmplHeartQuoteLabel');
+      const quoteGroup = document.getElementById('tmplQuoteGroup');
+      const polLabel = document.getElementById('tmplPolaroidCaptionLabel');
+
+      if (g2Title) {
+        if (isGoldenTruce) g2Title.innerHTML = '<span>📜</span> 2. Confession Salutation & Scratch Note (Chapter 02)';
+        else if (isSapphire) g2Title.innerHTML = '<span>📜</span> 2. Secured File & Scratch Note (Scene 4)';
+        else if (isObsidian) g2Title.innerHTML = '<span>📜</span> 2. Secured File & Secret Note (Scene 3)';
+        else g2Title.innerHTML = '<span>💖</span> 2. Chamber of Affection (Scenes 3 & 4)';
+      }
+
+      if (hTitleLabel) {
+        if (isGoldenTruce) hTitleLabel.textContent = 'Chapter 2 Confession Heading';
+        else if (isSapphire) hTitleLabel.textContent = 'Secured File Scratch Title';
+        else if (isObsidian) hTitleLabel.textContent = 'Secured File Secret Heading';
+        else hTitleLabel.textContent = 'Scene 4 Chamber Title';
+      }
+
+      if (hQuoteLabel) {
+        if (isGoldenTruce) hQuoteLabel.textContent = 'Scratch Confession Note';
+        else if (isSapphire) hQuoteLabel.textContent = 'Frosted Glass Scratch-Off Note';
+        else if (isObsidian) hQuoteLabel.textContent = 'Frosted Glass Wipe Reveal Note';
+        else hQuoteLabel.textContent = 'Scene 4 Heart Chamber Quote';
+      }
+
+      if (quoteGroup) {
+        quoteGroup.style.display = isRoyal ? 'block' : 'none';
+      }
+
+      if (polLabel) {
+        polLabel.textContent = isGoldenTruce ? 'Chapter 1 Opening Subtitle' : 'Scene 2 Polaroid Headline';
+      }
+
+      // Group 4 (Passcode & Clock) — Hidden completely for Golden Truce
+      const passGroup = document.getElementById('tmplPasscodeGroup');
+      const startDateRow = document.getElementById('tmplStartDateRow');
+      const passRow = document.getElementById('tmplPasscodeRow');
+      const passLabel = document.getElementById('tmplPasscodeLabel');
+      const passInp = document.getElementById('tmplPasscode');
+      const hintInp = document.getElementById('tmplHint');
+      const g4Title = document.getElementById('tmplGroup4Title');
+      const wishLabel = document.getElementById('tmplWishMessageLabel');
+
+      if (passGroup) passGroup.style.display = isGoldenTruce ? 'none' : 'flex';
+      if (startDateRow) startDateRow.style.display = (isObsidian || isSapphire) ? 'flex' : 'none';
+
+      if (isObsidian || isSapphire) {
+        let initialVal = preset.startDate;
+        if (isSapphire) {
+          initialVal = preset.startDate || '2011-07-12T00:00:00';
+        } else {
+          initialVal = preset.startDate || '2023-06-29T20:25:00';
+        }
+        if (typeof window.populateDatePickerFromIso === 'function') {
+          window.populateDatePickerFromIso(initialVal, isSapphire);
+        }
+
+        if (passLabel) passLabel.textContent = '6-Digit Secret Passcode (Keypad)';
+        if (passInp) {
+          passInp.maxLength = 6;
+          passInp.minLength = 6;
+          passInp.placeholder = isSapphire ? '120711' : '290623';
+          passInp.value = preset.passcode || (isSapphire ? '120711' : '290623');
+        }
+        if (hintInp) {
+          hintInp.value = preset.hint || (isSapphire ? 'Day of Birth (DDMMYY) — Key: 120711' : 'The date it all started — Key: 290623');
+        }
+      } else if (isRoyal) {
+        if (passLabel) passLabel.textContent = 'Secret Vault Passcode';
+        if (passInp) {
+          passInp.removeAttribute('maxLength');
+          passInp.placeholder = 'e.g. 2026';
+          passInp.value = preset.passcode || '2026';
+        }
+        if (hintInp) {
+          hintInp.value = preset.hint || 'The year of magic (Passcode: 2026)';
+        }
+      }
+
+      if (g4Title) {
+        if (isSapphire) g4Title.innerHTML = '<span>🔐</span> 4. Decryption Ceremony (Scenes 5 & 6)';
+        else if (isObsidian) g4Title.innerHTML = '<span>🔐</span> 4. Decryption Ceremony (Scenes 4 & 5)';
+        else g4Title.innerHTML = '<span>🔐</span> 4. Ceremony & Vault Gate (Scenes 8 & 9)';
+      }
+
+      if (wishLabel) {
+        wishLabel.textContent = 'Scene 8 Candle Wish Reveal Message';
+      }
+
+      // Group 5 (Letter / Clauses)
+      const g5Title = document.getElementById('tmplGroup5Title');
+      const l1L = document.getElementById('tmplLetter1Label');
+      const l2L = document.getElementById('tmplLetter2Label');
+      const l3L = document.getElementById('tmplLetter3Label');
+      const l4L = document.getElementById('tmplLetter4Label');
+
+      if (g5Title) {
+        if (isGoldenTruce) g5Title.innerHTML = '<span>📜</span> 5. Sincere Clauses & Final Promise (Chapters 03 & 04)';
+        else if (isSapphire) g5Title.innerHTML = '<span>📜</span> 5. Decrypted Archive Vow & Final Message (Scene 6)';
+        else if (isObsidian) g5Title.innerHTML = '<span>📜</span> 5. The Obsidian Vault Letter & Sign-off (Scene 6)';
+        else g5Title.innerHTML = '<span>📜</span> 5. The Vault Letter & Sign-off (Scene 10)';
+      }
+
+      if (l1L) l1L.textContent = isGoldenTruce ? 'Clause 01: Sincere Apology' : 'Letter Paragraph 1';
+      if (l2L) l2L.textContent = isGoldenTruce ? 'Clause 02: Pure Intentions' : 'Letter Paragraph 2';
+      if (l3L) l3L.textContent = isGoldenTruce ? 'Clause 03: Mutual Harmony' : 'Letter Paragraph 3';
+      if (l4L) l4L.textContent = isGoldenTruce ? 'Clause 04 & Final Reconciliation Promise' : 'Letter Paragraph 4';
+
+      // Group 6: Photo Memories (COMPLETELY HIDDEN for Sapphire & Golden Truce)
+      const photosGroup = document.getElementById('tmplPhotosGroup');
+      const g6Title = document.getElementById('tmplGroup6Title');
+      const limitNote = document.getElementById('tmplPhotoLimitNote');
+      const batchBtn = document.getElementById('tmplBatchUploadLabelText');
+
+      if (isSapphire || isGoldenTruce) {
+        if (photosGroup) photosGroup.style.display = 'none';
       } else {
-        subtitleEl.textContent = 'Every text across all 10 chapters is editable below. Leave defaults or write your own heartfelt words.';
-      }
-    }
-
-    // Render Scene Manager
-    window.renderSceneManager(tmplId);
-
-    // Group 3 (Treats) — Royal Velvet only
-    const treatsGroup = document.getElementById('tmplTreatsGroup');
-    if (treatsGroup) treatsGroup.style.display = isRoyal ? 'flex' : 'none';
-
-    // Group 2 Titles & Labels
-    const g2Title = document.getElementById('tmplGroup2Title');
-    const hTitleLabel = document.getElementById('tmplHeartTitleLabel');
-    const hQuoteLabel = document.getElementById('tmplHeartQuoteLabel');
-    const quoteGroup = document.getElementById('tmplQuoteGroup');
-    const polLabel = document.getElementById('tmplPolaroidCaptionLabel');
-
-    if (g2Title) {
-      if (isGoldenTruce) g2Title.innerHTML = '<span>📜</span> 2. Confession Salutation & Scratch Note (Chapter 02)';
-      else if (isSapphire) g2Title.innerHTML = '<span>📜</span> 2. Secured File & Scratch Note (Scene 4)';
-      else if (isObsidian) g2Title.innerHTML = '<span>📜</span> 2. Secured File & Secret Note (Scene 3)';
-      else g2Title.innerHTML = '<span>💖</span> 2. Chamber of Affection (Scenes 3 & 4)';
-    }
-
-    if (hTitleLabel) {
-      if (isGoldenTruce) hTitleLabel.textContent = 'Chapter 2 Confession Heading';
-      else if (isSapphire) hTitleLabel.textContent = 'Secured File Scratch Title';
-      else if (isObsidian) hTitleLabel.textContent = 'Secured File Secret Heading';
-      else hTitleLabel.textContent = 'Scene 4 Chamber Title';
-    }
-
-    if (hQuoteLabel) {
-      if (isGoldenTruce) hQuoteLabel.textContent = 'Scratch Confession Note';
-      else if (isSapphire) hQuoteLabel.textContent = 'Frosted Glass Scratch-Off Note';
-      else if (isObsidian) hQuoteLabel.textContent = 'Frosted Glass Wipe Reveal Note';
-      else hQuoteLabel.textContent = 'Scene 4 Heart Chamber Quote';
-    }
-
-    if (quoteGroup) {
-      quoteGroup.style.display = isRoyal ? 'block' : 'none';
-    }
-
-    if (polLabel) {
-      polLabel.textContent = isGoldenTruce ? 'Chapter 1 Opening Subtitle' : 'Scene 2 Polaroid Headline';
-    }
-
-    // Group 4 (Passcode & Clock) — Hidden completely for Golden Truce
-    const passGroup = document.getElementById('tmplPasscodeGroup');
-    const startDateRow = document.getElementById('tmplStartDateRow');
-    const passRow = document.getElementById('tmplPasscodeRow');
-    const passLabel = document.getElementById('tmplPasscodeLabel');
-    const passInp = document.getElementById('tmplPasscode');
-    const hintInp = document.getElementById('tmplHint');
-    const g4Title = document.getElementById('tmplGroup4Title');
-    const wishLabel = document.getElementById('tmplWishMessageLabel');
-
-    if (passGroup) passGroup.style.display = isGoldenTruce ? 'none' : 'flex';
-    if (startDateRow) startDateRow.style.display = (isObsidian || isSapphire) ? 'flex' : 'none';
-
-    if (isObsidian || isSapphire) {
-      let initialVal = preset.startDate;
-      if (isSapphire) {
-        initialVal = preset.startDate || '2011-07-12T00:00:00';
-      } else {
-        initialVal = preset.startDate || '2023-06-29T20:25:00';
-      }
-      if (typeof window.populateDatePickerFromIso === 'function') {
-        window.populateDatePickerFromIso(initialVal, isSapphire);
+        if (photosGroup) photosGroup.style.display = 'flex';
+        if (g6Title) {
+          g6Title.innerHTML = isObsidian
+            ? '<span>📸</span> 6. Photo Memories (Strictly 10 Memory Slots)'
+            : '<span>📸</span> 6. Photo Memories (Strictly 6 Memory Slots)';
+        }
+        const maxSlots = isObsidian ? 10 : 6;
+        if (limitNote) {
+          limitNote.innerHTML = isObsidian
+            ? 'Memory carousel requires <strong>strictly 10 photos</strong>.'
+            : 'Rotating 3D memory cylinder holds <strong>strictly 6 photos</strong>.';
+        }
+        if (batchBtn) batchBtn.textContent = `📂 Choose ${maxSlots} Photos`;
       }
 
-      if (passLabel) passLabel.textContent = '6-Digit Secret Passcode (Keypad)';
-      if (passInp) {
-        passInp.maxLength = 6;
-        passInp.minLength = 6;
-        passInp.placeholder = isSapphire ? '120711' : '290623';
-        passInp.value = preset.passcode || (isSapphire ? '120711' : '290623');
-      }
-      if (hintInp) {
-        hintInp.value = preset.hint || (isSapphire ? 'Day of Birth (DDMMYY) — Key: 120711' : 'The date it all started — Key: 290623');
-      }
-    } else if (isRoyal) {
-      if (passLabel) passLabel.textContent = 'Secret Vault Passcode';
-      if (passInp) {
-        passInp.removeAttribute('maxLength');
-        passInp.placeholder = 'e.g. 2026';
-        passInp.value = preset.passcode || '2026';
-      }
-      if (hintInp) {
-        hintInp.value = preset.hint || 'The year of magic (Passcode: 2026)';
-      }
+      // Pre-populate input values from preset
+      const fill = (id, val) => {
+        const el = document.getElementById(id);
+        if (el && val !== undefined) el.value = val;
+      };
+      fill('tmplRecipient', preset.recipientName);
+      fill('tmplOccasion', preset.occasion);
+      fill('tmplTagline', preset.tagline);
+      fill('tmplPolaroidCaption', preset.polaroidCaption);
+      fill('tmplQuote', preset.quote);
+      fill('tmplHeartQuote', preset.heartQuote);
+      fill('tmplHeartTitle', preset.heartTitle);
+      fill('tmplWishMessage', preset.wishMessage);
+      fill('tmplSender', preset.sender || 'Forever Yours');
+      fill('tmplTreat1Title', preset.treat1Title || 'Shopping Spree!');
+      fill('tmplTreat1Desc', preset.treat1Desc || 'My treat. Pick your favorites.');
+      fill('tmplTreat2Title', preset.treat2Title || 'Royal Dinner!');
+      fill('tmplTreat2Desc', preset.treat2Desc || 'Your favorite restaurant, anytime.');
+      fill('tmplLetter1', preset.letter1 || '');
+      fill('tmplLetter2', preset.letter2 || '');
+      fill('tmplLetter3', preset.letter3 || '');
+      fill('tmplLetter4', preset.letter4 || '');
+    } catch (err) {
+      console.error("Error adapting customizer to template:", err);
     }
-
-    if (g4Title) {
-      if (isSapphire) g4Title.innerHTML = '<span>🔐</span> 4. Decryption Ceremony (Scenes 5 & 6)';
-      else if (isObsidian) g4Title.innerHTML = '<span>🔐</span> 4. Decryption Ceremony (Scenes 4 & 5)';
-      else g4Title.innerHTML = '<span>🔐</span> 4. Ceremony & Vault Gate (Scenes 8 & 9)';
-    }
-
-    if (wishLabel) {
-      wishLabel.textContent = 'Scene 8 Candle Wish Reveal Message';
-    }
-
-    // Group 5 (Letter / Clauses)
-    const g5Title = document.getElementById('tmplGroup5Title');
-    const l1L = document.getElementById('tmplLetter1Label');
-    const l2L = document.getElementById('tmplLetter2Label');
-    const l3L = document.getElementById('tmplLetter3Label');
-    const l4L = document.getElementById('tmplLetter4Label');
-
-    if (g5Title) {
-      if (isGoldenTruce) g5Title.innerHTML = '<span>📜</span> 5. Sincere Clauses & Final Promise (Chapters 03 & 04)';
-      else if (isSapphire) g5Title.innerHTML = '<span>📜</span> 5. Decrypted Archive Vow & Final Message (Scene 6)';
-      else if (isObsidian) g5Title.innerHTML = '<span>📜</span> 5. The Obsidian Vault Letter & Sign-off (Scene 6)';
-      else g5Title.innerHTML = '<span>📜</span> 5. The Vault Letter & Sign-off (Scene 10)';
-    }
-
-    if (l1L) l1L.textContent = isGoldenTruce ? 'Clause 01: Sincere Apology' : 'Letter Paragraph 1';
-    if (l2L) l2L.textContent = isGoldenTruce ? 'Clause 02: Pure Intentions' : 'Letter Paragraph 2';
-    if (l3L) l3L.textContent = isGoldenTruce ? 'Clause 03: Mutual Harmony' : 'Letter Paragraph 3';
-    if (l4L) l4L.textContent = isGoldenTruce ? 'Clause 04 & Final Reconciliation Promise' : 'Letter Paragraph 4';
-
-    // Group 6: Photo Memories (COMPLETELY HIDDEN for Sapphire & Golden Truce)
-    const photosGroup = document.getElementById('tmplPhotosGroup');
-    const g6Title = document.getElementById('tmplGroup6Title');
-    const limitNote = document.getElementById('tmplPhotoLimitNote');
-    const batchBtn = document.getElementById('tmplBatchUploadLabelText');
-
-    if (isSapphire || isGoldenTruce) {
-      if (photosGroup) photosGroup.style.display = 'none';
-    } else {
-      if (photosGroup) photosGroup.style.display = 'flex';
-      if (g6Title) {
-        g6Title.innerHTML = isObsidian
-          ? '<span>📸</span> 6. Photo Memories (Strictly 10 Memory Slots)'
-          : '<span>📸</span> 6. Photo Memories (Strictly 6 Memory Slots)';
-      }
-      const maxSlots = isObsidian ? 10 : 6;
-      if (limitNote) {
-        limitNote.innerHTML = isObsidian
-          ? 'Memory carousel requires <strong>strictly 10 photos</strong>.'
-          : 'Rotating 3D memory cylinder holds <strong>strictly 6 photos</strong>.';
-      }
-      if (batchBtn) batchBtn.textContent = `📂 Choose ${maxSlots} Photos`;
-    }
-
-    // Pre-populate input values from preset
-    const fill = (id, val) => {
-      const el = document.getElementById(id);
-      if (el && val !== undefined) el.value = val;
-    };
-    fill('tmplRecipient', preset.recipientName);
-    fill('tmplOccasion', preset.occasion);
-    fill('tmplTagline', preset.tagline);
-    fill('tmplPolaroidCaption', preset.polaroidCaption);
-    fill('tmplQuote', preset.quote);
-    fill('tmplHeartQuote', preset.heartQuote);
-    fill('tmplHeartTitle', preset.heartTitle);
-    fill('tmplWishMessage', preset.wishMessage);
-    fill('tmplSender', preset.sender || 'Forever Yours');
-    fill('tmplTreat1Title', preset.treat1Title || 'Shopping Spree!');
-    fill('tmplTreat1Desc', preset.treat1Desc || 'My treat. Pick your favorites.');
-    fill('tmplTreat2Title', preset.treat2Title || 'Royal Dinner!');
-    fill('tmplTreat2Desc', preset.treat2Desc || 'Your favorite restaurant, anytime.');
-    fill('tmplLetter1', preset.letter1 || '');
-    fill('tmplLetter2', preset.letter2 || '');
-    fill('tmplLetter3', preset.letter3 || '');
-    fill('tmplLetter4', preset.letter4 || '');
   };
 
   // Open Template Studio
   window.openTemplateStudio = function(tmplId, autoScrollDown) {
-    window.currentActiveTmplId = tmplId || 'royal-velvet';
+    try {
+      window.currentActiveTmplId = tmplId || 'royal-velvet';
 
-    // Close curated templates modal
-    window.closeTemplatesModal();
+      // Close curated templates modal
+      window.closeTemplatesModal();
 
-    // Ensure main app container is fully revealed and landing page hidden
-    const landingEl = document.getElementById('landingPage');
-    const mainAppEl = document.getElementById('main-app');
-    if (landingEl) landingEl.classList.add('hidden');
-    if (mainAppEl) mainAppEl.classList.remove('app-hidden');
-    document.body.style.overflow = "auto";
+      // Ensure main app container is fully revealed and landing page hidden
+      const landingEl = document.getElementById('landingPage');
+      const mainAppEl = document.getElementById('main-app');
+      if (landingEl) landingEl.classList.add('hidden');
+      if (mainAppEl) mainAppEl.classList.remove('app-hidden');
+      document.body.style.overflow = "auto";
 
-    // Hide hub and workshop
-    if (hubEl) hubEl.classList.add('hidden');
-    if (workshopEl) workshopEl.classList.remove('visible');
+      // Hide hub and workshop
+      if (hubEl) hubEl.classList.add('hidden');
+      if (workshopEl) workshopEl.classList.remove('visible');
 
-    // Show template studio view
-    const studio = document.getElementById('templateStudioView');
-    if (studio) {
-      studio.style.display = 'flex';
-    }
+      // Show template studio view
+      const studio = document.getElementById('templateStudioView');
+      if (studio) {
+        studio.style.display = 'flex';
+        studio.classList.add('visible');
+      }
 
-    // Configure fields for this template
-    window.adaptCustomizerToTemplate(window.currentActiveTmplId);
-    renderPhotoSlots();
+      // Configure fields for this template
+      window.adaptCustomizerToTemplate(window.currentActiveTmplId);
+      if (typeof window.renderPhotoSlots === 'function') {
+        window.renderPhotoSlots();
+      } else if (typeof renderPhotoSlots === 'function') {
+        renderPhotoSlots();
+      }
 
-    // Live render preview
-    window.renderTemplateStudioLive();
+      // Live render preview
+      window.renderTemplateStudioLive();
 
-    // Proportional scaling for preview frame with multiple passes to handle CSS transitions & layout calculation
-    window.updateTmplStudioScale();
-    requestAnimationFrame(() => {
+      // Proportional scaling for preview frame with multiple passes to handle CSS transitions & layout calculation
       window.updateTmplStudioScale();
-    });
-    setTimeout(() => {
-      window.updateTmplStudioScale();
-    }, 80);
-    setTimeout(() => {
-      window.updateTmplStudioScale();
-    }, 250);
-
-    // Scroll positioning
-    if (autoScrollDown) {
+      requestAnimationFrame(() => {
+        window.updateTmplStudioScale();
+      });
       setTimeout(() => {
-        const customizerSec = document.getElementById('tmplStudioCustomizerSection');
-        if (customizerSec) {
-          customizerSec.scrollIntoView({ behavior: 'smooth' });
-        }
-      }, 150);
-    } else {
-      window.scrollTo(0, 0);
-      if (studio) studio.scrollTop = 0;
+        window.updateTmplStudioScale();
+      }, 80);
+      setTimeout(() => {
+        window.updateTmplStudioScale();
+      }, 250);
+
+      // Scroll positioning
+      if (autoScrollDown) {
+        setTimeout(() => {
+          const customizerSec = document.getElementById('tmplStudioCustomizerSection');
+          if (customizerSec) {
+            customizerSec.scrollIntoView({ behavior: 'smooth' });
+          }
+        }, 150);
+      } else {
+        window.scrollTo(0, 0);
+        if (studio) studio.scrollTop = 0;
+      }
+    } catch (err) {
+      console.error("Error opening template studio:", err);
     }
   };
 
@@ -6641,9 +6668,30 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
   if (studioBackBtn) {
     studioBackBtn.addEventListener('click', () => {
       const studio = document.getElementById('templateStudioView');
-      if (studio) studio.style.display = 'none';
+      if (studio) {
+        studio.style.display = 'none';
+        studio.classList.remove('visible');
+      }
       if (hubEl) hubEl.classList.remove('hidden');
       window.openTemplatesModal();
+    });
+  }
+
+  // Brand click resets to Hub cleanly from anywhere
+  const brandEl = document.querySelector('.brand');
+  if (brandEl) {
+    brandEl.style.cursor = 'pointer';
+    brandEl.addEventListener('click', () => {
+      const studio = document.getElementById('templateStudioView');
+      if (studio) {
+        studio.style.display = 'none';
+        studio.classList.remove('visible');
+      }
+      if (workshopEl) workshopEl.classList.remove('visible');
+      if (hubEl) hubEl.classList.remove('hidden');
+      if (hubBackBtn) hubBackBtn.classList.remove('visible');
+      if (aiStepIndicator) aiStepIndicator.style.display = 'none';
+      window.closeTemplatesModal();
     });
   }
 
