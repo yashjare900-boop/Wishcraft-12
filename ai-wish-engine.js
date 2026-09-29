@@ -21,7 +21,7 @@
       .replace(/'/g, '&#039;');
   }
 
-  // 6 Luxury Theme Color Palettes
+  // 10 Luxury Theme Color Palettes
   const THEME_PALETTES = {
     'royal-velvet': {
       bg: '#0B0914',
@@ -33,6 +33,17 @@
       glow: 'rgba(212, 175, 106, 0.15)',
       fontSerif: "'Playfair Display', Georgia, serif",
       fontSans: "'Montserrat', -apple-system, sans-serif"
+    },
+    'velvet-plum': {
+      bg: '#140711',
+      cardBg: 'linear-gradient(145deg, rgba(32, 12, 28, 0.90), rgba(16, 6, 14, 0.95))',
+      primary: '#DF8FA5',
+      secondary: '#FCE7F3',
+      accent: '#C084FC',
+      border: 'rgba(223, 143, 165, 0.38)',
+      glow: 'rgba(223, 143, 165, 0.20)',
+      fontSerif: "'Playfair Display', Georgia, serif",
+      fontSans: "'Montserrat', sans-serif"
     },
     'obsidian-gold': {
       bg: '#050507',
@@ -57,13 +68,13 @@
       fontSans: "'Montserrat', sans-serif"
     },
     'emerald-noir': {
-      bg: '#03140E',
-      cardBg: 'rgba(5, 26, 18, 0.85)',
-      primary: '#4ECCA3',
+      bg: '#02140D',
+      cardBg: 'rgba(4, 26, 18, 0.85)',
+      primary: '#3FCF8E',
       secondary: '#E8F5E9',
       accent: '#E5C158',
-      border: 'rgba(78, 204, 163, 0.3)',
-      glow: 'rgba(78, 204, 163, 0.18)',
+      border: 'rgba(63, 207, 142, 0.3)',
+      glow: 'rgba(63, 207, 142, 0.18)',
       fontSerif: "'Playfair Display', Georgia, serif",
       fontSans: "'Montserrat', sans-serif"
     },
@@ -88,6 +99,50 @@
       glow: 'rgba(230, 194, 128, 0.16)',
       fontSerif: "'Cinzel', Georgia, serif",
       fontSans: "'Space Grotesk', sans-serif"
+    },
+    'arctic-frost': {
+      bg: '#061019',
+      cardBg: 'linear-gradient(145deg, rgba(10, 26, 42, 0.90), rgba(6, 16, 26, 0.95))',
+      primary: '#8FD8E8',
+      secondary: '#E0F7FA',
+      accent: '#4DD0E1',
+      border: 'rgba(143, 216, 232, 0.40)',
+      glow: 'rgba(143, 216, 232, 0.25)',
+      fontSerif: "'Cinzel', 'Playfair Display', Georgia, serif",
+      fontSans: "'Space Grotesk', 'Montserrat', sans-serif"
+    },
+    'blush-romance': {
+      bg: '#160A12',
+      cardBg: 'linear-gradient(145deg, rgba(38, 16, 28, 0.90), rgba(18, 8, 14, 0.95))',
+      primary: '#E8A6B0',
+      secondary: '#FFF0F5',
+      accent: '#FF758F',
+      border: 'rgba(232, 166, 176, 0.40)',
+      glow: 'rgba(232, 166, 176, 0.22)',
+      fontSerif: "'Playfair Display', Georgia, serif",
+      fontSans: "'Montserrat', sans-serif"
+    },
+    'midnight-arcade': {
+      bg: '#090216',
+      cardBg: 'linear-gradient(145deg, rgba(20, 6, 45, 0.90), rgba(9, 2, 22, 0.95))',
+      primary: '#00F5D4',
+      secondary: '#F15BB5',
+      accent: '#9B5DE5',
+      border: 'rgba(0, 245, 212, 0.45)',
+      glow: 'rgba(0, 245, 212, 0.28)',
+      fontSerif: "'Space Grotesk', sans-serif",
+      fontSans: "'Space Grotesk', monospace"
+    },
+    'lavender-dream': {
+      bg: '#0E0818',
+      cardBg: 'linear-gradient(145deg, rgba(28, 14, 48, 0.90), rgba(12, 6, 22, 0.95))',
+      primary: '#C9A6FF',
+      secondary: '#F3E8FF',
+      accent: '#B794F4',
+      border: 'rgba(201, 166, 255, 0.40)',
+      glow: 'rgba(201, 166, 255, 0.24)',
+      fontSerif: "'Cinzel', 'Playfair Display', Georgia, serif",
+      fontSans: "'Montserrat', sans-serif"
     }
   };
 
@@ -122,22 +177,22 @@
       icon: '🕊️',
       tagline: 'Diplomatic Treaty, Sincere Clauses & Reconciliation Seal',
       defaultTheme: 'golden-truce',
-      bg: '#060E0A',
-      cardBg: 'linear-gradient(145deg, rgba(10, 24, 16, 0.92), rgba(5, 14, 10, 0.96))',
+      bg: '#0A0908',
+      cardBg: 'linear-gradient(145deg, rgba(20, 18, 14, 0.92), rgba(10, 9, 8, 0.96))',
       primary: '#E6C280',
-      secondary: '#A3B899',
-      accent: '#70A37F',
+      secondary: '#FAF6EE',
+      accent: '#A68A56',
       border: 'rgba(230, 194, 128, 0.38)',
-      glow: 'rgba(112, 163, 127, 0.2)',
-      fontSerif: "'Playfair Display', Georgia, serif",
+      glow: 'rgba(230, 194, 128, 0.18)',
+      fontSerif: "'Cinzel', 'Playfair Display', Georgia, serif",
       fontSans: "'Montserrat', sans-serif",
       cardBorder: '1px solid rgba(230, 194, 128, 0.4)',
       cardRadius: '20px',
       particleType: 'golden_leaves',
       cardAccentIcon: '🕊️',
-      finaleEmoji: '🕊️ 🌿 🤝 🤍 📜',
-      finaleBtnText: '🕊️ Accept Sincere Truce & Forgive',
-      finaleSuccessText: '❤️ Truce Accepted. Thank You For Your Kindness.'
+      finaleEmoji: '🕊️ 🤍 📜 🕊️ ✨',
+      finaleBtnText: '🕊️ Accept Peace Treaty & Seal Truce',
+      finaleSuccessText: '🤍 Truce Sealed. All is Forgiven. 🤍'
     },
     'romance': {
       id: 'romance',
@@ -557,50 +612,77 @@
     const sender = userData.senderName || '';
     const relationship = userData.relationship || 'friend';
     const tone = userData.tone || 'Cinematic & Deeply Moving';
+    const themeName = userData.themeName || 'royal-velvet';
+    const userMessage = userData.userMessage || '';
+    const aspirations = userData.aspirations || '';
+    const passcode = userData.passcode || '2026';
+    const passcodeHint = userData.passcodeHint || '';
 
     return `You are an elite poetic copywriter and sentiment architect for WishCraft, an ultra-luxury digital keepsake studio.
 Your mission is to write a 100% original, deeply touching, multi-chapter cinematic keepsake experience.
 
-CRITICAL INSTRUCTIONS FOR HIGH-CONVERTING, BESPOKE OUTPUT:
-1. RECIPIENT: "${recName}" (${relationship}). Occasion: "${occ}". Tone: "${tone}". Sender: "${sender || 'Anonymous Sincere Friend'}".
-2. NEVER use generic placeholder titles like "A Sovereign Letter" or "The Reserved Chamber". 
-   Invent EVOCATIVE, CREATIVE, CINEMATIC titles and chapter badges that feel exclusively written for ${recName}.
-3. Every chapter MUST have rich, soulful writing:
-   - Chapter 1 (Cover): An unforgettable opening headline, breathtaking subtitle, and a warm 2-sentence prelude welcoming them.
-   - Chapter 2 (Memories): A vibrant narrative celebrating their character, funny or sweet shared journey, and a timeless quote.
-   - Chapter 3 (Secret Chamber): An intriguing encrypted archive with an authentic private confession or inside joke revealed once unlocked.
-   - Chapter 4 (The Sovereign Letter): 3-4 deep, flowing paragraphs (p1, p2, p3) with genuine emotional gravity.
-   - Chapter 5 (Grand Finale): An exhilarating milestone celebration headline (e.g. "To The Unstoppable ${recName.toUpperCase()}!"), heartfelt blessing, and elegant sign-off.
-4. PASSCODE & HINT:
-   - "passcode": a 4-to-6 digit code or year (default "2026")
-   - "passcodeHint": A clever mystery clue for ${recName} to guess the code WITHOUT revealing the digits! (e.g. "The memorable year our journey began" or "Your special lucky day"). Never leak the raw code!
+CRITICAL INTAKE DETAILS:
+- RECIPIENT: "${recName}" (${relationship})
+- SENDER: "${sender || 'A sincere lifelong friend'}"
+- OCCASION: "${occ}"
+- TONE: "${tone}"
+- REQUESTED PALETTE: "${themeName}"
+- PERSONAL NOTES / MEMORIES FROM USER: ${userMessage ? `"${userMessage}"` : 'None provided — invent emotionally resonant, genuine details celebrating their bond.'}
+- ASPIRATIONS & HOPES: ${aspirations ? `"${aspirations}"` : 'None provided — craft meaningful, moving aspirations tailored to them.'}
+- SECRET VAULT PASSCODE: "${passcode}"
+- PASSCODE HINT: "${passcodeHint || 'A clever mystery riddle known to both of them'}"
+
+OCCASION & ARCHETYPE RULES:
+1. If occasion is Apology / Truce / Forgiveness / Reconciliation:
+   - "archetype": "truce"
+   - Write with genuine vulnerability, emotional maturity, and sincere regret from ${sender} to ${recName}.
+   - Chapter 1: Sincere invitation to clear the air, acknowledging how valuable their connection is.
+   - Chapter 2: Fond reflection on the irreplaceable moments and shared trust that make this bond worth protecting.
+   - Chapter 3 (Secret Chamber): The unlocked message must be an authentic, humble, heartfelt apology admitting mistakes and expressing pure care.
+   - Chapter 4 (Letter): 3 deep, emotional paragraphs (p1, p2, p3) about listening better, prioritizing their feelings over pride, and making things right.
+   - Chapter 5 (Finale): A gentle, pressure-free invitation to hit reset and seal a peace treaty whenever they are ready.
+2. If occasion is Birthday / Celebration:
+   - "archetype": "birthday"
+   - Joyful, majestic, celebrating milestones, laughter, and their radiant future.
+3. If occasion is Romance / Love / Anniversary / Proposal:
+   - "archetype": "romance"
+   - Intimate, cinematic, timeless poetry celebrating two hearts intertwined.
+4. If theme is "midnight-arcade" or "obsidian-gold":
+   - "archetype": "obsidian" (unless occasion is specifically apology, birthday, or romance).
+5. Otherwise:
+   - "archetype": "classic"
+
+CRITICAL RULES:
+- THEME: Set "theme": "${themeName}".
+- PASSCODE & HINT: Set "passcode": "${passcode}". The "passcodeHint" MUST NEVER reveal the actual numbers! It must be a mystery riddle for ${recName}.
+- NO GENERIC TEMPLATE PHRASES: Every title, badge, subtitle, intro, and letter paragraph MUST BE 100% ORIGINAL, specific, and crafted exclusively for ${recName} and ${sender}.
 
 You MUST return ONLY a strict, valid JSON object with the following schema:
 {
   "archetype": "birthday" | "truce" | "romance" | "obsidian" | "classic",
-  "theme": "royal-velvet" | "obsidian-gold" | "midnight-sapphire" | "emerald-noir" | "sunset-peach" | "golden-truce",
-  "themeColor": "#HexColor matching mood",
+  "theme": "${themeName}",
+  "themeColor": "#HexColor matching the ${themeName} palette",
   "occasion": "${occ}",
   "recipientName": "${recName}",
   "senderName": "${sender}",
-  "passcode": "2026",
-  "passcodeHint": "Clever mystery riddle without exposing the numbers",
+  "passcode": "${passcode}",
+  "passcodeHint": "Clever mystery riddle without exposing numbers",
   "chapters": [
     {
       "id": "chap_1",
       "type": "cover",
       "navTitle": "01. Arrival",
-      "badge": "CHAPTER 01 // [Creative Badge, e.g. THE GOLDEN DAWN]",
+      "badge": "CHAPTER 01 // [Creative Badge, e.g. THE EMBERS OF TRUTH]",
       "title": "[Bespoke Poetic Headline dedicated to ${recName}]",
       "subtitle": "[Evocative, cinema-grade one-line subtitle]",
       "intro": "[2 warm, stirring sentences welcoming ${recName} into this experience]",
-      "ctaText": "Begin Your Keepsake →"
+      "ctaText": "Begin Experience →"
     },
     {
       "id": "chap_2",
       "type": "memories",
       "navTitle": "02. Footprints",
-      "badge": "CHAPTER 02 // [Creative Badge, e.g. SHARED CONSTELLATIONS]",
+      "badge": "CHAPTER 02 // [Creative Badge, e.g. UNWRITTEN CONSTELLATIONS]",
       "title": "[Poetic chapter title honoring their shared memories]",
       "subtitle": "[A subtitle celebrating their laughter and character]",
       "body": "[Rich 3-sentence narrative weaving their qualities, laughs, and adventures]",
@@ -610,34 +692,34 @@ You MUST return ONLY a strict, valid JSON object with the following schema:
       "id": "chap_3",
       "type": "interactive_reveal",
       "navTitle": "03. Vault",
-      "badge": "CHAPTER 03 // [Creative Badge, e.g. CLASSIFIED ARCHIVE]",
-      "title": "[Intriguing chapter title, e.g. The Encrypted Heart]",
-      "subtitle": "Enter your security key to decrypt this private message",
+      "badge": "CHAPTER 03 // [Creative Badge, e.g. CLASSIFIED VAULT]",
+      "title": "[Intriguing chapter title, e.g. The Encrypted Confession]",
+      "subtitle": "Enter your private key to decrypt this message",
       "secretHeading": "To ${recName}, From the Heart",
       "secretMessage": "[2-3 deeply sincere, vulnerable or delightful sentences revealed upon unlocking]",
-      "passcode": "2026",
+      "passcode": "${passcode}",
       "passcodeHint": "[Riddle or clue that never mentions the passcode digits]"
     },
     {
       "id": "chap_4",
       "type": "letter",
       "navTitle": "04. The Letter",
-      "badge": "CHAPTER 04 // [Creative Badge, e.g. UNFILTERED TRUTH]",
-      "title": "[Poetic Title for the sovereign letter]",
-      "subtitle": "Written with reverence, fondness, and unwavering support",
-      "p1": "[Paragraph 1: Celebrating who ${recName} is, their light, and their impact]",
-      "p2": "[Paragraph 2: Weaving personal anecdotes, inside jokes, and mutual trust]",
-      "p3": "[Paragraph 3: Deep hopes for their future, unwavering loyalty, and blessings]"
+      "badge": "CHAPTER 04 // [Creative Badge, e.g. SINCERE CLAUSES]",
+      "title": "[Poetic Title for the tribute letter]",
+      "subtitle": "Written with reverence, fondness, and unwavering sincerity",
+      "p1": "[Paragraph 1: Celebrating who ${recName} is, their qualities, and their importance]",
+      "p2": "[Paragraph 2: Weaving personal reflections, heartfelt truths, and honest emotions]",
+      "p3": "[Paragraph 3: Deep hopes for the future, commitments moving forward, and blessings]"
     },
     {
       "id": "chap_5",
       "type": "finale",
       "navTitle": "05. Finale",
-      "badge": "CHAPTER 05 // [Creative Badge, e.g. THE ROYAL TOAST]",
-      "title": "[Grand high-impact celebration title, e.g. HAPPY BIRTHDAY ${recName.toUpperCase()}!]",
-      "subtitle": "May every dream you hold take flight across the skies",
-      "wishMessage": "[Stirring 2-sentence toast to their health, joy, and grand adventures]",
-      "signature": "With immense love & admiration,\\n${sender || 'Always by your side'}"
+      "badge": "CHAPTER 05 // [Creative Badge, e.g. THE TRUCE SEAL]",
+      "title": "[Grand high-impact celebration title dedicated to ${recName}]",
+      "subtitle": "[A moving one-line wish or invitation to connect]",
+      "wishMessage": "[Stirring 2-sentence closing statement celebrating their bond]",
+      "signature": "With sincere care & respect,\\n${sender || 'Forever your friend'}"
     }
   ]
 }
@@ -656,9 +738,11 @@ Output ONLY the raw JSON object. Do not enclose in markdown fences.`;
   "relationship": "${userData.relationship || 'friend'}",
   "occasion": "${userData.occasion || 'Birthday'}",
   "tone": "${userData.tone || 'heartfelt'}",
+  "themeName": "${userData.themeName || 'royal-velvet'}",
   "personalMemoriesAndInsideJokes": ${userData.aspirations ? JSON.stringify(userData.aspirations) : 'null'},
   "userPersonalNote": ${userData.userMessage ? JSON.stringify(userData.userMessage) : 'null'},
-  "passcode": "${userData.passcode || '2026'}"
+  "passcode": "${userData.passcode || '2026'}",
+  "passcodeHint": "${userData.passcodeHint || 'A memorable secret key'}"
 }`;
   }
 
@@ -672,22 +756,22 @@ Output ONLY the raw JSON object. Do not enclose in markdown fences.`;
     const archetypeKey = (data.archetype && ARCHETYPES[data.archetype]) ? data.archetype : determineArchetype(data);
     const archetype = ARCHETYPES[archetypeKey] || ARCHETYPES['classic'];
 
-    // Theme resolution: prioritize user-picked theme if non-default; otherwise archetype's custom aesthetic
-    const basePalette = (data.theme && THEME_PALETTES[data.theme]) ? THEME_PALETTES[data.theme] : null;
-    const isCustomPalette = Boolean(basePalette && data.theme !== 'royal-velvet');
+    // Theme resolution: prioritize user-picked theme if provided; fallback to data.theme or archetype default
+    const userTheme = options.themeName || data.theme || archetype.defaultTheme || 'royal-velvet';
+    const basePalette = THEME_PALETTES[userTheme] || (data.theme && THEME_PALETTES[data.theme]) || THEME_PALETTES['royal-velvet'];
 
     const theme = {
-      bg: isCustomPalette ? basePalette.bg : archetype.bg,
-      cardBg: isCustomPalette ? basePalette.cardBg : archetype.cardBg,
-      primary: data.themeColor || (isCustomPalette ? basePalette.primary : archetype.primary),
-      secondary: isCustomPalette ? basePalette.secondary : archetype.secondary,
-      accent: isCustomPalette ? basePalette.accent : archetype.accent,
-      border: isCustomPalette ? basePalette.border : archetype.border,
-      glow: isCustomPalette ? basePalette.glow : archetype.glow,
-      fontSerif: isCustomPalette ? basePalette.fontSerif : archetype.fontSerif,
-      fontSans: isCustomPalette ? basePalette.fontSans : archetype.fontSans,
-      cardBorder: archetype.cardBorder,
-      cardRadius: archetype.cardRadius
+      bg: basePalette.bg,
+      cardBg: basePalette.cardBg,
+      primary: basePalette.primary,
+      secondary: basePalette.secondary,
+      accent: basePalette.accent,
+      border: basePalette.border,
+      glow: basePalette.glow,
+      fontSerif: basePalette.fontSerif,
+      fontSans: basePalette.fontSans,
+      cardBorder: archetype.cardBorder || ('1px solid ' + basePalette.border),
+      cardRadius: archetype.cardRadius || '24px'
     };
     const primaryColor = theme.primary;
     const recName = data.recipientName || "Someone Special";
@@ -1013,32 +1097,32 @@ Output ONLY the raw JSON object. Do not enclose in markdown fences.`;
     }
     /* Archetype specific flair */
     .wc-glass-card.birthday {
-      border: 1.5px solid rgba(255, 211, 42, 0.45);
+      border: 1.5px solid var(--border);
       border-radius: 26px;
-      box-shadow: 0 25px 70px rgba(0,0,0,0.9), 0 0 45px rgba(255, 211, 42, 0.18), inset 0 0 20px rgba(255, 211, 42, 0.05);
+      box-shadow: 0 25px 70px rgba(0,0,0,0.9), 0 0 45px var(--glow), inset 0 0 20px var(--glow);
     }
     .wc-glass-card.truce {
-      border: 1px solid rgba(230, 194, 128, 0.4);
+      border: 1px solid var(--border);
       border-radius: 20px;
-      box-shadow: 0 25px 70px rgba(0,0,0,0.9), inset 0 0 35px rgba(112, 163, 127, 0.08);
-      background: radial-gradient(circle at 50% 0%, rgba(112, 163, 127, 0.12) 0%, var(--card-bg) 70%);
+      box-shadow: 0 25px 70px rgba(0,0,0,0.9), inset 0 0 35px var(--glow);
+      background: radial-gradient(circle at 50% 0%, var(--glow) 0%, var(--card-bg) 70%);
     }
     .wc-glass-card.romance {
-      border: 1.5px solid rgba(255, 107, 129, 0.45);
+      border: 1.5px solid var(--border);
       border-radius: 28px;
-      box-shadow: 0 25px 70px rgba(0,0,0,0.9), 0 0 50px rgba(255, 107, 129, 0.22), inset 0 0 25px rgba(255, 107, 129, 0.06);
-      background: radial-gradient(circle at 50% 0%, rgba(255, 107, 129, 0.12) 0%, var(--card-bg) 70%);
+      box-shadow: 0 25px 70px rgba(0,0,0,0.9), 0 0 50px var(--glow), inset 0 0 25px var(--glow);
+      background: radial-gradient(circle at 50% 0%, var(--glow) 0%, var(--card-bg) 70%);
     }
     .wc-glass-card.obsidian {
-      border: 1.5px solid #00F5D4;
-      border-radius: 10px;
-      box-shadow: 0 25px 80px rgba(0,0,0,0.95), 0 0 35px rgba(0, 245, 212, 0.2), inset 0 0 20px rgba(0, 245, 212, 0.06);
-      background: linear-gradient(180deg, rgba(4, 16, 22, 0.95), rgba(2, 7, 12, 0.98));
+      border: 1.5px solid var(--primary);
+      border-radius: 12px;
+      box-shadow: 0 25px 80px rgba(0,0,0,0.95), 0 0 35px var(--glow), inset 0 0 20px var(--glow);
+      background: var(--card-bg);
     }
     .wc-glass-card.classic {
-      border: 1.5px solid rgba(212, 175, 106, 0.4);
+      border: 1.5px solid var(--border);
       border-radius: 22px;
-      box-shadow: 0 25px 70px rgba(0,0,0,0.9), 0 0 35px rgba(212, 175, 106, 0.12);
+      box-shadow: 0 25px 70px rgba(0,0,0,0.9), 0 0 35px var(--glow);
     }
     .wc-badge {
       display: inline-block;
@@ -1361,7 +1445,7 @@ Output ONLY the raw JSON object. Do not enclose in markdown fences.`;
       width: 100%; height: 100%; transform: rotate(-90deg); position: absolute; inset: 0;
     }
     .wc-truce-bg-circle {
-      fill: none; stroke: rgba(230, 194, 128, 0.15); stroke-width: 6;
+      fill: none; stroke: var(--border); stroke-width: 6;
     }
     .wc-truce-progress-circle {
       fill: none; stroke: var(--primary); stroke-width: 6;
@@ -1843,10 +1927,15 @@ Output ONLY the raw JSON object. Do not enclose in markdown fences.`;
       let h = cvs.height = window.innerHeight;
       window.addEventListener('resize', () => { w = cvs.width = window.innerWidth; h = cvs.height = window.innerHeight; });
 
-      const pType = ${JSON.stringify(archetype.particleType || 'stardust')};
+      const userTheme = ${JSON.stringify(userTheme)};
+      let pType = ${JSON.stringify(archetype.particleType || 'stardust')};
+      if (userTheme === 'arctic-frost') pType = 'frost_crystals';
+      else if (userTheme === 'midnight-arcade') pType = 'cyber_grid';
+      else if (userTheme === 'blush-romance') pType = 'rose_hearts';
+      else if (userTheme === 'lavender-dream') pType = 'lavender_stars';
       const pColor = ${JSON.stringify(primaryColor)};
 
-      const count = pType === 'cyber_grid' ? 50 : (pType === 'rose_hearts' ? 32 : 45);
+      const count = pType === 'cyber_grid' ? 50 : (pType === 'rose_hearts' ? 32 : (pType === 'frost_crystals' ? 38 : 45));
       const pts = Array.from({length: count}, () => ({
         x: Math.random() * w,
         y: Math.random() * h,
@@ -1881,7 +1970,26 @@ Output ONLY the raw JSON object. Do not enclose in markdown fences.`;
           if (p.x < -10) p.x = w + 10;
           if (p.x > w + 10) p.x = -10;
 
-          if (pType === 'rose_hearts') {
+          if (pType === 'frost_crystals') {
+            ctx.save();
+            ctx.translate(p.x, p.y);
+            ctx.rotate(p.rot);
+            ctx.strokeStyle = 'rgba(143, 216, 232, ' + (p.alpha * 0.88) + ')';
+            ctx.lineWidth = 1.2;
+            for (let i = 0; i < 3; i++) {
+              ctx.rotate(Math.PI / 3);
+              ctx.beginPath();
+              ctx.moveTo(0, -p.r * 2.5);
+              ctx.lineTo(0, p.r * 2.5);
+              ctx.stroke();
+            }
+            ctx.restore();
+          } else if (pType === 'lavender_stars') {
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.r * 1.3, 0, Math.PI * 2);
+            ctx.fillStyle = 'rgba(201, 166, 255, ' + p.alpha + ')';
+            ctx.fill();
+          } else if (pType === 'rose_hearts') {
             drawHeart(p.x, p.y, p.r * 3.5, p.alpha);
           } else if (pType === 'cyber_grid') {
             ctx.fillStyle = 'rgba(0, 245, 212, ' + p.alpha + ')';

@@ -3335,6 +3335,10 @@
                   <div class="ai-palette-swatch" style="background:#D4AF6A;"></div>
                   <span>Royal Velvet</span>
                 </div>
+                <div class="ai-palette-card" data-theme="arctic-frost">
+                  <div class="ai-palette-swatch" style="background:#8FD8E8;"></div>
+                  <span>Arctic Frost</span>
+                </div>
                 <div class="ai-palette-card" data-theme="obsidian-gold">
                   <div class="ai-palette-swatch" style="background:#E5C158;"></div>
                   <span>Obsidian Gold</span>
@@ -3342,6 +3346,14 @@
                 <div class="ai-palette-card" data-theme="midnight-sapphire">
                   <div class="ai-palette-swatch" style="background:#64B5F6;"></div>
                   <span>Sapphire Blue</span>
+                </div>
+                <div class="ai-palette-card" data-theme="blush-romance">
+                  <div class="ai-palette-swatch" style="background:#E8A6B0;"></div>
+                  <span>Blush Romance</span>
+                </div>
+                <div class="ai-palette-card" data-theme="midnight-arcade">
+                  <div class="ai-palette-swatch" style="background:#00F5D4;"></div>
+                  <span>Midnight Neon</span>
                 </div>
                 <div class="ai-palette-card" data-theme="emerald-noir">
                   <div class="ai-palette-swatch" style="background:#4ECCA3;"></div>
@@ -3351,9 +3363,17 @@
                   <div class="ai-palette-swatch" style="background:#FF9E9D;"></div>
                   <span>Sunset Peach</span>
                 </div>
+                <div class="ai-palette-card" data-theme="lavender-dream">
+                  <div class="ai-palette-swatch" style="background:#C9A6FF;"></div>
+                  <span>Lavender Dream</span>
+                </div>
                 <div class="ai-palette-card" data-theme="golden-truce">
                   <div class="ai-palette-swatch" style="background:#E6C280;"></div>
                   <span>Golden Truce</span>
+                </div>
+                <div class="ai-palette-card" data-theme="velvet-plum">
+                  <div class="ai-palette-swatch" style="background:#DF8FA5;"></div>
+                  <span>Velvet Plum</span>
                 </div>
               </div>
             </div>
@@ -4765,7 +4785,7 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
       aiWishData.passcode = userData.passcode || aiWishData.passcode || '2026';
       aiWishData.passcodeHint = userData.passcodeHint || aiWishData.passcodeHint;
       aiWishData.occasion = userData.occasion || aiWishData.occasion;
-      if (userData.themeName && userData.themeName !== 'royal-velvet') {
+      if (userData.themeName) {
         aiWishData.theme = userData.themeName;
       }
       console.log("%c✦ [WishCraft Live AI Keepsake Output]", "color:#FFD700; font-size:13px; font-weight:bold;", aiWishData);
@@ -4778,7 +4798,8 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
       const isPro = typeof window.isUserProTier === 'function' && window.isUserProTier();
       const compiledHtml = window.WishCraftAiEngine.compileMultiPageWish(window.currentAiWishData, {
         isPro: isPro,
-        photos: photos || []
+        photos: photos || [],
+        themeName: userData.themeName || window.currentAiWishData.theme
       });
 
       if (typeof window.syncAiToManualEditor === 'function') {
@@ -5251,8 +5272,10 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
       
       const archObj = window.WishCraftAiEngine?.ARCHETYPES?.[archKey];
       if (archObj) {
-        window.currentAiWishData.theme = archObj.defaultTheme || 'royal-velvet';
-        window.currentAiWishData.themeColor = archObj.primary;
+        if (!window.currentAiWishData.theme || window.currentAiWishData.theme === 'royal-velvet') {
+          window.currentAiWishData.theme = archObj.defaultTheme || 'royal-velvet';
+          window.currentAiWishData.themeColor = archObj.primary;
+        }
         document.querySelectorAll('#aiPaletteGrid .ai-palette-card').forEach(p => {
           p.classList.toggle('selected', p.getAttribute('data-theme') === window.currentAiWishData.theme);
         });
@@ -5287,7 +5310,8 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
     const isPro = typeof window.isUserProTier === 'function' && window.isUserProTier();
     const html = window.WishCraftAiEngine.compileMultiPageWish(window.currentAiWishData, {
       isPro: isPro,
-      photos: photos || []
+      photos: photos || [],
+      themeName: window.currentAiWishData.theme
     });
 
     window.currentHtml = html;
