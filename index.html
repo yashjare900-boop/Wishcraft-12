@@ -2125,6 +2125,67 @@
     #tmplPhotoSlotsGrid { grid-template-columns: repeat(auto-fill, minmax(50px, 1fr)) !important; gap: 6px !important; }
   }
 
+  /* Masterpiece Template Purchase Modal & Lock Banner Styles */
+  .tmpl-buy-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 18px;
+  }
+  .tmpl-buy-card {
+    background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 18px; padding: 24px 20px; display: flex; flex-direction: column;
+    position: relative; overflow: hidden; transition: all 0.3s ease;
+  }
+  .tmpl-buy-card:hover {
+    border-color: rgba(212,175,106,0.6); transform: translateY(-3px);
+    box-shadow: 0 14px 35px rgba(0,0,0,0.6);
+  }
+  .tmpl-buy-card.popular {
+    background: linear-gradient(165deg, rgba(212,175,106,0.12), rgba(20,16,22,0.95));
+    border: 1.5px solid rgba(212,175,106,0.6);
+    box-shadow: 0 16px 45px rgba(0,0,0,0.7), 0 0 25px rgba(212,175,106,0.15);
+  }
+  .tmpl-buy-popular-tag {
+    position: absolute; top: 12px; right: -28px;
+    background: linear-gradient(135deg, var(--gold), #c79a52); color: var(--ink);
+    font-size: 9.5px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em;
+    padding: 3px 28px; transform: rotate(45deg); box-shadow: 0 3px 8px rgba(0,0,0,0.4);
+  }
+  .tmpl-buy-header {
+    display: flex; flex-direction: column; gap: 4px; margin-bottom: 12px;
+  }
+  .tmpl-buy-tier {
+    font-size: 13px; font-weight: 700; color: var(--cream-dim); text-transform: uppercase; letter-spacing: 0.05em;
+  }
+  .tmpl-buy-price {
+    font-family: var(--serif); font-size: 32px; font-weight: 700; color: var(--gold);
+    display: flex; align-items: baseline; gap: 4px;
+  }
+  .tmpl-buy-period {
+    font-family: var(--sans); font-size: 12px; color: var(--cream-dim); font-weight: 500;
+  }
+  .tmpl-buy-desc {
+    font-size: 12.5px; color: var(--cream-dim); line-height: 1.5; margin: 0 0 16px;
+  }
+  .tmpl-buy-features {
+    list-style: none; padding: 0; margin: 0 0 20px; display: flex; flex-direction: column; gap: 10px;
+  }
+  .tmpl-buy-features li {
+    font-size: 12.5px; color: rgba(255,255,255,0.9); display: flex; align-items: flex-start; gap: 8px; line-height: 1.4;
+  }
+  .tmpl-buy-features li span {
+    color: var(--gold); font-weight: bold; flex-shrink: 0;
+  }
+
+  /* Customizer Locked State */
+  .tmpl-customizer-locked-banner {
+    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+    background: linear-gradient(135deg, rgba(212,175,106,0.15), rgba(255,117,140,0.12));
+    border: 1px solid rgba(212,175,106,0.4); border-radius: 14px; padding: 14px 18px; margin-bottom: 18px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.5);
+  }
+  .tmpl-locked-inputs input, .tmpl-locked-inputs textarea {
+    opacity: 0.65; cursor: not-allowed !important; pointer-events: none;
+  }
+
   /* Customizer Sub-panel inside Modal */
   .tmpl-customizer {
     background: rgba(0,0,0,0.35); border: 1px solid rgba(212,175,106,0.25);
@@ -2724,22 +2785,12 @@
       <div class="tag">occasion pages, made per-person</div>
     </div>
     <div class="topbar-right">
-      <button class="api-key-pill-btn" id="apiKeyModalBtn" onclick="openApiKeyModal()" title="Configure your Gemini API key">
-        <span class="api-key-icon">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/>
-          </svg>
-        </span>
-        <span class="api-btn-text" id="apiKeyBtnText">API Key</span>
-        <span class="api-key-status-dot" id="apiKeyStatusDot" title="Custom key active"></span>
-      </button>
-      
-     <!-- AUTH UI -->
+      <!-- AUTH UI -->
       <button class="ghost-btn" id="topbarLoginBtn" style="padding: 7px 12px; font-size:12px; display:none;">Log In / Sign Up</button>
       
       <div id="userProfile" style="display:none; align-items:center; gap:14px;">
-        <!-- Primary Action kept outside for quick access -->
-        <button class="generate-btn" id="publishBtn" style="padding:8px 16px; font-size:13px; margin:0;">Deploy 🚀</button>
+        <!-- Primary Action kept outside for quick access (Hidden on Hub by default) -->
+        <button class="generate-btn" id="publishBtn" style="padding:8px 16px; font-size:13px; margin:0; display:none;">Deploy 🚀</button>
         
         <!-- Profile Dropdown Menu -->
         <div class="profile-wrapper">
@@ -3486,6 +3537,20 @@
           <button type="button" class="tmpl-btn-ghost" id="tmplStudioJumpTopBtn" style="padding:7px 14px; font-size:12px; white-space:nowrap;">↑ View Live Preview</button>
         </div>
 
+        <!-- UNLOCKED / GATED BANNER FOR NON-SUBSCRIBED PREVIEW -->
+        <div id="tmplLockedBanner" class="tmpl-customizer-locked-banner" style="display:none; margin-bottom:18px;">
+          <div style="font-size:24px;">🔒</div>
+          <div style="flex:1; min-width:200px;">
+            <div style="font-size:14px; font-weight:700; color:#fff;">Template in Free Interactive Preview</div>
+            <div style="font-size:12px; color:var(--cream-dim); margin-top:2px;">
+              Text personalization, custom photo memory uploads, and live cloud deployment require an unlocked pass (₹99) or Studio All-Access.
+            </div>
+          </div>
+          <button type="button" class="tmpl-btn-primary" id="tmplLockedUnlockBtn" style="padding:9px 18px; font-size:12.5px; font-weight:700; white-space:nowrap; cursor:pointer;">
+            👑 Unlock for ₹99 →
+          </button>
+        </div>
+
         <!-- CHAPTER / SCENE SEQUENCE & VISIBILITY MANAGER -->
         <div class="tmpl-sec-group" id="tmplSceneManagerGroup">
           <div class="tmpl-sec-title"><span>🎞️</span> Chapter Sequence & Visibility</div>
@@ -3738,7 +3803,7 @@
                   <div style="font-size: 10px; letter-spacing: 2px; color: rgba(255,255,255,0.75); text-transform:uppercase;">Cinematic Reveal Journey</div>
                 </div>
                 <div class="tmpl-preview-badge">✦ Recommended</div>
-                <div class="tmpl-price-pill"><span class="tmpl-price-amt">$4.99</span> <span class="tmpl-price-sub">/ wish</span></div>
+                <div class="tmpl-price-pill"><span class="tmpl-price-amt">₹99</span> <span class="tmpl-price-sub">/ wish</span></div>
               </div>
               <div class="tmpl-info">
                 <h4>Royal Velvet // Cinematic Premiere</h4>
@@ -3751,8 +3816,8 @@
                   <span class="tmpl-tag">Fully Editable</span>
                 </div>
                 <div class="tmpl-pricing-row">
-                  <span class="tmpl-price-tag"><strong>$4.99</strong> single launch</span>
-                  <span class="tmpl-price-pass">Included with Studio Pass</span>
+                  <span class="tmpl-price-tag"><strong>₹99</strong> Single Wish Pass</span>
+                  <span class="tmpl-price-pass">Free with Studio Pass</span>
                 </div>
               </div>
               <div class="tmpl-actions">
@@ -3773,7 +3838,7 @@
                   <div style="font-size: 10px; letter-spacing: 2px; color: rgba(255,255,255,0.7); text-transform:uppercase;">Liquid Gold & Resin</div>
                 </div>
                 <div class="tmpl-preview-badge" style="background: rgba(212,175,55,0.22); border-color: rgba(212,175,55,0.5); color: #F5DCA8;">✦ New Edition</div>
-                <div class="tmpl-price-pill"><span class="tmpl-price-amt">$4.99</span> <span class="tmpl-price-sub">/ wish</span></div>
+                <div class="tmpl-price-pill"><span class="tmpl-price-amt">₹99</span> <span class="tmpl-price-sub">/ wish</span></div>
               </div>
               <div class="tmpl-info">
                 <h4>Obsidian Vault // Liquid Gold Edition</h4>
@@ -3787,8 +3852,8 @@
                   <span class="tmpl-tag">10 Photos</span>
                 </div>
                 <div class="tmpl-pricing-row">
-                  <span class="tmpl-price-tag"><strong>$4.99</strong> single launch</span>
-                  <span class="tmpl-price-pass">Included with Studio Pass</span>
+                  <span class="tmpl-price-tag"><strong>₹99</strong> Single Wish Pass</span>
+                  <span class="tmpl-price-pass">Free with Studio Pass</span>
                 </div>
               </div>
               <div class="tmpl-actions">
@@ -3809,7 +3874,7 @@
                   <div style="font-size: 10px; letter-spacing: 2px; color: rgba(255,255,255,0.7); text-transform:uppercase;">Midnight Sapphire & Gold</div>
                 </div>
                 <div class="tmpl-preview-badge" style="background: rgba(229,193,88,0.22); border-color: rgba(229,193,88,0.5); color: #FCE698;">✦ New Masterpiece</div>
-                <div class="tmpl-price-pill"><span class="tmpl-price-amt">$4.99</span> <span class="tmpl-price-sub">/ wish</span></div>
+                <div class="tmpl-price-pill"><span class="tmpl-price-amt">₹99</span> <span class="tmpl-price-sub">/ wish</span></div>
               </div>
               <div class="tmpl-info">
                 <h4>Sapphire Protocol // Luxury Birthday Vault</h4>
@@ -3823,8 +3888,8 @@
                   <span class="tmpl-tag">Cipher Keypad</span>
                 </div>
                 <div class="tmpl-pricing-row">
-                  <span class="tmpl-price-tag"><strong>$4.99</strong> single launch</span>
-                  <span class="tmpl-price-pass">Included with Studio Pass</span>
+                  <span class="tmpl-price-tag"><strong>₹99</strong> Single Wish Pass</span>
+                  <span class="tmpl-price-pass">Free with Studio Pass</span>
                 </div>
               </div>
               <div class="tmpl-actions">
@@ -3845,7 +3910,7 @@
                   <div style="font-size: 10px; letter-spacing: 2px; color: rgba(255,255,255,0.7); text-transform:uppercase;">Confession & Peace</div>
                 </div>
                 <div class="tmpl-preview-badge" style="background: rgba(212,175,55,0.22); border-color: rgba(212,175,55,0.5); color: #F5DCA8;">🕊️ Apology Flagship</div>
-                <div class="tmpl-price-pill"><span class="tmpl-price-amt">$4.99</span> <span class="tmpl-price-sub">/ wish</span></div>
+                <div class="tmpl-price-pill"><span class="tmpl-price-amt">₹99</span> <span class="tmpl-price-sub">/ wish</span></div>
               </div>
               <div class="tmpl-info">
                 <h4>Golden Truce // The Confession Vault</h4>
@@ -3859,8 +3924,8 @@
                   <span class="tmpl-tag">Web Audio FX</span>
                 </div>
                 <div class="tmpl-pricing-row">
-                  <span class="tmpl-price-tag"><strong>$4.99</strong> single launch</span>
-                  <span class="tmpl-price-pass">Included with Studio Pass</span>
+                  <span class="tmpl-price-tag"><strong>₹99</strong> Single Wish Pass</span>
+                  <span class="tmpl-price-pass">Free with Studio Pass</span>
                 </div>
               </div>
               <div class="tmpl-actions">
@@ -3879,6 +3944,77 @@
           </div>
         </div>
 
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= 8. MASTERPIECE TEMPLATE UNLOCK / PURCHASE MODAL ================= -->
+  <div class="tmpl-modal-overlay" id="tmplPurchaseModal" style="display: none; position:fixed; inset:0; z-index:999999; background:rgba(0,0,0,0.85); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); align-items:center; justify-content:center; padding:16px;">
+    <div class="tmpl-modal-card" style="max-width: 760px; width: 100%; border: 1px solid rgba(212,175,106,0.4); box-shadow: 0 30px 80px rgba(0,0,0,0.9), 0 0 40px rgba(212,175,106,0.15);">
+      <div class="tmpl-modal-header" style="border-bottom: 1px solid rgba(255,255,255,0.08);">
+        <h3 class="tmpl-modal-title">
+          <span class="tmpl-crown">👑</span> Unlock Masterpiece Experience
+        </h3>
+        <button class="tmpl-modal-close" id="closeTmplPurchaseModalBtn" aria-label="Close modal">&times;</button>
+      </div>
+      
+      <div class="tmpl-modal-body" style="padding: 24px 20px 24px;">
+        <div style="text-align:center; margin-bottom: 22px;">
+          <div id="purchaseModalTmplBadge" style="display:inline-flex; align-items:center; gap:6px; background:rgba(212,175,106,0.15); border:1px solid rgba(212,175,106,0.4); color:var(--gold); padding:4px 14px; border-radius:20px; font-size:11px; font-weight:700; letter-spacing:0.05em; text-transform:uppercase; margin-bottom:10px;">
+            ✦ MASTERPIECE EDITION
+          </div>
+          <h2 id="purchaseModalTmplTitle" style="font-family:var(--serif); font-size:clamp(1.4rem, 3.8vw, 1.85rem); color:#fff; margin:0 0 6px;">Royal Velvet Premiere</h2>
+          <p style="font-size:13px; color:var(--cream-dim); max-width:520px; margin:0 auto; line-height:1.5;">
+            Unlock complete chapter personalization, custom photo memory vaults, dynamic music, and 1-click live cloud deployment.
+          </p>
+        </div>
+
+        <div class="tmpl-buy-grid">
+          <!-- Card 1: Single Wish Pass -->
+          <div class="tmpl-buy-card">
+            <div class="tmpl-buy-header">
+              <span class="tmpl-buy-tier">Single Wish Pass</span>
+              <div class="tmpl-buy-price">₹99 <span class="tmpl-buy-period">/ wish</span></div>
+            </div>
+            <p class="tmpl-buy-desc">Ideal for a single special moment. Full access to personalize and launch this masterpiece.</p>
+            <ul class="tmpl-buy-features">
+              <li><span>✓</span> Full customization of all chapters & text</li>
+              <li><span>✓</span> Upload custom memories & photos</li>
+              <li><span>✓</span> 1 Live Cloud Deployment with QR Code</li>
+              <li><span>✓</span> Passcode lock & dynamic reveals</li>
+              <li><span>✓</span> Standalone zero-dependency HTML backup</li>
+            </ul>
+            <button class="tmpl-btn-ghost tmpl-unlock-btn" id="buySinglePassBtn" style="width:100%; padding:12px; font-size:13px; border-color:var(--gold); color:var(--gold); font-weight:600; margin-top:auto;">
+              Unlock This Template (₹99) →
+            </button>
+          </div>
+
+          <!-- Card 2: Studio All-Access Membership -->
+          <div class="tmpl-buy-card popular">
+            <div class="tmpl-buy-popular-tag">Most Popular</div>
+            <div class="tmpl-buy-header">
+              <span class="tmpl-buy-tier" style="color:var(--gold);">✦ Studio All-Access</span>
+              <div class="tmpl-buy-price" style="color:#fff;">₹499 <span class="tmpl-buy-period">/ month</span></div>
+            </div>
+            <p class="tmpl-buy-desc">Full unlimited creative license. Build unlimited cinematic gifts for everyone you cherish.</p>
+            <ul class="tmpl-buy-features">
+              <li><span>✓</span> <strong>Unlimited access</strong> to ALL 4+ masterpiece templates</li>
+              <li><span>✓</span> <strong>0 Watermarks</strong> (100% White-Label Luxury)</li>
+              <li><span>✓</span> Unlimited live wishes & custom passcodes</li>
+              <li><span>✓</span> High-res photo vaults & audio engines</li>
+              <li><span>✓</span> Priority cloud hosting & instant updates</li>
+            </ul>
+            <button class="tmpl-btn-primary tmpl-unlock-btn" id="buyStudioPassBtn" style="width:100%; padding:13px; font-size:13.5px; font-weight:700; margin-top:auto;">
+              👑 Get All-Access Studio (₹499) →
+            </button>
+          </div>
+        </div>
+
+        <div style="text-align:center; margin-top: 18px; font-size: 11.5px; color: var(--cream-dim); display:flex; align-items:center; justify-content:center; gap:8px;">
+          <span>🔒 256-Bit Encrypted Activation</span>
+          <span>•</span>
+          <span>⚡ Instant Access Guaranteed</span>
+        </div>
       </div>
     </div>
   </div>
@@ -4293,6 +4429,8 @@
     }
     hubBackBtn.classList.remove('visible');
     aiStepIndicator.style.display = 'none';
+    const pubBtn = document.getElementById('publishBtn');
+    if (pubBtn) pubBtn.style.display = 'none';
   });
 
   // ---------- State ----------
@@ -7465,6 +7603,97 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
     }
   };
 
+  // Template Subscription & Single Pass Gating
+  window.isUserSubscribed = function(tmplId) {
+    try {
+      const currentEmail = (window.currentUser && window.currentUser.email) ? window.currentUser.email.toLowerCase() : '';
+      const ADMIN_EMAILS = ["yashjare12@gmail.com", "yashjare081@gmail.com"];
+      if (currentEmail && ADMIN_EMAILS.includes(currentEmail)) return true;
+
+      const tier = (window.currentUserTier || '').toLowerCase();
+      if (tier === 'artisan' || tier === 'studio' || tier === 'pro' || tier === 'admin') return true;
+
+      const unlocked = JSON.parse(localStorage.getItem('wishcraft_unlocked_templates') || '[]');
+      if (Array.isArray(unlocked)) {
+        if (unlocked.includes('all') || unlocked.includes('studio_all_access')) return true;
+        if (tmplId && unlocked.includes(tmplId)) return true;
+        if (window.currentActiveTmplId && unlocked.includes(window.currentActiveTmplId)) return true;
+      }
+    } catch(e) {
+      console.warn("Subscription check warning:", e);
+    }
+    return false;
+  };
+
+  window.openTemplatePurchaseModal = function(tmplId) {
+    const modal = document.getElementById('tmplPurchaseModal');
+    if (!modal) return;
+    const targetId = tmplId || window.currentActiveTmplId || 'royal-velvet';
+    const meta = TEMPLATE_METADATA[targetId] || TEMPLATE_METADATA['royal-velvet'];
+
+    const titleEl = document.getElementById('purchaseModalTmplTitle');
+    if (titleEl && meta) titleEl.textContent = meta.title;
+
+    const buySingleBtn = document.getElementById('buySinglePassBtn');
+    if (buySingleBtn) {
+      buySingleBtn.setAttribute('data-tmpl', targetId);
+      buySingleBtn.textContent = `Unlock ${meta ? meta.title : 'Template'} (₹99) →`;
+    }
+
+    modal.style.display = 'flex';
+  };
+
+  window.closeTemplatePurchaseModal = function() {
+    const modal = document.getElementById('tmplPurchaseModal');
+    if (modal) modal.style.display = 'none';
+  };
+
+  window.unlockTemplatePass = function(tmplId, isStudio) {
+    try {
+      const unlocked = JSON.parse(localStorage.getItem('wishcraft_unlocked_templates') || '[]');
+      if (isStudio) {
+        if (!unlocked.includes('studio_all_access')) unlocked.push('studio_all_access');
+        window.currentUserTier = 'Studio';
+      } else {
+        const targetId = tmplId || window.currentActiveTmplId || 'royal-velvet';
+        if (!unlocked.includes(targetId)) unlocked.push(targetId);
+      }
+      localStorage.setItem('wishcraft_unlocked_templates', JSON.stringify(unlocked));
+      window.closeTemplatePurchaseModal();
+      window.refreshTemplateGatingState();
+
+      if (typeof window.appModal === 'function') {
+        window.appModal({
+          title: isStudio ? '✦ Studio All-Access Unlocked!' : '✦ Masterpiece Pass Unlocked!',
+          msg: isStudio
+            ? 'Welcome to Studio All-Access! Full customization, dynamic music, zero watermarks, and 1-click deployment are now unlocked across ALL templates.'
+            : 'Your single wish pass is active! Full customization, photo vaults, and live deployment are now unlocked for this masterpiece.'
+        });
+      }
+    } catch (e) {
+      console.error('Error unlocking template pass:', e);
+    }
+  };
+
+  window.refreshTemplateGatingState = function() {
+    const tmplId = window.currentActiveTmplId || 'royal-velvet';
+    const isSubscribed = window.isUserSubscribed(tmplId);
+    const lockedBanner = document.getElementById('tmplLockedBanner');
+    if (lockedBanner) {
+      lockedBanner.style.display = isSubscribed ? 'none' : 'flex';
+    }
+
+    const groups = document.querySelectorAll('#tmplCustomizerView .tmpl-sec-group');
+    groups.forEach(g => {
+      if (g.id === 'tmplLockedBanner') return;
+      if (isSubscribed) {
+        g.classList.remove('tmpl-locked-inputs');
+      } else {
+        g.classList.add('tmpl-locked-inputs');
+      }
+    });
+  };
+
   // Open Template Studio
   window.openTemplateStudio = function(tmplId, autoScrollDown) {
     try {
@@ -7499,6 +7728,9 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
         renderPhotoSlots();
       }
 
+      // Refresh gating state
+      window.refreshTemplateGatingState();
+
       // Live render preview
       window.renderTemplateStudioLive();
 
@@ -7514,8 +7746,11 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
         window.updateTmplStudioScale();
       }, 250);
 
-      // Scroll positioning
+      // Scroll positioning or prompt purchase if non-subscribed tried to customize directly
       if (autoScrollDown) {
+        if (!window.isUserSubscribed(window.currentActiveTmplId)) {
+          window.openTemplatePurchaseModal(window.currentActiveTmplId);
+        }
         setTimeout(() => {
           const customizerSec = document.getElementById('tmplStudioCustomizerSection');
           if (customizerSec) {
@@ -7542,9 +7777,42 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
   document.querySelectorAll('.tmpl-customize-action').forEach(btn => {
     btn.addEventListener('click', (e) => {
       const tmplId = e.currentTarget.getAttribute('data-tmpl') || 'royal-velvet';
-      window.openTemplateStudio(tmplId, true);
+      if (window.isUserSubscribed(tmplId)) {
+        window.openTemplateStudio(tmplId, true);
+      } else {
+        window.openTemplateStudio(tmplId, false);
+        window.openTemplatePurchaseModal(tmplId);
+      }
     });
   });
+
+  // Wire Purchase Modal Actions
+  const closeTmplModalBtn = document.getElementById('closeTmplPurchaseModalBtn');
+  if (closeTmplModalBtn) {
+    closeTmplModalBtn.addEventListener('click', () => window.closeTemplatePurchaseModal());
+  }
+
+  const buySinglePassBtn = document.getElementById('buySinglePassBtn');
+  if (buySinglePassBtn) {
+    buySinglePassBtn.addEventListener('click', () => {
+      const tmplId = buySinglePassBtn.getAttribute('data-tmpl') || window.currentActiveTmplId;
+      window.unlockTemplatePass(tmplId, false);
+    });
+  }
+
+  const buyStudioPassBtn = document.getElementById('buyStudioPassBtn');
+  if (buyStudioPassBtn) {
+    buyStudioPassBtn.addEventListener('click', () => {
+      window.unlockTemplatePass(null, true);
+    });
+  }
+
+  const tmplLockedUnlockBtn = document.getElementById('tmplLockedUnlockBtn');
+  if (tmplLockedUnlockBtn) {
+    tmplLockedUnlockBtn.addEventListener('click', () => {
+      window.openTemplatePurchaseModal(window.currentActiveTmplId);
+    });
+  }
 
   // Wire Template Studio Topbar & Footer Buttons
   const studioBackBtn = document.getElementById('tmplStudioBackBtn');
@@ -7555,6 +7823,8 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
         studio.style.display = 'none';
         studio.classList.remove('visible');
       }
+      const pubBtn = document.getElementById('publishBtn');
+      if (pubBtn) pubBtn.style.display = 'none';
       if (hubEl) hubEl.classList.remove('hidden');
       window.openTemplatesModal();
     });
@@ -7574,7 +7844,10 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
       if (hubEl) hubEl.classList.remove('hidden');
       if (hubBackBtn) hubBackBtn.classList.remove('visible');
       if (aiStepIndicator) aiStepIndicator.style.display = 'none';
+      const pubBtn = document.getElementById('publishBtn');
+      if (pubBtn) pubBtn.style.display = 'none';
       window.closeTemplatesModal();
+      window.closeTemplatePurchaseModal();
     });
   }
 
@@ -7591,6 +7864,11 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
   const studioDownloadBtn = document.getElementById('tmplStudioDownloadBtn');
   if (studioDownloadBtn) {
     studioDownloadBtn.addEventListener('click', () => {
+      const tmplId = window.currentActiveTmplId || 'royal-velvet';
+      if (!window.isUserSubscribed(tmplId)) {
+        window.openTemplatePurchaseModal(tmplId);
+        return;
+      }
       const pubBtn = document.getElementById('publishBtn');
       if (pubBtn) pubBtn.click();
       else window.openExportModal();
@@ -7600,6 +7878,11 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
   const studioExportBtn = document.getElementById('tmplStudioExportBtn');
   if (studioExportBtn) {
     studioExportBtn.addEventListener('click', () => {
+      const tmplId = window.currentActiveTmplId || 'royal-velvet';
+      if (!window.isUserSubscribed(tmplId)) {
+        window.openTemplatePurchaseModal(tmplId);
+        return;
+      }
       const pubBtn = document.getElementById('publishBtn');
       if (pubBtn) pubBtn.click();
       else window.openExportModal();
@@ -7638,11 +7921,19 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
   const customizerViewEl = document.getElementById('tmplCustomizerView');
   if (customizerViewEl) {
     customizerViewEl.addEventListener('input', (e) => {
+      if (!window.isUserSubscribed(window.currentActiveTmplId)) {
+        window.openTemplatePurchaseModal(window.currentActiveTmplId);
+        return;
+      }
       if (e.target && e.target.id && e.target.id.startsWith('tmpl')) {
         window.renderTemplateStudioLive(350);
       }
     });
     customizerViewEl.addEventListener('change', (e) => {
+      if (!window.isUserSubscribed(window.currentActiveTmplId)) {
+        window.openTemplatePurchaseModal(window.currentActiveTmplId);
+        return;
+      }
       if (e.target && e.target.id && e.target.id.startsWith('tmpl')) {
         window.renderTemplateStudioLive(100);
       }
@@ -8691,14 +8982,14 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
               <button class="dash-btn" style="justify-content:center; width:100%; border-style:dashed;" disabled>Current Plan</button>
           </div>
           <div class="pricing-card popular">
-              <div class="pricing-title">Artisan</div><div class="pricing-price">$5<span> / month</span></div>
+              <div class="pricing-title">Artisan</div><div class="pricing-price">₹199<span> / month</span></div>
               <ul class="pricing-features"><li>Interactive Vaults</li><li>Unlimited wishes</li><li>Dynamic Passwords</li><li>High-res storage</li></ul>
-              <button class="generate-btn" style="width:100%; padding:12px; font-size:14px; margin:0;" onclick="window.appModal({title: 'Coming Soon', msg: 'Stripe Checkout integration is coming in the next update!'})">Upgrade to Artisan</button>
+              <button class="generate-btn" style="width:100%; padding:12px; font-size:14px; margin:0;" onclick="window.appModal({title: 'Coming Soon', msg: 'Razorpay / UPI Checkout integration is coming in the next update!'})">Upgrade to Artisan (₹199)</button>
           </div>
           <div class="pricing-card">
-              <div class="pricing-title">Studio</div><div class="pricing-price">$15<span> / month</span></div>
-              <ul class="pricing-features"><li>Everything in Artisan</li><li>Custom domain</li><li>Remove branding</li><li>Priority support</li></ul>
-              <button class="dash-btn" style="justify-content:center; width:100%;" onclick="window.appModal({title: 'Coming Soon', msg: 'Stripe Checkout integration is coming in the next update!'})">Select Studio</button>
+              <div class="pricing-title">Studio All-Access</div><div class="pricing-price">₹499<span> / month</span></div>
+              <ul class="pricing-features"><li>Everything in Artisan</li><li>All Masterpiece Templates</li><li>Remove branding</li><li>Priority cloud hosting</li></ul>
+              <button class="dash-btn" style="justify-content:center; width:100%;" onclick="window.appModal({title: 'Coming Soon', msg: 'Razorpay / UPI Checkout integration is coming in the next update!'})">Select Studio (₹499)</button>
           </div>
         </div>
       </div>
