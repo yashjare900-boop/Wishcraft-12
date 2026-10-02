@@ -942,7 +942,7 @@ Output ONLY the raw JSON object. Do not enclose in markdown fences.`;
         } else if (archetype.id === 'truce') {
           archetypeWidgetHtml = `
             <div class="wc-truce-hold-container">
-              <div class="wc-truce-seal-circle" id="wcTruceSealBtn" onmousedown="wcStartTruceHold()" onmouseup="wcEndTruceHold()" onmouseleave="wcEndTruceHold()" ontouchstart="wcStartTruceHold()" ontouchend="wcEndTruceHold()">
+              <div class="wc-truce-seal-circle" id="wcTruceSealBtn" role="button" tabindex="0" aria-label="Hold to forgive">
                 <svg class="wc-truce-ring-svg" viewBox="0 0 100 100">
                   <circle class="wc-truce-bg-circle" cx="50" cy="50" r="44"></circle>
                   <circle class="wc-truce-progress-circle" id="wcTruceProgressCircle" cx="50" cy="50" r="44"></circle>
@@ -950,9 +950,10 @@ Output ONLY the raw JSON object. Do not enclose in markdown fences.`;
                 <div class="wc-truce-seal-inner">
                   <span class="wc-truce-seal-icon" id="wcTruceSealIcon">🕊️</span>
                   <span class="wc-truce-seal-label" id="wcTruceSealLabel">HOLD TO FORGIVE</span>
+                  <span class="wc-truce-seal-percent" id="wcTruceSealPercent" style="display:none; font-size:9px; font-weight:700; color:var(--primary); margin-top:2px;">0%</span>
                 </div>
               </div>
-              <div class="wc-truce-sub-hint" id="wcTruceSubHint">Press & hold for 1.5s to accept sincere peace treaty</div>
+              <div class="wc-truce-sub-hint" id="wcTruceSubHint">Press & hold for 1.2s (or tap) to accept sincere peace treaty</div>
             </div>
           `;
         } else if (archetype.id === 'romance') {
@@ -1434,31 +1435,59 @@ Output ONLY the raw JSON object. Do not enclose in markdown fences.`;
     /* 2. Truce Hold-to-Forgive Circular Progress Seal */
     .wc-truce-hold-container {
       margin: 18px auto 14px; display: flex; flex-direction: column; align-items: center; gap: 10px;
-      user-select: none; max-width: 320px;
+      user-select: none; -webkit-user-select: none; max-width: 320px;
     }
     .wc-truce-seal-circle {
-      width: 90px; height: 90px; position: relative; cursor: pointer;
+      width: 96px; height: 96px; position: relative; cursor: pointer;
       display: flex; align-items: center; justify-content: center;
       border-radius: 50%; -webkit-tap-highlight-color: transparent;
+      touch-action: none; -webkit-touch-callout: none;
+      background: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.04) 0%, rgba(0,0,0,0.4) 100%);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.6);
+      transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease;
+    }
+    .wc-truce-seal-circle:hover {
+      transform: scale(1.03);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.7), 0 0 20px var(--glow);
+    }
+    .wc-truce-seal-circle.holding {
+      transform: scale(1.08);
+      box-shadow: 0 12px 35px rgba(0,0,0,0.8), 0 0 35px var(--glow);
+    }
+    .wc-truce-seal-circle.sealed {
+      transform: scale(1.05);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.8), 0 0 40px rgba(46, 213, 115, 0.4);
+      cursor: default;
     }
     .wc-truce-ring-svg {
-      width: 100%; height: 100%; transform: rotate(-90deg); position: absolute; inset: 0;
+      width: 100%; height: 100%; transform: rotate(-90deg); position: absolute; inset: 0; pointer-events: none;
     }
     .wc-truce-bg-circle {
-      fill: none; stroke: var(--border); stroke-width: 6;
+      fill: none; stroke: var(--border); stroke-width: 6; opacity: 0.4;
     }
     .wc-truce-progress-circle {
       fill: none; stroke: var(--primary); stroke-width: 6;
       stroke-dasharray: 276.46; stroke-dashoffset: 276.46;
-      stroke-linecap: round; transition: stroke-dashoffset 0.1s linear;
+      stroke-linecap: round; transition: stroke-dashoffset 0.05s linear;
+      filter: drop-shadow(0 0 6px var(--primary));
+    }
+    .wc-truce-seal-circle.sealed .wc-truce-progress-circle {
+      stroke: #2ed573;
+      filter: drop-shadow(0 0 8px #2ed573);
     }
     .wc-truce-seal-inner {
       position: relative; z-index: 2; display: flex; flex-direction: column;
       align-items: center; justify-content: center; text-align: center;
+      pointer-events: none; user-select: none; -webkit-user-select: none;
     }
-    .wc-truce-seal-icon { font-size: 26px; }
-    .wc-truce-seal-label { font-size: 8px; font-weight: 700; letter-spacing: 1px; color: var(--primary); margin-top: 2px; }
-    .wc-truce-sub-hint { font-size: 11.5px; color: rgba(255,255,255,0.7); text-align: center; font-style: italic; }
+    .wc-truce-seal-icon { font-size: 26px; transition: transform 0.2s ease; }
+    .wc-truce-seal-circle.holding .wc-truce-seal-icon { transform: scale(1.15); }
+    .wc-truce-seal-label {
+      font-size: 8px; font-weight: 700; letter-spacing: 1px; color: var(--primary); margin-top: 2px;
+      transition: color 0.2s ease;
+    }
+    .wc-truce-seal-circle.sealed .wc-truce-seal-label { color: #2ed573; }
+    .wc-truce-sub-hint { font-size: 11.5px; color: rgba(255,255,255,0.7); text-align: center; font-style: italic; min-height: 18px; }
 
     /* 3. Romance Metallic Love Lock */
     .wc-love-lock-widget {
@@ -1830,48 +1859,153 @@ Output ONLY the raw JSON object. Do not enclose in markdown fences.`;
     };
 
     // 2. Truce Hold to Forgive
-    let truceHoldTimer = null;
-    let truceHoldProgress = 0;
     let truceHoldInterval = null;
+    let truceDrainInterval = null;
+    let truceHoldProgress = 0;
+    let isTruceSealed = false;
 
-    window.wcStartTruceHold = function() {
+    function updateTruceUI(prog) {
       const circle = document.getElementById('wcTruceProgressCircle');
       const label = document.getElementById('wcTruceSealLabel');
+      const percent = document.getElementById('wcTruceSealPercent');
+      const hint = document.getElementById('wcTruceSubHint');
+
+      if (circle) {
+        const offset = 276.46 - (276.46 * (Math.min(100, Math.max(0, prog)) / 100));
+        circle.style.strokeDashoffset = offset;
+      }
+
+      if (percent) {
+        if (prog > 4 && prog < 100) {
+          percent.style.display = 'block';
+          percent.textContent = Math.floor(prog) + '%';
+        } else {
+          percent.style.display = 'none';
+        }
+      }
+
+      if (prog < 35) {
+        if (label) label.textContent = 'HOLDING...';
+        if (hint) hint.textContent = 'Keep holding to clear the air... 🕊️';
+      } else if (prog < 70) {
+        if (label) label.textContent = 'MELTING...';
+        if (hint) hint.textContent = 'Reconciliation in progress... ✨';
+      } else if (prog < 100) {
+        if (label) label.textContent = 'ALMOST!';
+        if (hint) hint.textContent = 'Almost sealed, please don\'t let go... ❤️';
+      }
+    }
+
+    function completeTruceForgiveness() {
+      if (isTruceSealed) return;
+      isTruceSealed = true;
+      clearInterval(truceHoldInterval);
+      clearInterval(truceDrainInterval);
+      truceHoldProgress = 100;
+
+      const circle = document.getElementById('wcTruceProgressCircle');
+      const label = document.getElementById('wcTruceSealLabel');
+      const percent = document.getElementById('wcTruceSealPercent');
       const hint = document.getElementById('wcTruceSubHint');
       const icon = document.getElementById('wcTruceSealIcon');
-      if (circle && circle.getAttribute('data-sealed') === 'true') return;
+      const btn = document.getElementById('wcTruceSealBtn');
 
-      truceHoldProgress = 0;
+      if (circle) {
+        circle.setAttribute('data-sealed', 'true');
+        circle.style.strokeDashoffset = '0';
+      }
+      if (btn) {
+        btn.classList.remove('holding');
+        btn.classList.add('sealed');
+      }
+      if (label) label.textContent = 'TRUCE SEALED';
+      if (percent) percent.style.display = 'none';
+      if (icon) icon.textContent = '🤍';
+      if (hint) hint.innerHTML = '❤️ <strong>Truce sealed. All is forgiven.</strong> Thank you for your sincerity.';
+
+      playTone(440, 0.15, 'sine');
+      setTimeout(() => playTone(554, 0.18, 'sine'), 120);
+      setTimeout(() => playTone(659, 0.35, 'sine'), 250);
+      if (navigator.vibrate) try { navigator.vibrate([80, 40, 120]); } catch(_) {}
+      launchConfetti();
+    }
+
+    window.wcStartTruceHold = function(e) {
+      if (isTruceSealed) return;
+      if (e && e.cancelable) e.preventDefault();
+
+      clearInterval(truceDrainInterval);
       clearInterval(truceHoldInterval);
+
+      const btn = document.getElementById('wcTruceSealBtn');
+      if (btn) btn.classList.add('holding');
+
       playTone(280, 0.08, 'sine');
 
       truceHoldInterval = setInterval(() => {
         truceHoldProgress += 4;
-        if (circle) {
-          const offset = 276.46 - (276.46 * (truceHoldProgress / 100));
-          circle.style.strokeDashoffset = Math.max(0, offset);
+        updateTruceUI(truceHoldProgress);
+
+        if (Math.floor(truceHoldProgress) % 20 === 0) {
+          playTone(280 + truceHoldProgress * 3, 0.05, 'sine');
+          if (navigator.vibrate) try { navigator.vibrate(15); } catch(_) {}
         }
 
         if (truceHoldProgress >= 100) {
-          clearInterval(truceHoldInterval);
-          if (circle) circle.setAttribute('data-sealed', 'true');
-          if (label) label.textContent = 'TRUCE ACCEPTED';
-          if (icon) icon.textContent = '🤍';
-          if (hint) hint.innerHTML = '❤️ Truce sealed. All is forgiven. Thank you for your sincerity.';
-          playTone(440, 0.15, 'sine');
-          setTimeout(() => playTone(554, 0.18, 'sine'), 120);
-          setTimeout(() => playTone(659, 0.35, 'sine'), 250);
-          launchConfetti();
+          completeTruceForgiveness();
         }
-      }, 50);
+      }, 35);
     };
 
     window.wcEndTruceHold = function() {
-      const circle = document.getElementById('wcTruceProgressCircle');
-      if (circle && circle.getAttribute('data-sealed') === 'true') return;
+      if (isTruceSealed) return;
       clearInterval(truceHoldInterval);
-      if (circle) circle.style.strokeDashoffset = 276.46;
+
+      const btn = document.getElementById('wcTruceSealBtn');
+      if (btn) btn.classList.remove('holding');
+
+      const label = document.getElementById('wcTruceSealLabel');
+      const percent = document.getElementById('wcTruceSealPercent');
+      const hint = document.getElementById('wcTruceSubHint');
+
+      if (truceHoldProgress < 100) {
+        if (label) label.textContent = 'HOLD TO FORGIVE';
+        if (percent) percent.style.display = 'none';
+        if (hint) hint.textContent = 'Press & hold for 1.2s to accept sincere peace treaty';
+
+        clearInterval(truceDrainInterval);
+        truceDrainInterval = setInterval(() => {
+          truceHoldProgress -= 5;
+          if (truceHoldProgress <= 0) {
+            truceHoldProgress = 0;
+            clearInterval(truceDrainInterval);
+          }
+          updateTruceUI(truceHoldProgress);
+        }, 25);
+      }
     };
+
+    // Auto-bind Truce Seal event listeners cleanly
+    (function initTruceListeners() {
+      const btn = document.getElementById('wcTruceSealBtn');
+      if (!btn) return;
+      btn.addEventListener('mousedown', window.wcStartTruceHold);
+      window.addEventListener('mouseup', window.wcEndTruceHold);
+      btn.addEventListener('touchstart', window.wcStartTruceHold, { passive: false });
+      window.addEventListener('touchend', window.wcEndTruceHold);
+      window.addEventListener('touchcancel', window.wcEndTruceHold);
+      btn.addEventListener('contextmenu', (e) => e.preventDefault());
+
+      // Click / Tap Fallback: If tapped quickly, smoothly complete
+      btn.addEventListener('click', (e) => {
+        if (!isTruceSealed && truceHoldProgress < 15) {
+          window.wcStartTruceHold(e);
+          setTimeout(() => {
+            if (!isTruceSealed) completeTruceForgiveness();
+          }, 850);
+        }
+      });
+    })();
 
     // 3. Romance Love Lock
     window.wcEngraveLoveLock = function() {
