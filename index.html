@@ -2737,6 +2737,7 @@
             <div class="dropdown-item" id="menuSettings">⚙️ Settings</div>
             <div class="dropdown-item" id="menuContact">✉️ Contact Support</div>
             <div class="dropdown-item" id="menuDownloadHtml" onclick="window.openExportModal()">💾 Download HTML File</div>
+            <div class="dropdown-item" id="menuDevMode" onclick="window.toggleAiDevMode()" style="color:#4ECDC4;">🛠️ Toggle AI Kickstart (Dev)</div>
             <div class="dropdown-divider"></div>
             <div class="dropdown-item" id="menuFAQ">📖 Help & FAQ</div>
             <div class="dropdown-item" id="menuDocs">💻 API Documentation</div>
@@ -2770,12 +2771,12 @@
         <p>Choose from handcrafted cinematic masterpiece templates featuring liquid glass cards, 3D stardust particle heart, biometric scan verification, scratch-off reveals, and secret memory vaults. Customize and launch instantly.</p>
         <div class="hub-cta" style="color:#ffb199;">Browse Templates →</div>
       </div>
-      <div class="hub-card ai" id="hubAiCard">
-        <div class="lock-badge" id="aiLockBadge" style="display:none;">🔒 Login Required</div>
+      <div class="hub-card ai locked" id="hubAiCard" style="position: relative; cursor: pointer;">
+        <div class="lock-badge" id="aiLockBadge" style="display:flex; border-color:rgba(212,175,106,0.6); background:rgba(20,16,10,0.9); color:var(--gold);">🚧 Under Development</div>
         <div class="hub-ic-wrap"><div class="hub-ic">✦</div></div>
         <h3>Generate with AI</h3>
         <p>Answer a few quick questions about the recipient, occasion, and tone. The AI writes a full interactive page for you, which you can then refine with chat instructions or download directly.</p>
-        <div class="hub-cta">Start AI Kickstart →</div>
+        <div class="hub-cta" id="hubAiCtaText" style="color: var(--gold-dim); opacity: 0.85;">Under Development — Coming Soon ⏳</div>
       </div>
       <div class="hub-card manual locked" id="hubManualCard" style="cursor: not-allowed; position: relative;">
         <div class="lock-badge" style="display:flex; border-color:rgba(212,175,106,0.6); background:rgba(20,16,10,0.9); color:var(--gold);">🚧 Coming Soon</div>
@@ -4141,6 +4142,118 @@
     document.body.style.overflow = "auto";
   });
 
+  // ---------- AI Kickstart Developer Mode Gate & State Management ----------
+  window.currentUserEmail = null;
+
+  function isAiDevModeEnabled() {
+    // 1. URL parameter override: ?dev=true, ?ai=true, ?devmode=true
+    try {
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.has('dev') || urlParams.has('ai') || urlParams.has('devmode')) return true;
+    } catch (_) {}
+
+    // 2. LocalStorage override
+    try {
+      if (localStorage.getItem('wishcraft_dev_ai') === 'true') return true;
+    } catch (_) {}
+
+    // 3. Admin account logged in
+    if (window.currentUserEmail && typeof ADMIN_EMAILS !== 'undefined' && Array.isArray(ADMIN_EMAILS)) {
+      if (ADMIN_EMAILS.includes(window.currentUserEmail)) return true;
+    }
+
+    return false;
+  }
+
+  function updateAiDevUIState() {
+    const isDev = isAiDevModeEnabled();
+    const aiCard = document.getElementById('hubAiCard');
+    const aiBadge = document.getElementById('aiLockBadge');
+    const aiCta = document.getElementById('hubAiCtaText');
+
+    if (!aiCard) return;
+
+    if (isDev) {
+      aiCard.classList.remove('locked');
+      aiCard.style.cursor = 'pointer';
+      if (aiBadge) {
+        aiBadge.style.display = 'flex';
+        aiBadge.style.borderColor = 'rgba(78, 205, 196, 0.6)';
+        aiBadge.style.background = 'rgba(10, 24, 28, 0.9)';
+        aiBadge.style.color = '#4ECDC4';
+        aiBadge.textContent = '🛠️ Dev Mode Active';
+      }
+      if (aiCta) {
+        aiCta.textContent = 'Start AI Kickstart →';
+        aiCta.style.color = 'var(--gold)';
+        aiCta.style.opacity = '1';
+      }
+    } else {
+      aiCard.classList.add('locked');
+      aiCard.style.cursor = 'pointer';
+      if (aiBadge) {
+        aiBadge.style.display = 'flex';
+        aiBadge.style.borderColor = 'rgba(212, 175, 106, 0.6)';
+        aiBadge.style.background = 'rgba(20, 16, 10, 0.9)';
+        aiBadge.style.color = 'var(--gold)';
+        aiBadge.textContent = '🚧 Under Development';
+      }
+      if (aiCta) {
+        aiCta.textContent = 'Under Development — Coming Soon ⏳';
+        aiCta.style.color = 'var(--gold-dim)';
+        aiCta.style.opacity = '0.85';
+      }
+    }
+  }
+
+  window.toggleAiDevMode = function(forceState) {
+    const current = isAiDevModeEnabled();
+    const nextState = typeof forceState === 'boolean' ? forceState : !current;
+    try {
+      if (nextState) {
+        localStorage.setItem('wishcraft_dev_ai', 'true');
+      } else {
+        localStorage.removeItem('wishcraft_dev_ai');
+      }
+    } catch (_) {}
+    updateAiDevUIState();
+    if (window.appModal) {
+      window.appModal({
+        title: nextState ? "🛠️ Dev Mode: AI Kickstart Unlocked" : "🔒 AI Kickstart Locked",
+        msg: nextState
+          ? "Developer Mode is now ACTIVE.\n\nAI Kickstart Studio is fully accessible for testing & development."
+          : "AI Kickstart is now LOCKED for regular users (Under Development notice active)."
+      });
+    }
+    return nextState;
+  };
+
+  // Keyboard shortcut Ctrl+Shift+D to toggle Dev Mode
+  window.addEventListener('keydown', (e) => {
+    if (e.ctrlKey && e.shiftKey && (e.key === 'D' || e.key === 'd')) {
+      e.preventDefault();
+      window.toggleAiDevMode();
+    }
+  });
+
+  // Secret 5-Click on Brand Logo to toggle Dev Mode
+  let brandClickCount = 0;
+  let brandClickTimer = null;
+  document.querySelectorAll('.brand, .nav-brand').forEach(brand => {
+    brand.addEventListener('click', () => {
+      brandClickCount++;
+      clearTimeout(brandClickTimer);
+      brandClickTimer = setTimeout(() => { brandClickCount = 0; }, 1800);
+      if (brandClickCount >= 5) {
+        brandClickCount = 0;
+        window.toggleAiDevMode();
+      }
+    });
+  });
+
+  // Initial check
+  updateAiDevUIState();
+
   // ---------- Entry Hub Fork ----------
   const hubEl = document.getElementById('hub');
   const workshopEl = document.getElementById('workshop');
@@ -4150,15 +4263,23 @@
   document.getElementById('hubManualCard').addEventListener('click', () => {
     window.appModal({
       title: "🚧 Under Development",
-      msg: "The Pro Canvas Editor is currently under active development and fine-tuning.\n\nPlease choose 'Generate with AI' or 'Using Template' to craft your wishes today!"
+      msg: "The Pro Canvas Editor is currently under active development and fine-tuning.\n\nPlease choose 'Using Template' to craft your wishes today!"
     });
   });
+
   aiCard.addEventListener('click', () => {
-    if (window.isGuest) {
-      // Trigger the cinematic modal instead of the ugly browser alert
+    if (!isAiDevModeEnabled()) {
       window.appModal({
-          title: "Authentication Required", 
-          msg: "🔒 AI Generation is restricted to logged-in users to prevent abuse.\n\nPlease log in with Google to craft AI wishes, or explore our flagship 'Using Template' showcase!"
+        title: "🚧 AI Kickstart — Under Development",
+        msg: "WishCraft AI Kickstart Studio is currently undergoing extensive upgrades and feature enhancement.\n\nPlease choose 'Using Template' to customize and launch our handcrafted cinematic masterpiece templates!\n\n(Tip for developer: Add ?dev=true to URL, log in with admin account, or press Ctrl+Shift+D to unlock)."
+      });
+      return;
+    }
+
+    if (window.isGuest) {
+      window.appModal({
+        title: "Authentication Required", 
+        msg: "🔒 AI Generation is restricted to logged-in users to prevent abuse.\n\nPlease log in with Google to craft AI wishes, or explore our flagship 'Using Template' showcase!"
       });
       return;
     }
@@ -4167,6 +4288,7 @@
     hubBackBtn.classList.add('visible');
     aiStepIndicator.style.display = 'flex';
   });
+
   if (templateCard) {
     templateCard.addEventListener('click', () => {
       if (window.isGuest) {
@@ -4179,6 +4301,7 @@
       window.openTemplatesModal();
     });
   }
+
   hubBackBtn.addEventListener('click', () => {
     hubEl.classList.remove('hidden');
     workshopEl.classList.remove('visible');
@@ -7796,8 +7919,9 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
         if(document.getElementById('panelName')) document.getElementById('panelName').textContent = user.displayName || user.email;
         if(document.getElementById('panelAvatar')) document.getElementById('panelAvatar').textContent = uName.charAt(0).toUpperCase();
 
-        document.getElementById('hubAiCard').classList.remove('locked');
-        document.getElementById('aiLockBadge').style.display = 'none';
+        window.currentUserEmail = user.email;
+        if (typeof updateAiDevUIState === 'function') updateAiDevUIState();
+
         const tCard = document.getElementById('hubTemplateCard');
         const tBadge = document.getElementById('templateLockBadge');
         if (tCard) tCard.classList.remove('locked');
@@ -7820,6 +7944,9 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
         }
         if (document.getElementById('apiKeyModalBtn')) document.getElementById('apiKeyModalBtn').style.display = 'inline-flex';
       } else {
+        window.currentUserEmail = null;
+        if (typeof updateAiDevUIState === 'function') updateAiDevUIState();
+
         userProfile.style.display = 'none';
         if (document.getElementById('apiKeyModalBtn')) document.getElementById('apiKeyModalBtn').style.display = 'none';
         const tCard = document.getElementById('hubTemplateCard');
