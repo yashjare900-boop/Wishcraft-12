@@ -1863,6 +1863,7 @@ Output ONLY the raw JSON object. Do not enclose in markdown fences.`;
     let truceDrainInterval = null;
     let truceHoldProgress = 0;
     let isTruceSealed = false;
+    let truceHoldStartTime = 0;
 
     function updateTruceUI(prog) {
       const circle = document.getElementById('wcTruceProgressCircle');
@@ -1930,15 +1931,45 @@ Output ONLY the raw JSON object. Do not enclose in markdown fences.`;
       launchConfetti();
     }
 
-    window.wcStartTruceHold = function(e) {
+    function autoCompleteTruceHold() {
       if (isTruceSealed) return;
-      if (e && e.cancelable) e.preventDefault();
-
       clearInterval(truceDrainInterval);
       clearInterval(truceHoldInterval);
 
       const btn = document.getElementById('wcTruceSealBtn');
       if (btn) btn.classList.add('holding');
+
+      playTone(320, 0.1, 'sine');
+
+      truceHoldInterval = setInterval(() => {
+        truceHoldProgress += 4;
+        updateTruceUI(truceHoldProgress);
+
+        if (Math.floor(truceHoldProgress) % 20 === 0) {
+          playTone(280 + truceHoldProgress * 3, 0.05, 'sine');
+          if (navigator.vibrate) try { navigator.vibrate(15); } catch(_) {}
+        }
+
+        if (truceHoldProgress >= 100) {
+          completeTruceForgiveness();
+        }
+      }, 25);
+    }
+
+    window.wcStartTruceHold = function(e) {
+      if (isTruceSealed) return;
+      truceHoldStartTime = Date.now();
+
+      clearInterval(truceDrainInterval);
+      clearInterval(truceHoldInterval);
+
+      const btn = document.getElementById('wcTruceSealBtn');
+      if (btn) {
+        btn.classList.add('holding');
+        if (e && e.pointerId !== undefined && btn.setPointerCapture) {
+          try { btn.setPointerCapture(e.pointerId); } catch(_) {}
+        }
+      }
 
       playTone(280, 0.08, 'sine');
 
@@ -1957,21 +1988,32 @@ Output ONLY the raw JSON object. Do not enclose in markdown fences.`;
       }, 35);
     };
 
-    window.wcEndTruceHold = function() {
+    window.wcEndTruceHold = function(e) {
       if (isTruceSealed) return;
       clearInterval(truceHoldInterval);
 
       const btn = document.getElementById('wcTruceSealBtn');
-      if (btn) btn.classList.remove('holding');
+      if (btn) {
+        btn.classList.remove('holding');
+        if (e && e.pointerId !== undefined && btn.releasePointerCapture) {
+          try { btn.releasePointerCapture(e.pointerId); } catch(_) {}
+        }
+      }
 
       const label = document.getElementById('wcTruceSealLabel');
       const percent = document.getElementById('wcTruceSealPercent');
       const hint = document.getElementById('wcTruceSubHint');
 
+      const holdDuration = Date.now() - truceHoldStartTime;
+      if (holdDuration < 250 && truceHoldProgress < 100) {
+        autoCompleteTruceHold();
+        return;
+      }
+
       if (truceHoldProgress < 100) {
         if (label) label.textContent = 'HOLD TO FORGIVE';
         if (percent) percent.style.display = 'none';
-        if (hint) hint.textContent = 'Press & hold for 1.2s to accept sincere peace treaty';
+        if (hint) hint.textContent = 'Press & hold (or tap) to accept sincere peace treaty';
 
         clearInterval(truceDrainInterval);
         truceDrainInterval = setInterval(() => {
@@ -1989,22 +2031,24 @@ Output ONLY the raw JSON object. Do not enclose in markdown fences.`;
     (function initTruceListeners() {
       const btn = document.getElementById('wcTruceSealBtn');
       if (!btn) return;
-      btn.addEventListener('mousedown', window.wcStartTruceHold);
-      window.addEventListener('mouseup', window.wcEndTruceHold);
-      btn.addEventListener('touchstart', window.wcStartTruceHold, { passive: false });
-      window.addEventListener('touchend', window.wcEndTruceHold);
-      window.addEventListener('touchcancel', window.wcEndTruceHold);
-      btn.addEventListener('contextmenu', (e) => e.preventDefault());
 
-      // Click / Tap Fallback: If tapped quickly, smoothly complete
+      btn.addEventListener('pointerdown', window.wcStartTruceHold);
+      btn.addEventListener('pointerup', window.wcEndTruceHold);
+      btn.addEventListener('pointercancel', window.wcEndTruceHold);
+
+      // Fallback for touch devices where PointerEvent might behave differently
+      btn.addEventListener('touchstart', (e) => {
+        if (!window.PointerEvent) window.wcStartTruceHold(e);
+      }, { passive: true });
+      btn.addEventListener('touchend', (e) => {
+        if (!window.PointerEvent) window.wcEndTruceHold(e);
+      });
       btn.addEventListener('click', (e) => {
-        if (!isTruceSealed && truceHoldProgress < 15) {
-          window.wcStartTruceHold(e);
-          setTimeout(() => {
-            if (!isTruceSealed) completeTruceForgiveness();
-          }, 850);
+        if (!isTruceSealed && truceHoldProgress < 100) {
+          autoCompleteTruceHold();
         }
       });
+      btn.addEventListener('contextmenu', (e) => e.preventDefault());
     })();
 
     // 3. Romance Love Lock

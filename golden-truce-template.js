@@ -642,6 +642,7 @@
             width: 100%; padding: 19px 0; border-radius: 50px; border: 1px solid rgba(251, 226, 133, 0.45);
             background: rgba(212, 175, 55, 0.08); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
             overflow: hidden; cursor: pointer; transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            touch-action: none; -webkit-touch-callout: none; user-select: none; -webkit-user-select: none;
             box-shadow: 0 8px 30px rgba(0, 0, 0, 0.8), inset 0 1px 1px rgba(255, 255, 255, 0.25), 0 0 20px rgba(212, 175, 55, 0.2);
         }
 
@@ -1278,23 +1279,54 @@
             }
         }
 
-        function startHold(e) {
+        let holdStartTime = 0;
+
+        function autoCompleteHold() {
             if (isForgiven) return;
-            e.preventDefault(); 
             clearInterval(drainTimer);
+            clearInterval(holdTimer);
             mainCardS4.classList.add('holding');
 
             holdTimer = setInterval(() => {
-                holdProgress += 1.4; 
+                holdProgress += 2.5;
+                if (holdProgress >= 100) holdProgress = 100;
+                updateHoldUI();
+            }, 25);
+        }
+
+        function startHold(e) {
+            if (isForgiven) return;
+            holdStartTime = Date.now();
+            clearInterval(drainTimer);
+            clearInterval(holdTimer);
+            mainCardS4.classList.add('holding');
+
+            if (e && e.pointerId !== undefined && holdBtn.setPointerCapture) {
+                try { holdBtn.setPointerCapture(e.pointerId); } catch(_) {}
+            }
+
+            holdTimer = setInterval(() => {
+                holdProgress += 1.6; 
                 if (holdProgress >= 100) holdProgress = 100;
                 updateHoldUI();
             }, 30);
         }
 
-        function stopHold() {
+        function stopHold(e) {
             if (isForgiven) return;
             clearInterval(holdTimer);
             mainCardS4.classList.remove('holding');
+
+            if (e && e.pointerId !== undefined && holdBtn.releasePointerCapture) {
+                try { holdBtn.releasePointerCapture(e.pointerId); } catch(_) {}
+            }
+
+            const holdDuration = Date.now() - holdStartTime;
+            if (holdDuration < 250 && holdProgress < 100) {
+                autoCompleteHold();
+                return;
+            }
+
             btnLabel.innerText = "${escapeHtml(c.holdBtnText)}";
             subLabel.innerText = "Aww don't let go! Try again 🥺";
 
@@ -1355,12 +1387,20 @@
             }
         });
 
-        holdBtn.addEventListener('mousedown', startHold);
-        window.addEventListener('mouseup', stopHold);
-        window.addEventListener('mouseleave', stopHold);
-        holdBtn.addEventListener('touchstart', startHold, { passive: false });
-        window.addEventListener('touchend', stopHold);
-        window.addEventListener('touchcancel', stopHold);
+        holdBtn.addEventListener('pointerdown', startHold);
+        holdBtn.addEventListener('pointerup', stopHold);
+        holdBtn.addEventListener('pointercancel', stopHold);
+        holdBtn.addEventListener('touchstart', (e) => {
+            if (!window.PointerEvent) startHold(e);
+        }, { passive: true });
+        holdBtn.addEventListener('touchend', (e) => {
+            if (!window.PointerEvent) stopHold(e);
+        });
+        holdBtn.addEventListener('click', () => {
+            if (!isForgiven && holdProgress < 100) {
+                autoCompleteHold();
+            }
+        });
         holdBtn.addEventListener('contextmenu', e => e.preventDefault());
     </script>
 </body>
