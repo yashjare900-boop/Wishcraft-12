@@ -4142,26 +4142,15 @@
     document.body.style.overflow = "auto";
   });
 
-  // ---------- AI Kickstart Developer Mode Gate & State Management ----------
+  // ---------- AI Kickstart Admin Access Gate ----------
+  window.ADMIN_EMAILS = ["yashjare12@gmail.com", "yashjare081@gmail.com"];
   window.currentUserEmail = null;
 
   function isAiDevModeEnabled() {
-    // 1. URL parameter override: ?dev=true, ?ai=true, ?devmode=true
-    try {
-      const urlParams = new URLSearchParams(window.location.search);
-      if (urlParams.has('dev') || urlParams.has('ai') || urlParams.has('devmode')) return true;
-    } catch (_) {}
-
-    // 2. LocalStorage override
-    try {
-      if (localStorage.getItem('wishcraft_dev_ai') === 'true') return true;
-    } catch (_) {}
-
-    // 3. Admin account logged in
-    if (window.currentUserEmail && typeof ADMIN_EMAILS !== 'undefined' && Array.isArray(ADMIN_EMAILS)) {
-      if (ADMIN_EMAILS.includes(window.currentUserEmail)) return true;
+    // Strictly restricted to verified Admin accounts only
+    if (window.currentUserEmail && window.ADMIN_EMAILS && Array.isArray(window.ADMIN_EMAILS)) {
+      if (window.ADMIN_EMAILS.includes(window.currentUserEmail)) return true;
     }
-
     return false;
   }
 
@@ -4181,7 +4170,7 @@
         aiBadge.style.borderColor = 'rgba(78, 205, 196, 0.6)';
         aiBadge.style.background = 'rgba(10, 24, 28, 0.9)';
         aiBadge.style.color = '#4ECDC4';
-        aiBadge.textContent = '🛠️ Dev Mode Active';
+        aiBadge.textContent = '👑 Admin Access';
       }
       if (aiCta) {
         aiCta.textContent = 'Start AI Kickstart →';
@@ -4206,51 +4195,6 @@
     }
   }
 
-  window.toggleAiDevMode = function(forceState) {
-    const current = isAiDevModeEnabled();
-    const nextState = typeof forceState === 'boolean' ? forceState : !current;
-    try {
-      if (nextState) {
-        localStorage.setItem('wishcraft_dev_ai', 'true');
-      } else {
-        localStorage.removeItem('wishcraft_dev_ai');
-      }
-    } catch (_) {}
-    updateAiDevUIState();
-    if (window.appModal) {
-      window.appModal({
-        title: nextState ? "🛠️ Dev Mode: AI Kickstart Unlocked" : "🔒 AI Kickstart Locked",
-        msg: nextState
-          ? "Developer Mode is now ACTIVE.\n\nAI Kickstart Studio is fully accessible for testing & development."
-          : "AI Kickstart is now LOCKED for regular users (Under Development notice active)."
-      });
-    }
-    return nextState;
-  };
-
-  // Keyboard shortcut Ctrl+Shift+D to toggle Dev Mode
-  window.addEventListener('keydown', (e) => {
-    if (e.ctrlKey && e.shiftKey && (e.key === 'D' || e.key === 'd')) {
-      e.preventDefault();
-      window.toggleAiDevMode();
-    }
-  });
-
-  // Secret 5-Click on Brand Logo to toggle Dev Mode
-  let brandClickCount = 0;
-  let brandClickTimer = null;
-  document.querySelectorAll('.brand, .nav-brand').forEach(brand => {
-    brand.addEventListener('click', () => {
-      brandClickCount++;
-      clearTimeout(brandClickTimer);
-      brandClickTimer = setTimeout(() => { brandClickCount = 0; }, 1800);
-      if (brandClickCount >= 5) {
-        brandClickCount = 0;
-        window.toggleAiDevMode();
-      }
-    });
-  });
-
   // Initial check
   updateAiDevUIState();
 
@@ -4270,8 +4214,8 @@
   aiCard.addEventListener('click', () => {
     if (!isAiDevModeEnabled()) {
       window.appModal({
-        title: "🚧 AI Kickstart — Under Development",
-        msg: "WishCraft AI Kickstart Studio is currently undergoing extensive upgrades and feature enhancement.\n\nPlease choose 'Using Template' to customize and launch our handcrafted cinematic masterpiece templates!\n\n(Tip for developer: Add ?dev=true to URL, log in with admin account, or press Ctrl+Shift+D to unlock)."
+        title: "🚧 Under Development",
+        msg: "WishCraft AI Kickstart Studio is currently undergoing extensive upgrades and feature enhancement.\n\nPlease choose 'Using Template' to customize and launch our handcrafted cinematic masterpiece templates!"
       });
       return;
     }
@@ -8675,12 +8619,18 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
                 <span style="font-size: 20px;">👑</span>
                 <div>
                     <h3 style="color: var(--gold); font-family: var(--serif); font-size: 18px; margin: 0;">Admin Portal</h3>
-                    <p style="font-size: 12px; color: var(--cream-dim); margin: 4px 0 0 0;">Generate secure, infinite-use Studio codes.</p>
+                    <p style="font-size: 12px; color: var(--cream-dim); margin: 4px 0 0 0;">Manage studio codes & internal development features.</p>
                 </div>
             </div>
-            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+            <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px;">
                 <button id="generateCodeBtn" class="generate-btn" style="padding: 10px 20px; font-size: 13px; margin: 0;">Generate Code</button>
                 <input type="text" id="newCodeDisplay" readonly style="flex:1; min-width: 200px; background: rgba(0,0,0,0.4); border: 1px dashed rgba(255,255,255,0.2); color: var(--gold); padding: 10px 14px; border-radius: 8px; font-family: var(--mono); font-size: 14px; outline: none;" placeholder="Generated code will appear here..." onclick="this.select()">
+            </div>
+            <div style="padding-top: 12px; border-top: 1px solid rgba(212,175,106,0.15); display: flex; align-items: center; justify-content: space-between;">
+                <div style="font-size: 12.5px; color: var(--cream-dim);">
+                    <strong style="color: var(--gold);">🤖 AI Kickstart Access:</strong> Unlocked exclusively for Admin accounts
+                </div>
+                <span style="font-size: 11px; padding: 4px 10px; border-radius: 20px; background: rgba(78,205,196,0.15); border: 1px solid rgba(78,205,196,0.4); color: #4ECDC4; font-weight: 600;">Admin Active</span>
             </div>
         </div>
 
