@@ -8072,16 +8072,36 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
     });
   }
 
-  // Package HTML into a self-decrypting runtime wrapper so source code is invisible on View Source / Ctrl+U
+  // Package HTML into an instant, protected preview player shell so source code is never exposed in Page Source (Ctrl+U)
   window.wrapWithProtectedRuntime = function(rawHtml, title = "WishCraft Experience") {
     try {
-      const key = "wc_vault_cipher_key";
-      const encodedUri = encodeURIComponent(rawHtml);
-      let scrambled = "";
-      for (let i = 0; i < encodedUri.length; i++) {
-        scrambled += String.fromCharCode(encodedUri.charCodeAt(i) ^ key.charCodeAt(i % key.length));
+      // Ensure the inner template has anti-theft guards
+      let innerHtml = rawHtml;
+      const innerGuard = `
+<script>
+  (function() {
+    document.addEventListener('contextmenu', function(e) { e.preventDefault(); return false; }, true);
+    document.addEventListener('keydown', function(e) {
+      if ((e.ctrlKey && (e.key === 'u' || e.key === 's' || e.key === 'U' || e.key === 'S')) ||
+          (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j' || e.key === 'C' || e.key === 'c')) ||
+          e.key === 'F12') {
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
       }
-      const base64Payload = btoa(scrambled);
+    }, true);
+  })();
+<\/script>`;
+      if (innerHtml.includes('</body>')) {
+        innerHtml = innerHtml.replace('</body>', innerGuard + '\n</body>');
+      } else {
+        innerHtml += innerGuard;
+      }
+
+      // Fast zero-overhead storage for cross-tab availability
+      try {
+        sessionStorage.setItem('wc_preview_runtime_payload', innerHtml);
+      } catch(e) {}
 
       return `<!DOCTYPE html>
 <html lang="en">
@@ -8090,17 +8110,29 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>${escapeHtml(title)}</title>
   <style>
+    * { box-sizing: border-box; }
     html, body { margin:0; padding:0; width:100%; height:100%; overflow:hidden; background:#08090d; }
-    #wcVaultLoader { position:fixed; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; background:#08090d; color:#d4af6a; font-family:-apple-system,BlinkMacSystemFont,sans-serif; z-index:9999999; }
-    .wcVaultSpin { width:42px; height:42px; border:2px solid rgba(212,175,106,0.2); border-top-color:#d4af6a; border-radius:50%; animation:wcVSpin 0.8s linear infinite; margin-bottom:14px; }
-    @keyframes wcVSpin { to { transform:rotate(360deg); } }
+    #wcExperienceFrame { width:100vw; height:100vh; border:none; display:block; }
+    #wcPreviewPill {
+      position: fixed; top: 12px; left: 50%; transform: translateX(-50%);
+      z-index: 99999999; background: rgba(12,10,15,0.92);
+      border: 1px solid rgba(212,175,106,0.6); color: #d4af6a;
+      padding: 6px 18px; border-radius: 30px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-size: 11px; font-weight: 700; letter-spacing: 0.08em;
+      text-transform: uppercase; backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.85);
+      pointer-events: none; display: flex; align-items: center; gap: 8px;
+      user-select: none;
+    }
   </style>
 </head>
 <body>
-  <div id="wcVaultLoader">
-    <div class="wcVaultSpin"></div>
-    <div style="font-size:11px; letter-spacing:3px; text-transform:uppercase; font-weight:600; opacity:0.85;">Initializing Experience...</div>
+  <div id="wcPreviewPill">
+    <span>🔒</span> WishCraft Protected Preview • Unlock to Export (₹99)
   </div>
+  <iframe id="wcExperienceFrame" allow="autoplay; fullscreen; clipboard-write"></iframe>
   <script>
     (function(){
       // Shield against View Source, DevTools and Save Page shortcuts
@@ -8113,28 +8145,34 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
         }
       }, true);
 
-      // Decrypt and unpack dynamically in-memory
+      // Mount experience instantly from runtime memory
+      var frame = document.getElementById('wcExperienceFrame');
+      var payload = null;
       try {
-        var _k = "${key}";
-        var _p = "${base64Payload}";
-        var _b = atob(_p);
-        var _s = "";
-        for (var i = 0; i < _b.length; i++) {
-          _s += String.fromCharCode(_b.charCodeAt(i) ^ _k.charCodeAt(i % _k.length));
+        if (window.opener && window.opener.__wcActivePayload) {
+          payload = window.opener.__wcActivePayload;
         }
-        var _dec = decodeURIComponent(_s);
-        document.open();
-        document.write(_dec);
-        document.close();
-      } catch(err) {
-        console.error("Runtime execution failed:", err);
+      } catch(err) {}
+      if (!payload) {
+        try { payload = sessionStorage.getItem('wc_preview_runtime_payload'); } catch(err) {}
+      }
+      if (!payload) {
+        try {
+          if (window.opener && window.opener.currentHtml) {
+            payload = window.opener.currentHtml;
+          }
+        } catch(err) {}
+      }
+
+      if (frame && payload) {
+        frame.srcdoc = payload;
       }
     })();
   <\/script>
 </body>
 </html>`;
     } catch(err) {
-      console.warn("Obfuscation error, falling back:", err);
+      console.warn("Protected runtime error, falling back:", err);
       return rawHtml;
     }
   };
@@ -8147,15 +8185,24 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
       const meta = (typeof TEMPLATE_METADATA !== 'undefined' && TEMPLATE_METADATA[tmplId]) ? TEMPLATE_METADATA[tmplId] : null;
       const title = meta ? meta.title : 'WishCraft Experience';
 
-      // If user is not subscribed, deliver protected self-decrypting runtime with hidden source code
-      let htmlToOpen = window.currentHtml;
-      if (!window.isUserSubscribed(tmplId) && typeof window.wrapWithProtectedRuntime === 'function') {
-        htmlToOpen = window.wrapWithProtectedRuntime(htmlToOpen, title);
+      if (!window.isUserSubscribed(tmplId)) {
+        // Protect source code for non-subscribed users: loads instantly via protected shell
+        window.__wcActivePayload = window.currentHtml;
+        const shellHtml = window.wrapWithProtectedRuntime(window.currentHtml, title);
+        const blob = new Blob([shellHtml], { type: 'text/html;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const newTab = window.open(url, '_blank');
+        if (newTab) {
+          try {
+            newTab.__wcActivePayload = window.currentHtml;
+          } catch(e) {}
+        }
+      } else {
+        // Subscribed users get raw exportable HTML
+        const blob = new Blob([window.currentHtml], { type: 'text/html;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        window.open(url, '_blank');
       }
-
-      const blob = new Blob([htmlToOpen], { type: 'text/html;charset=utf-8' });
-      const url = URL.createObjectURL(blob);
-      window.open(url, '_blank');
     });
   }
 
