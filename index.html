@@ -7713,6 +7713,11 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
   // Template Subscription & Single Pass Gating
   window.isUserSubscribed = function(tmplId) {
     try {
+      // If simulating free / non-subscribed user for testing, block access
+      if (localStorage.getItem('wishcraft_simulate_free') === 'true' || window.simulateFreeTier === true) {
+        return false;
+      }
+
       const currentEmail = (window.currentUser && window.currentUser.email) ? window.currentUser.email.toLowerCase() : '';
       const ADMIN_EMAILS = ["yashjare12@gmail.com", "yashjare081@gmail.com"];
       if (currentEmail && ADMIN_EMAILS.includes(currentEmail)) return true;
@@ -7730,6 +7735,49 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
       console.warn("Subscription check warning:", e);
     }
     return false;
+  };
+
+  window.resetTestingAccount = function() {
+    try {
+      localStorage.removeItem('wishcraft_unlocked_templates');
+      localStorage.setItem('wishcraft_simulate_free', 'true');
+      window.simulateFreeTier = true;
+      window.currentUserTier = 'Hobbyist';
+      if (typeof window.refreshTemplateGatingState === 'function') {
+        window.refreshTemplateGatingState();
+      }
+      if (typeof window.appModal === 'function') {
+        window.appModal({
+          title: '🔒 Testing Account Degraded to Free',
+          msg: 'Local passes have been cleared and your account is now simulating a Free / Hobbyist user.\n\nYou can now test the exact locked template experience, locked customizer banner, and purchase modal.'
+        });
+      }
+    } catch(e) {
+      console.error("Reset error:", e);
+    }
+  };
+
+  window.restoreAdminAccount = function() {
+    try {
+      localStorage.removeItem('wishcraft_simulate_free');
+      window.simulateFreeTier = false;
+      const currentEmail = (window.currentUser && window.currentUser.email) ? window.currentUser.email.toLowerCase() : '';
+      const ADMIN_EMAILS = ["yashjare12@gmail.com", "yashjare081@gmail.com"];
+      if (currentEmail && ADMIN_EMAILS.includes(currentEmail)) {
+        window.currentUserTier = 'Studio';
+      }
+      if (typeof window.refreshTemplateGatingState === 'function') {
+        window.refreshTemplateGatingState();
+      }
+      if (typeof window.appModal === 'function') {
+        window.appModal({
+          title: '👑 Admin Access Restored',
+          msg: 'Simulation mode disabled. Full Admin & Studio privileges have been restored.'
+        });
+      }
+    } catch(e) {
+      console.error("Restore error:", e);
+    }
   };
 
   window.openTemplatePurchaseModal = function(tmplId) {
@@ -7918,15 +7966,28 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
   const buySinglePassBtn = document.getElementById('buySinglePassBtn');
   if (buySinglePassBtn) {
     buySinglePassBtn.addEventListener('click', () => {
-      const tmplId = buySinglePassBtn.getAttribute('data-tmpl') || window.currentActiveTmplId;
-      window.unlockTemplatePass(tmplId, false);
+      const tmplId = buySinglePassBtn.getAttribute('data-tmpl') || window.currentActiveTmplId || 'royal-velvet';
+      const meta = (typeof TEMPLATE_METADATA !== 'undefined' && TEMPLATE_METADATA[tmplId]) ? TEMPLATE_METADATA[tmplId] : null;
+      const title = meta ? meta.title : 'Template';
+
+      if (typeof window.appModal === 'function') {
+        window.appModal({
+          title: '💳 Checkout (₹99)',
+          msg: `Online payment checkout for "${title}" (₹99) is currently being connected to Razorpay / UPI for production release.\n\nOnline checkout will go live in the upcoming payment gateway rollout! If you have an Artisan or VIP gift code, you can activate it in your Account Panel.`
+        });
+      }
     });
   }
 
   const buyStudioPassBtn = document.getElementById('buyStudioPassBtn');
   if (buyStudioPassBtn) {
     buyStudioPassBtn.addEventListener('click', () => {
-      window.unlockTemplatePass(null, true);
+      if (typeof window.appModal === 'function') {
+        window.appModal({
+          title: '👑 Studio All-Access Checkout (₹499/mo)',
+          msg: 'Online subscription checkout for Studio All-Access (₹499 / month) is currently being connected to Razorpay / UPI for production release.\n\nOnline checkout will go live in the upcoming payment gateway rollout! If you have an Artisan or VIP gift code, you can activate it in your Account Panel.'
+        });
+      }
     });
   }
 
@@ -9092,6 +9153,22 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
                     <strong style="color: var(--gold);">🤖 AI Kickstart Access:</strong> Unlocked exclusively for Admin accounts
                 </div>
                 <span style="font-size: 11px; padding: 4px 10px; border-radius: 20px; background: rgba(78,205,196,0.15); border: 1px solid rgba(78,205,196,0.4); color: #4ECDC4; font-weight: 600;">Admin Active</span>
+            </div>
+
+            <div style="padding-top: 14px; margin-top: 14px; border-top: 1px solid rgba(212,175,106,0.15);">
+                <div style="font-size: 12px; font-weight: 700; color: var(--gold); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.05em;">🧪 Gating & Free User Simulator (Admin Only)</div>
+                <p style="font-size: 11.5px; color: var(--cream-dim); margin: 0 0 10px 0; line-height: 1.4;">Degrade your account to Free/Hobbyist to preview locked templates, or clear any local passes you tested.</p>
+                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                    <button type="button" class="dash-btn" id="adminDegradeToFreeBtn" style="padding: 7px 14px; font-size: 12px; background: rgba(255,255,255,0.05); border-color: rgba(255,100,100,0.4); color: #ff8888;" onclick="window.resetTestingAccount()">
+                      🔒 Degrade to Free / Hobbyist
+                    </button>
+                    <button type="button" class="dash-btn" id="adminRestoreAdminBtn" style="padding: 7px 14px; font-size: 12px; background: rgba(212,175,106,0.1); border-color: var(--gold); color: var(--gold);" onclick="window.restoreAdminAccount()">
+                      👑 Restore Admin / Studio Access
+                    </button>
+                    <button type="button" class="dash-btn" id="adminClearPassesBtn" style="padding: 7px 14px; font-size: 12px; color: var(--cream-dim);" onclick="localStorage.removeItem('wishcraft_unlocked_templates'); if(window.refreshTemplateGatingState) window.refreshTemplateGatingState(); if(window.appModal) window.appModal({title:'Passes Cleared', msg:'Local unlocked template cache has been completely cleared.'});">
+                      🗑️ Clear Local Passes
+                    </button>
+                </div>
             </div>
         </div>
 
