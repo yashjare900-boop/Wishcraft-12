@@ -7878,15 +7878,9 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
 
     const openTabBtn = document.getElementById('tmplStudioOpenTabBtn');
     if (openTabBtn) {
-      if (isSubscribed) {
-        openTabBtn.innerHTML = 'Open in Tab ↗';
-        openTabBtn.style.opacity = '1';
-        openTabBtn.title = 'Open full-screen standalone preview in new tab';
-      } else {
-        openTabBtn.innerHTML = '🔒 Open in Tab';
-        openTabBtn.style.opacity = '0.75';
-        openTabBtn.title = 'Unlock Masterpiece Pass (₹99) to open in full tab & export source code';
-      }
+      openTabBtn.innerHTML = 'Open in Tab ↗';
+      openTabBtn.style.opacity = '1';
+      openTabBtn.title = 'Open full-screen interactive preview in a new tab';
     }
 
     const groups = document.querySelectorAll('#tmplCustomizerView .tmpl-sec-group');
@@ -8078,22 +8072,88 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
     });
   }
 
+  // Package HTML into a self-decrypting runtime wrapper so source code is invisible on View Source / Ctrl+U
+  window.wrapWithProtectedRuntime = function(rawHtml, title = "WishCraft Experience") {
+    try {
+      const key = "wc_vault_cipher_key";
+      const encodedUri = encodeURIComponent(rawHtml);
+      let scrambled = "";
+      for (let i = 0; i < encodedUri.length; i++) {
+        scrambled += String.fromCharCode(encodedUri.charCodeAt(i) ^ key.charCodeAt(i % key.length));
+      }
+      const base64Payload = btoa(scrambled);
+
+      return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>${escapeHtml(title)}</title>
+  <style>
+    html, body { margin:0; padding:0; width:100%; height:100%; overflow:hidden; background:#08090d; }
+    #wcVaultLoader { position:fixed; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; background:#08090d; color:#d4af6a; font-family:-apple-system,BlinkMacSystemFont,sans-serif; z-index:9999999; }
+    .wcVaultSpin { width:42px; height:42px; border:2px solid rgba(212,175,106,0.2); border-top-color:#d4af6a; border-radius:50%; animation:wcVSpin 0.8s linear infinite; margin-bottom:14px; }
+    @keyframes wcVSpin { to { transform:rotate(360deg); } }
+  </style>
+</head>
+<body>
+  <div id="wcVaultLoader">
+    <div class="wcVaultSpin"></div>
+    <div style="font-size:11px; letter-spacing:3px; text-transform:uppercase; font-weight:600; opacity:0.85;">Initializing Experience...</div>
+  </div>
+  <script>
+    (function(){
+      // Shield against View Source, DevTools and Save Page shortcuts
+      document.addEventListener('contextmenu', function(e){ e.preventDefault(); return false; }, true);
+      document.addEventListener('keydown', function(e){
+        if ((e.ctrlKey && (e.key === 'u' || e.key === 's' || e.key === 'U' || e.key === 'S')) ||
+            (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j' || e.key === 'C' || e.key === 'c')) ||
+            e.key === 'F12') {
+          e.preventDefault(); e.stopPropagation(); return false;
+        }
+      }, true);
+
+      // Decrypt and unpack dynamically in-memory
+      try {
+        var _k = "${key}";
+        var _p = "${base64Payload}";
+        var _b = atob(_p);
+        var _s = "";
+        for (var i = 0; i < _b.length; i++) {
+          _s += String.fromCharCode(_b.charCodeAt(i) ^ _k.charCodeAt(i % _k.length));
+        }
+        var _dec = decodeURIComponent(_s);
+        document.open();
+        document.write(_dec);
+        document.close();
+      } catch(err) {
+        console.error("Runtime execution failed:", err);
+      }
+    })();
+  <\/script>
+</body>
+</html>`;
+    } catch(err) {
+      console.warn("Obfuscation error, falling back:", err);
+      return rawHtml;
+    }
+  };
+
   const studioOpenTabBtn = document.getElementById('tmplStudioOpenTabBtn');
   if (studioOpenTabBtn) {
     studioOpenTabBtn.addEventListener('click', () => {
-      const tmplId = window.currentActiveTmplId || 'royal-velvet';
-      if (!window.isUserSubscribed(tmplId)) {
-        if (typeof window.appModal === 'function') {
-          window.appModal({
-            title: '🔒 Preview Protected',
-            msg: 'Opening the full-screen standalone tab and downloading raw source code requires an unlocked Masterpiece Pass (₹99) or Studio All-Access.\n\nYou can interact with the live interactive experience directly here in the studio!'
-          });
-        }
-        window.openTemplatePurchaseModal(tmplId);
-        return;
-      }
       if (!window.currentHtml) return;
-      const blob = new Blob([window.currentHtml], { type: 'text/html;charset=utf-8' });
+      const tmplId = window.currentActiveTmplId || 'royal-velvet';
+      const meta = (typeof TEMPLATE_METADATA !== 'undefined' && TEMPLATE_METADATA[tmplId]) ? TEMPLATE_METADATA[tmplId] : null;
+      const title = meta ? meta.title : 'WishCraft Experience';
+
+      // If user is not subscribed, deliver protected self-decrypting runtime with hidden source code
+      let htmlToOpen = window.currentHtml;
+      if (!window.isUserSubscribed(tmplId) && typeof window.wrapWithProtectedRuntime === 'function') {
+        htmlToOpen = window.wrapWithProtectedRuntime(htmlToOpen, title);
+      }
+
+      const blob = new Blob([htmlToOpen], { type: 'text/html;charset=utf-8' });
       const url = URL.createObjectURL(blob);
       window.open(url, '_blank');
     });
