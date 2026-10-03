@@ -2125,14 +2125,11 @@
     .tmpl-card .tmpl-btn-primary, .tmpl-card .tmpl-btn-ghost { width: 100%; min-height: 44px; display: flex; align-items: center; justify-content: center; font-size: 13px; }
 
     /* Customizer Form Mobile Phone Optimization */
-    .tmpl-customizer { padding: 14px 10px; gap: 14px; border-radius: 16px; }
+    .tmpl-customizer { padding: 16px 12px; gap: 14px; border-radius: 16px; }
     .tmpl-customizer-header { flex-direction: column !important; align-items: flex-start !important; gap: 10px; }
-    #backToTmplGalleryBtn { width: auto !important; min-height: 32px !important; height: 32px !important; padding: 4px 12px !important; font-size: 11.5px !important; align-self: flex-start; }
-    .tmpl-customizer-footer { flex-direction: column-reverse !important; width: 100% !important; gap: 8px !important; }
-    #cancelCustomizerBtn { width: 100% !important; min-height: 40px !important; height: 40px !important; padding: 0 16px !important; font-size: 13px !important; }
-    #launchCustomizedTmplBtn { width: 100% !important; min-height: 44px !important; height: 44px !important; padding: 0 16px !important; font-size: 13px !important; }
+    #tmplStudioJumpTopBtn { width: 100% !important; min-height: 38px !important; display: flex; align-items: center; justify-content: center; font-size: 12px !important; }
     .tmpl-watermark-row { padding: 12px 14px !important; gap: 10px !important; }
-    #tmplPhotoSlotsGrid { grid-template-columns: repeat(auto-fill, minmax(50px, 1fr)) !important; gap: 6px !important; }
+    #tmplPhotoSlotsGrid { grid-template-columns: repeat(auto-fill, minmax(54px, 1fr)) !important; gap: 6px !important; }
   }
 
   /* Masterpiece Template Purchase Modal & Lock Banner Styles */
@@ -2194,6 +2191,42 @@
   }
   .tmpl-locked-inputs input, .tmpl-locked-inputs textarea {
     opacity: 0.65; cursor: not-allowed !important; pointer-events: none;
+  }
+
+  /* Purchase Modal Overlay & Animation Explicit Hooks */
+  #tmplPurchaseModal {
+    z-index: 1000000;
+  }
+  #tmplPurchaseModal.show {
+    opacity: 1 !important;
+    pointer-events: auto !important;
+  }
+  #tmplPurchaseModal.show .tmpl-modal-card {
+    transform: translateY(0) scale(1) !important;
+  }
+
+  /* Purchase Modal & Locked Banner Mobile Responsive */
+  @media (max-width: 640px) {
+    #tmplPurchaseModal .tmpl-modal-card {
+      max-height: 94vh;
+      border-radius: 20px;
+    }
+    #tmplPurchaseModal .tmpl-modal-body {
+      padding: 16px 14px 20px;
+      gap: 14px;
+    }
+    .tmpl-buy-grid { grid-template-columns: 1fr; gap: 14px; }
+    .tmpl-buy-card { padding: 18px 16px; border-radius: 14px; }
+    .tmpl-buy-price { font-size: 26px; }
+    .tmpl-buy-features li { font-size: 12px; }
+    .tmpl-buy-popular-tag { font-size: 8.5px; padding: 2px 24px; }
+    .tmpl-unlock-btn { min-height: 44px; display: flex; align-items: center; justify-content: center; }
+    .tmpl-customizer-locked-banner {
+      flex-direction: column; text-align: center; gap: 10px; padding: 14px;
+    }
+    .tmpl-customizer-locked-banner button {
+      width: 100%; justify-content: center; min-height: 42px;
+    }
   }
 
   /* Customizer Sub-panel inside Modal */
@@ -2607,11 +2640,51 @@
       height: 420px;
     }
     .tmpl-studio-topbar {
-      padding: 8px 12px;
+      padding: 10px 12px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+    .tmpl-studio-title-badge {
+      display: none !important;
+    }
+    .tmpl-studio-left {
+      order: 1;
+      gap: 6px;
     }
     .tmpl-studio-right {
-      width: 100%;
+      order: 2;
+      width: auto !important;
+      gap: 6px;
       justify-content: flex-end;
+    }
+    .tmpl-studio-center {
+      order: 3;
+      width: 100% !important;
+      justify-content: center;
+      margin-top: 2px;
+    }
+    #tmplStudioOpenTabBtn {
+      padding: 6px 10px !important;
+      font-size: 11px !important;
+    }
+    #tmplStudioDownloadBtn {
+      padding: 7px 14px !important;
+      font-size: 12px !important;
+      font-weight: 700 !important;
+    }
+    #tmplStudioBackBtn {
+      padding: 6px 12px !important;
+      font-size: 12px !important;
+    }
+    .tmpl-customizer-footer {
+      flex-direction: column-reverse; width: 100%; gap: 8px;
+    }
+    .tmpl-customizer-footer .tmpl-btn-primary,
+    .tmpl-customizer-footer .tmpl-btn-ghost {
+      width: 100%; min-height: 44px; display: flex; align-items: center; justify-content: center;
     }
   }
   .tmpl-scroll-indicator {
@@ -3741,7 +3814,7 @@
             ✦ Update Preview
           </button>
           <button type="button" class="tmpl-btn-primary" id="tmplStudioExportBtn" style="padding:12px 28px; font-size:13.5px;">
-            🚀 Deploy Keepsake
+            🚀 Deploy Live
           </button>
         </div>
       </div>
@@ -3831,8 +3904,8 @@
                 </div>
               </div>
               <div class="tmpl-actions">
-                <button class="tmpl-btn-ghost tmpl-preview-action" data-tmpl="royal-velvet" id="previewTmplBtn">👁️ Quick Preview</button>
-                <button class="tmpl-btn-primary tmpl-customize-action" data-tmpl="royal-velvet" id="openCustomizerBtn">✦ Customize & Launch</button>
+                <button class="tmpl-btn-ghost tmpl-preview-action" data-tmpl="royal-velvet">👁️ Quick Preview</button>
+                <button class="tmpl-btn-primary tmpl-customize-action" data-tmpl="royal-velvet">✦ Customize & Launch</button>
               </div>
             </div>
             
@@ -3959,7 +4032,7 @@
   </div>
 
   <!-- ================= 8. MASTERPIECE TEMPLATE UNLOCK / PURCHASE MODAL ================= -->
-  <div class="tmpl-modal-overlay" id="tmplPurchaseModal" style="display: none; position:fixed; inset:0; z-index:999999; background:rgba(0,0,0,0.85); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); align-items:center; justify-content:center; padding:16px;">
+  <div class="tmpl-modal-overlay" id="tmplPurchaseModal" style="display: none;">
     <div class="tmpl-modal-card" style="max-width: 760px; width: 100%; border: 1px solid rgba(212,175,106,0.4); box-shadow: 0 30px 80px rgba(0,0,0,0.9), 0 0 40px rgba(212,175,106,0.15);">
       <div class="tmpl-modal-header" style="border-bottom: 1px solid rgba(255,255,255,0.08);">
         <h3 class="tmpl-modal-title">
@@ -3995,7 +4068,7 @@
               <li><span>✓</span> Standalone zero-dependency HTML backup</li>
             </ul>
             <button class="tmpl-btn-ghost tmpl-unlock-btn" id="buySinglePassBtn" style="width:100%; padding:12px; font-size:13px; border-color:var(--gold); color:var(--gold); font-weight:600; margin-top:auto;">
-              Unlock This Template (₹99) →
+              Unlock Single Pass (₹99) →
             </button>
           </div>
 
@@ -6645,11 +6718,6 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
 
   const curatedModal = document.getElementById('curatedTemplatesModal');
   const closeTmplModalBtn = document.getElementById('closeTmplModalBtn');
-  const previewTmplBtn = document.getElementById('previewTmplBtn');
-  const openCustomizerBtn = document.getElementById('openCustomizerBtn');
-  const backToTmplGalleryBtn = document.getElementById('backToTmplGalleryBtn');
-  const cancelCustomizerBtn = document.getElementById('cancelCustomizerBtn');
-  const launchCustomizedTmplBtn = document.getElementById('launchCustomizedTmplBtn');
   const tmplGalleryView = document.getElementById('tmplGalleryView');
   const tmplCustomizerView = document.getElementById('tmplCustomizerView');
 
@@ -6676,22 +6744,6 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
       if (e.target === curatedModal) window.closeTemplatesModal();
     });
   }
-
-  if (openCustomizerBtn) {
-    openCustomizerBtn.addEventListener('click', () => {
-      if (tmplGalleryView) tmplGalleryView.style.display = 'none';
-      if (tmplCustomizerView) tmplCustomizerView.classList.add('open');
-    });
-  }
-
-  if (backToTmplGalleryBtn) {
-    backToTmplGalleryBtn.addEventListener('click', () => {
-      if (tmplCustomizerView) tmplCustomizerView.classList.remove('open');
-      if (tmplGalleryView) tmplGalleryView.style.display = 'block';
-    });
-  }
-
-  if (cancelCustomizerBtn) cancelCustomizerBtn.addEventListener('click', window.closeTemplatesModal);
 
     // Curated Template State & Dynamic Photo Slots (Royal Velvet = 6, Obsidian Vault = 10)
   window.currentActiveTmplId = 'royal-velvet';
@@ -6737,11 +6789,19 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
         if (removeBtn) {
           removeBtn.addEventListener("click", (e) => {
             e.stopPropagation();
+            if (!window.isUserSubscribed(window.currentActiveTmplId)) {
+              window.openTemplatePurchaseModal(window.currentActiveTmplId);
+              return;
+            }
             window.customTmplPhotos[i] = null;
             renderPhotoSlots();
           });
         }
         slotEl.addEventListener("click", () => {
+          if (!window.isUserSubscribed(window.currentActiveTmplId)) {
+            window.openTemplatePurchaseModal(window.currentActiveTmplId);
+            return;
+          }
           activeSlotTargetIdx = i;
           if (tmplSingleSlotUpload) tmplSingleSlotUpload.click();
         });
@@ -6752,6 +6812,10 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
           <span style="font-size:8px; color:var(--gold); margin-top:2px;">+ Add</span>
         `;
         slotEl.addEventListener("click", () => {
+          if (!window.isUserSubscribed(window.currentActiveTmplId)) {
+            window.openTemplatePurchaseModal(window.currentActiveTmplId);
+            return;
+          }
           activeSlotTargetIdx = i;
           if (tmplSingleSlotUpload) tmplSingleSlotUpload.click();
         });
@@ -6762,6 +6826,17 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
 
   window.renderPhotoSlots = renderPhotoSlots;
   renderPhotoSlots();
+
+  // Gate batch upload label click
+  const tmplBatchUploadLabel = document.querySelector('label[for="tmplBatchPhotoUpload"]');
+  if (tmplBatchUploadLabel) {
+    tmplBatchUploadLabel.addEventListener("click", (e) => {
+      if (!window.isUserSubscribed(window.currentActiveTmplId)) {
+        e.preventDefault();
+        window.openTemplatePurchaseModal(window.currentActiveTmplId);
+      }
+    });
+  }
 
   if (tmplSingleSlotUpload) {
     tmplSingleSlotUpload.addEventListener("change", async (e) => {
@@ -6805,6 +6880,10 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
 
   if (tmplClearAllPhotosBtn) {
     tmplClearAllPhotosBtn.addEventListener("click", () => {
+      if (!window.isUserSubscribed(window.currentActiveTmplId)) {
+        window.openTemplatePurchaseModal(window.currentActiveTmplId);
+        return;
+      }
       window.customTmplPhotos = new Array(10).fill(null);
       renderPhotoSlots();
     });
@@ -7665,15 +7744,23 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
     const buySingleBtn = document.getElementById('buySinglePassBtn');
     if (buySingleBtn) {
       buySingleBtn.setAttribute('data-tmpl', targetId);
-      buySingleBtn.textContent = `Unlock ${meta ? meta.title : 'Template'} (₹99) →`;
+      buySingleBtn.textContent = `Unlock Single Pass (₹99) →`;
     }
 
     modal.style.display = 'flex';
+    requestAnimationFrame(() => {
+      modal.classList.add('show');
+    });
   };
 
   window.closeTemplatePurchaseModal = function() {
     const modal = document.getElementById('tmplPurchaseModal');
-    if (modal) modal.style.display = 'none';
+    if (modal) {
+      modal.classList.remove('show');
+      setTimeout(() => {
+        if (!modal.classList.contains('show')) modal.style.display = 'none';
+      }, 260);
+    }
   };
 
   window.unlockTemplatePass = function(tmplId, isStudio) {
@@ -7818,6 +7905,14 @@ Do NOT wrap the output in markdown code fences. Output ONLY the raw JSON object.
   const closeTmplPurchaseModalBtn = document.getElementById('closeTmplPurchaseModalBtn');
   if (closeTmplPurchaseModalBtn) {
     closeTmplPurchaseModalBtn.addEventListener('click', () => window.closeTemplatePurchaseModal());
+  }
+
+  // Close purchase modal on overlay click
+  const purchaseModalOverlay = document.getElementById('tmplPurchaseModal');
+  if (purchaseModalOverlay) {
+    purchaseModalOverlay.addEventListener('click', (e) => {
+      if (e.target === purchaseModalOverlay) window.closeTemplatePurchaseModal();
+    });
   }
 
   const buySinglePassBtn = document.getElementById('buySinglePassBtn');
